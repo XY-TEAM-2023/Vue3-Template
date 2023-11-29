@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Document</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="description" content="Description" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, minimum-scale=1.0"
+    />
+    <link
+      rel="stylesheet"
+      href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css"
+    />
+    <link rel="stylesheet" href="./插件/gif播放.css" />
+    <!-- 测试 -->
+  </head>
+  <body>
+    <div id="app"></div>
+    <style>
+      /* 自定义代码框样式 */
+      .lang- {
+        background-color: #f7f7f7;
+        border: 0px solid #ddd;
+        border-radius: 4px;
+        padding-top: 8px !important;
+        padding-bottom: 8px !important;
+        padding-left: 6px !important;
+        padding-right: 6px !important;
+        overflow: hidden !important;
+      }
+    </style>
+
+    <script>
+      window.$docsify = {
+        name: "",
+        repo: "",
+        loadSidebar: true,
+        subMaxLevel: 3,
+        alias: {
+          "/.*/_sidebar.md": "/_sidebar.md",
+        },
+        // 阅读进度
+        progress: {
+          position: "top",
+          color: "var(--theme-color,#42b983)",
+          height: "3px",
+        },
+        // 最后更新时间
+        // timeUpdater: {
+        //   text: "<div align='right' width='200px' style='color:gray;font-size:10px'> 最后更新时间：{docsify-updated} </div>",
+        //   formatUpdated: "{YYYY}/{MM}/{DD}",
+        //   whereToPlace: "bottom", // "top" or "bottom", default to "bottom"
+        // },
+        theme: {
+          code: {
+            // 内置样式名称：dark、coy、okaidia、tomorrow、funky、twilight
+            // 选择你喜欢的样式
+            defaultTheme: "funky",
+          },
+        },
+        markdown: {
+          renderer: {
+            code: function (code, lang) {
+              if (lang === "mermaid") {
+                return '<div class="mermaid">' + code + "</div>";
+              }
+              return this.origin.code.apply(this, arguments);
+            },
+          },
+        },
+      };
+    </script>
+	<script src="./插件/docsify.js"></script>
+    <script src="./插件/复制代码.js"></script>
+    <script src="./插件/图片缩放.js"></script>
+    <script src="./插件/外联脚本.js"></script>
+    <script src="./插件/分页导航.js"></script>
+    <script src="./插件/gif播放.js"></script>
+    <script src="./插件/全局搜索.js"></script>
+    <script src="./插件/markdown.js"></script>
+    <script>
+      mermaid.initialize({ startOnLoad: true });
+    </script>
+    <!-- Docsify v4 -->
+    <!-- 在 body 结束前 -->
+  </body>
+</html>
