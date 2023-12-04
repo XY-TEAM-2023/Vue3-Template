@@ -1,23 +1,18 @@
-// user.js 用于管理用户的相关数据
-// 引入pinia插件
+// 于管理用户的相关数据
 import { defineStore } from 'pinia'
 
 // 定义一个名为 "user" 的 store(数据管理对象)
-export const useUserStore = defineStore({
-  /**store 的唯一标识 */
-  id: 'user',
-
+export const useUserStore = defineStore('user', {
   /*****************************************
-   * 定义当前对象会保存哪些基础数据，可直接读取
-   * 在Vue中可以直接只能进行取值操作，不可修改
+   * 定义当前对象会保存哪些基础数据
    *****************************************/
   state: () => ({
     /**用户id */
     userId: 0,
     /**用户账号 */
     account: '',
-    /**用户角色，0普通用户；1测试用户；2管理员账号 */
-    role: '',
+    /**用户角色，比如: 普通用户、测试用户、管理员账号 */
+    roles: [],
     /**
      * jwt字符串
      * "_"代表这是个不希望外界调用的属性
@@ -31,35 +26,32 @@ export const useUserStore = defineStore({
   getters: {
     /**
      * 是否为测试账号
-     * @param {*} state 固定参数，实际操作中代表上面定义的state
      * @returns {boolean}
      */
-    isTestAccount: (state) => {
-      return state.role == 1 // 假设 role 为1的时，该用户为测试账号
+    isTestAccount() {
+      return this.roles.includes('test')
     },
 
     /**
      * 是否为开发账号
-     * @param {*} state
      * @returns {boolean}
      */
-    isDevAccount: (state) => {
-      return state.role == 2
+    isDevAccount() {
+      return this.role === 2
     },
 
     /**
      * 登录状态
-     * @param {*} state
      * @returns {number} -1未登录；0已登录；1登录失效；
      */
-    loginStatus: (state) => {
+    loginStatus() {
       // 未登录
-      if (!state._jwt || state.userId <= 0) {
+      if (!this._jwt || this.userId <= 0) {
         return -1
       }
 
       // 解析JWT中间payload数据
-      const tokenParts = jwtToken.split('.')
+      const tokenParts = this._jwt.split('.')
       if (tokenParts.length !== 3) {
         console.error('JWT token is not in the correct format.')
         return 1 // 错误的jwt，视为登录失效
@@ -89,7 +81,7 @@ export const useUserStore = defineStore({
   },
 
   /*****************************************
-   * 修改数据
+   * 自定义函数
    *****************************************/
   actions: {
     /**
@@ -126,15 +118,8 @@ export const useUserStore = defineStore({
    * 持久化数据配置
    *****************************************/
   persist: {
-    // 开启后，默认会对整个 Store 的 state 内容进行 sessionStorage 储存
+    key: 'user', // 区分不同store
     enabled: true,
-    strategies: [
-      {
-        // 持久化数据位置：localStorage 或 sessionStorage
-        storage: localStorage,
-        // 指定state中需要持久化的字段，不配置paths时将对所有内容进行持久化
-        // paths: ['foo', 'bar'],
-      },
-    ],
+    strategies: [{ storage: localStorage }],
   },
 })
