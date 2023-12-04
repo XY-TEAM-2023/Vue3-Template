@@ -1,9 +1,13 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { mobileAsyncRoutes, mobileConstantRoutes } from '@/router/mobileRoutes'
-import { desktopAsyncRoutes, desktopConstantRoutes } from '@/router/desktopRoutes'
 import { ElMessageBox } from 'element-plus'
 import i18n from '@/i18n'
 import isMobile from '@/utils'
+import { useUserStore } from '@/stores/user'
+import { config } from '@/config'
+import NProgress from 'nprogress'
+import { useAppStore } from '@/stores/app'
+import { desktopAsyncRoutes, desktopConstantRoutes } from './r_desktop'
+import { mobileAsyncRoutes, mobileConstantRoutes } from './r_mobile'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -27,12 +31,14 @@ router.reloadRoutes = function () {
   })
   router.config = []
 
-  const is_mobile = isMobile()
-  // 根据手机还是PC加载路由配置
-  constantRoutes = is_mobile ? mobileConstantRoutes : desktopConstantRoutes
-  asyncRoutes = is_mobile ? mobileAsyncRoutes : desktopAsyncRoutes
-  console.log(constantRoutes)
-  console.log(asyncRoutes)
+  // 加载手机还是PC路由配置
+  const useMobileRouter = config.websiteModel === 'mobile' || (!config.noMobileModel && isMobile())
+  constantRoutes = useMobileRouter ? mobileConstantRoutes : desktopConstantRoutes
+  asyncRoutes = useMobileRouter ? mobileAsyncRoutes : desktopAsyncRoutes
+
+  console.log('useMobileRouter', useMobileRouter)
+  // console.log(constantRoutes)
+  // console.log(asyncRoutes)
 
   let index = 0
   console.log('重新加载Router配置')
@@ -57,9 +63,6 @@ router.reloadRoutes = function () {
   }
 }
 
-/** 登录页面 */
-let loginPath = ''
-
 router.beforeEach(
   /**
    * 前置路由
@@ -68,25 +71,31 @@ router.beforeEach(
    * @param next next() 继续执行；next(false) 中断导航；next('/') 或 next({ path: '/' }): 跳转到一个不同的地址
    */
   (to, from, next) => {
-    // const userStore = useUserStore()
-    next()
-    return
-    if (to.path === '/noPermission') {
-      return
-    }
-    ElMessageBox.alert(i18n.global.t('app.needLogin'), '', {
-      showClose: false,
-      confirmButtonText: i18n.global.t('com.btnOk'),
-      callback: (action) => {
-        console.log(action)
-        next({ path: '/noPermission' })
-      },
-    })
-    return
+    NProgress.start()
+
+    console.log('路由守卫：' + to.path)
+    const userStore = useUserStore()
     // 登录状态 -1未登录；0已登录；1登录失效；
     const loginStatus = userStore.loginStatus
 
-    if (!to.meta.needLogin) {
+    if (to.path === '/') {
+      // 如果访问的是根目录
+      if (loginStatus === -1) {
+        // 跳转到登录页面
+        if (config.router.loginPage && config.router.loginPage !== to.path) {
+          next(config.router.loginPage)
+        } else {
+          next()
+        }
+      } else {
+        // 跳转到登录成功后的第一个页面
+        if (config.router.loginSuccessPage && config.router.loginSuccessPage !== to.path) {
+          next(config.router.loginSuccessPage)
+        } else {
+          next()
+        }
+      }
+    } else if (!to.meta || !to.meta.needLogin) {
       // 不需要登录, 直接访问页面
       next()
     } else if (loginStatus === -1) {
@@ -94,10 +103,10 @@ router.beforeEach(
       ElMessageBox.alert(i18n.global.t('app.needLogin'), '', {
         showClose: false,
         confirmButtonText: i18n.global.t('com.btnOk'),
-        callback: (action) => {
+        callback: () => {
           // 如果有登录页面, 访问登录页面
-          if (loginPage) {
-            next(loginPath)
+          if (config.router.loginPage) {
+            next(config.router.loginPage)
           }
         },
       })
@@ -106,10 +115,10 @@ router.beforeEach(
       ElMessageBox.alert(i18n.global.t('app.sessionTimeout'), '', {
         showClose: false,
         confirmButtonText: i18n.global.t('com.btnOk'),
-        callback: (action) => {
+        callback: () => {
           // 如果有登录页面, 访问登录页面
-          if (loginPage) {
-            next(loginPath)
+          if (config.router.loginPage) {
+            next(config.router.loginPage)
           }
         },
       })
@@ -130,8 +139,9 @@ router.beforeEach(
 )
 
 router.afterEach(() => {
-  // finish progress bar
-  // NProgress.done()
+  const appStore = useAppStore()
+  appStore.routerPath = router.currentRoute.value.fullPath
+  NProgress.done()
 })
 
 router.reloadRoutes()

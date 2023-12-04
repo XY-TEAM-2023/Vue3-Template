@@ -3,6 +3,7 @@ import EN from './en'
 import ZH from './zh'
 import KO from './ko'
 import { useAppStore } from '@/stores/app'
+import { config } from '@/config'
 
 // 语言配置
 const messages = {
@@ -22,11 +23,11 @@ function getLanguageFromLocalStorage() {
         return language
       }
     } catch (error) {
-      return 'en'
+      return config.defaultLanguage
     }
   }
   // 默认返回 'en' 作为容错机制
-  return 'en'
+  return config.defaultLanguage
 }
 
 const i18n = createI18n({

@@ -1,14 +1,19 @@
 // 网站配置
 import { defineStore } from 'pinia'
+import { config } from '@/config'
 
 export const useAppStore = defineStore('app', {
   state: () => ({
     /**默认语言 */
-    language: 'zh',
+    language: config.language,
     /**国际化列表 */
     languages: [],
     /**内部-切换语言处理器*/
     _languageSwitchHandler: null,
+    /**路由菜单-当前访问的路径 */
+    routerPath: '',
+    /**路由菜单-显示小红点的路由*/
+    _routerRedDot: {},
   }),
 
   getters: {},
@@ -40,6 +45,61 @@ export const useAppStore = defineStore('app', {
       if (!this._languageSwitchHandler(lang)) return false
       this.language = lang
       return true
+    },
+    /**
+     * 设置路由小红点
+     * @param path 路由路径
+     * @param content 显示内容，如果内容为空，显示单纯的小红点
+     * @param clickHide 点击后隐藏，默认微针
+     */
+    setRouteRedDot(path, content = '', clickHide = true) {
+      this._routerRedDot[path] = {
+        display: true,
+        content: content,
+        clickHide: clickHide,
+        looked: false,
+      }
+    },
+    /**
+     * 取路由是否显示小红点
+     * @param path 路由路径
+     * @returns {boolean}
+     */
+    isShowRouteRedDot(path) {
+      const route = this._routerRedDot[path]
+      return route && route.display
+    },
+    /**
+     * 取油路显示内容
+     * @param path
+     * @returns {String} 返回内容, 如果为空显示小红点
+     */
+    getRouteRedDotValue(path) {
+      const route = this._routerRedDot[path]
+      return route && route.content
+    },
+    /**
+     * 取路由是否已经查看过小红点
+     * @param path 路径
+     * @returns {boolean}
+     */
+    getRouteRedDotIsLooked(path) {
+      const route = this._routerRedDot[path]
+      return route && route.looked
+    },
+    /**
+     * 尝试隐藏小红点
+     * @param path 路由路径
+     */
+    tryHideRouteRedDot(path) {
+      const route = this._routerRedDot[path]
+      if (!route) {
+        return
+      }
+      if (route.clickHide) {
+        this._routerRedDot[path].display = false
+      }
+      this._routerRedDot[path].looked = true
     },
   },
 

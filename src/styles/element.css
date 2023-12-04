@@ -1,0 +1,13 @@
+.el-header{
+    padding: 0 0 0 0 !important;
+}
+.el-main {
+    padding: 0 0 0 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important; /* 水平方向靠左对齐 */
+    align-items: flex-start !important;     /* 垂直方向靠上对齐 */
+}
+.el-footer{
+    padding: 0 0 0 0 !important;
+}
