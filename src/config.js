@@ -2,6 +2,12 @@
  * 默认配置
  */
 export const config = {
+  logo: {
+    /** 是否显示 */
+    display: true,
+    /** 默认Logo文本 */
+    label: 'Rube',
+  },
   /** 默认语言: zh、en、ko */
   language: 'zh',
   /** 网站模式: website、admin、mobile(该模式下只有手机版本) */
@@ -14,6 +20,12 @@ export const config = {
     loginPage: '/',
     /** 登录成功后访问的路径，需要在登录逻辑中处理 */
     loginSuccessPage: '/test',
+    /** 点击已经激活的页面导航时，重新加载页面 */
+    clickSamePageReload: true,
+    mobile: {
+      /** 图标大小 */
+      iconSize: 28,
+    },
     /** 管理后台相关 */
     admin: {
       /** 背景颜色 */

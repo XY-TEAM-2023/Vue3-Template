@@ -2,6 +2,7 @@
   <div id="app">
     <el-container>
       <el-aside width="220px">
+        <ui-logo></ui-logo>
         <ui-navigation :routes="routes"></ui-navigation>
       </el-aside>
       <el-main>
@@ -14,10 +15,12 @@
 <script>
 import UiNavigation from '@/ui/desktop/components/UiNavigation.vue'
 import { RouterView } from 'vue-router'
+import UiLogo from '@/ui/desktop/components/UiLogo.vue'
 
 export default {
   name: 'UiLayout',
   components: {
+    UiLogo,
     RouterView,
     UiNavigation,
   },
@@ -29,6 +32,10 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 /* 样式可以根据需求进行自定义 */
+.el-aside {
+  display: flex;
+  flex-direction: column;
+}
 </style>

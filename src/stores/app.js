@@ -4,6 +4,8 @@ import { config } from '@/config'
 
 export const useAppStore = defineStore('app', {
   state: () => ({
+    /** Logo组件显示文本 */
+    logoLabel: config.logo.label,
     /**默认语言 */
     language: config.language,
     /**国际化列表 */
@@ -109,6 +111,6 @@ export const useAppStore = defineStore('app', {
   persist: {
     key: 'app', // 区分不同store
     enabled: true,
-    strategies: [{ storage: localStorage }],
+    strategies: [{ storage: localStorage, paths: ['language', 'routerPath'] }],
   },
 })

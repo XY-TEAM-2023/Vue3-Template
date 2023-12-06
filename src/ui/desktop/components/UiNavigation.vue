@@ -9,7 +9,7 @@
     popper-effect="dark"
   >
     <template v-for="(route, index) in router.config" :key="index">
-      <ui-navigation-item :route="route" />
+      <ui-navigation-item :route="route" class="unselect" />
     </template>
   </el-menu>
 </template>

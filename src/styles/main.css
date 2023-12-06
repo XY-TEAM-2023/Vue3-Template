@@ -1,5 +1,6 @@
 @import './base.css';
 @import './element.css';
+@import './nprogress.css';
 
 a,
 .green {
@@ -40,10 +41,19 @@ a,
   }
 }
 
+/* flex 上下左右居中显示 */
 .flex-center{
   display: flex;
   width: 100%;
   height: 100%;
   justify-content: center;
   align-items: center;
+}
+
+/* 禁止选择文本 */
+.unselect {
+  user-select: none; /* 标准语法 */
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* IE10+/Edge */
 }

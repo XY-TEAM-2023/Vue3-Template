@@ -1,32 +1,21 @@
 <template>
-  <router-link :to="fullPath" class="nav-item">
-    <component
-      v-if="checkIsShowIcon(route)"
-      :is="route.meta.icon"
-      :width="config.router.admin.iconSize"
-      :height="config.router.admin.iconSize"
-      class="icon"
-    ></component>
-    <span class="text">{{ route.name }}</span>
-  </router-link>
+  <!-- 有子菜单 -->
+  <ui-navigation-item v-if="isShowGroup" v-for="subRoute in route.children" :key="subRoute.path" :route="subRoute" />
 
-  <!-- 无子菜单 -->
-  <el-menu-item v-else-if="isShowItem" :index="fullPath" @click="navigateTo(route.path)">
-    <!--  图标  -->
-    <component
-      v-if="checkIsShowIcon(route)"
-      :is="route.meta.icon"
-      :width="config.router.admin.iconSize"
-      :height="config.router.admin.iconSize"
-      style="margin-right: 10px"
-    ></component>
-    <!--  菜单名  -->
-    {{ route.name }}
-    <!--  小红点  -->
-    <el-badge v-if="showRedDot" :is-dot="!redDotValue" :value="redDotValue" :hidden="false">
-      <div style="margin-left: 15px"></div>
+  <!-- 菜单按钮 -->
+  <router-link v-else-if="isShowItem" :to="route.fullPath" @click="navigateTo(route.fullPath)">
+    <!--  显示小红点  -->
+    <el-badge :is-dot="!redDotValue" :value="redDotValue" :hidden="!showRedDot" class="nav-item">
+      <!-- 有图标 -->
+      <component
+        v-if="checkIsShowIcon(route)"
+        :is="route.meta.icon"
+        :width="config.router.mobile.iconSize"
+        :height="config.router.mobile.iconSize"
+      ></component>
+      <span class="text">{{ route.name }}</span>
     </el-badge>
-  </el-menu-item>
+  </router-link>
 </template>
 
 <script setup>
@@ -34,22 +23,25 @@ import { useRouter } from 'vue-router'
 import { defineProps, computed } from 'vue'
 import { useAppStore } from '@/stores/app'
 import { config } from '@/config'
+import UiNavigationItem from '@/ui/mobile/components/UiNavigationItem.vue'
 
 const router = useRouter()
 const props = defineProps({
   route: Object,
-  parentPath: String,
 })
 
 const appStore = useAppStore()
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 // 路由相关
-/** 当前路由完整路径 */
-const fullPath = computed(() => {
-  return (props.parentPath ? props.parentPath : '') + props.route.path
-})
-
+const navigateTo = (path) => {
+  if (path === router.currentRoute.value.fullPath) {
+    router.push({ path: '/refresh', query: { redirect: path } })
+  } else {
+    router.push(path)
+  }
+  appStore.tryHideRouteRedDot(path)
+}
 /**
  * 检查是否为菜单组
  */
@@ -131,52 +123,48 @@ const isShowGroup = computed(() => {
 const isShowItem = computed(() => {
   return checkIsShowItem(props.route)
 })
-//
-// console.log('-------------------------- ', props.route.path)
-// console.log('isShowItem', isShowItem.value)
-// console.log('isShowGroup', isShowGroup.value)
-
-const navigateTo = (path) => {
-  appStore.tryHideRouteRedDot(path)
-  router.push(path)
-}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 // 小红点相关
 /** 是否显示小红点 */
-const showRedDot = computed(() => appStore.isShowRouteRedDot(props.route.path))
+const showRedDot = computed(() => appStore.isShowRouteRedDot(props.route.fullPath))
 /** 小红点显示内容 */
-const redDotValue = computed(() => appStore.getRouteRedDotValue(props.route.path))
-/** 是否显示分区的小红点 */
-const showRedDotGroup = computed(() => {
-  if (!checkIsGroup(props.route)) {
-    return false
-  }
-
-  if (!checkIsShow(props.route)) {
-    return false
-  }
-
-  // 判断是否有要显示的子菜单
-  for (const key in props.route.children) {
-    const item = props.route.children[key]
-    // 菜单分组
-    if (checkIsGroup(item)) {
-      return checkIsShowGroup(item)
-    }
-
-    // 是否显示菜单
-    if (checkIsShowItem(item)) {
-      // 是否有小红点显示
-      if (appStore.isShowRouteRedDot(item.path) && !appStore.getRouteRedDotIsLooked(item.path)) {
-        return true
-      }
-    }
-  }
-  return false
-})
+const redDotValue = computed(() => appStore.getRouteRedDotValue(props.route.fullPath))
 
 // 测试路由小红点
-// appStore.setRouteRedDot(props.route.path, '', false)
-appStore.setRouteRedDot(props.route.path, '18', true)
+// appStore.setRouteRedDot(props.route.fullPath, '', false)
+// appStore.setRouteRedDot(props.route.fullPath, '18', true)
 </script>
+
+<style scoped>
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 auto; /* 不要伸缩，避免被压缩 */
+  width: 90px;
+  min-width: 90px;
+  height: 100%;
+  text-align: center;
+  color: white;
+  text-decoration: none;
+  margin-top: 2px;
+  justify-content: center; /* 水平方向靠左对齐 */
+  align-items: center; /* 垂直方向靠上对齐 */
+}
+
+.nav-item + .nav-item {
+  margin-left: 40px;
+}
+
+.icon {
+  display: block;
+}
+
+.text {
+  font-size: 12px;
+}
+
+:deep(.el-badge__content) {
+  margin-right: 16px !important;
+}
+</style>

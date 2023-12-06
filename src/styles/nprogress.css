@@ -1,0 +1,13 @@
+@import 'nprogress/nprogress.css';
+
+#nprogress .bar {
+    /* 进度条颜色 */
+    background: #29d;
+}
+
+
+#nprogress .spinner {
+    /* 隐藏转圈效果 */
+    display: none;
+}
+

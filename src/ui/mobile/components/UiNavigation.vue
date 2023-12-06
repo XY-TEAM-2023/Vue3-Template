@@ -2,13 +2,9 @@
   <nav class="bottom-nav">
     <div class="arrow left-arrow" v-if="showLeftArrow" @click="scrollLeft">&lsaquo;</div>
     <div class="scroll-container" ref="scrollContainer" @scroll="checkScroll">
-      <!--      <template v-for="(route, index) in router.config" :key="index">-->
-      <!--        <ui-navigation-item :route="route" />-->
-      <!--      </template>-->
-      <router-link v-for="(route, index) in links" :key="index" :to="route.to" class="nav-item">
-        <span class="icon">{{ route.icon }}</span>
-        <span class="text">{{ route.text }}</span>
-      </router-link>
+      <template v-for="(route, index) in router.config" :key="index">
+        <ui-navigation-item :route="route" />
+      </template>
     </div>
     <div class="arrow right-arrow" v-if="showRightArrow" @click="scrollRight">&rsaquo;</div>
   </nav>
@@ -16,20 +12,9 @@
 
 <script setup>
 import router from '@/router'
-import UiNavigationItem from '@/ui/desktop/components/UiNavigationItem.vue'
-import { reactive, ref, onMounted } from 'vue'
+import UiNavigationItem from '@/ui/mobile/components/UiNavigationItem.vue'
+import { ref, onMounted } from 'vue'
 
-const links = reactive([
-  { icon: '🎁', text: '이벤트', to: '/' },
-  { icon: '▶️', text: '라이브쇼츠', to: '/test' },
-  { icon: '▶️', text: '라이브쇼츠', to: '/test' },
-  { icon: '▶️', text: '1', to: '/test' },
-  { icon: '▶️', text: '2', to: '/test' },
-  { icon: '▶️', text: '3', to: '/test' },
-  { icon: '▶️', text: '4', to: '/test' },
-  { icon: '▶️', text: '5', to: '/test' },
-  // ... 更多链接
-])
 const showLeftArrow = ref(false)
 const showRightArrow = ref(false)
 onMounted(() => {
@@ -37,6 +22,14 @@ onMounted(() => {
 })
 
 const scrollContainer = ref(null)
+
+onMounted(() => {
+  const container = document.querySelector('.scroll-container')
+  // 检查内容是否超出容器
+  if (container.scrollWidth > container.clientWidth) {
+    container.style.justifyContent = 'flex-start'
+  }
+})
 
 function checkScroll() {
   const container = scrollContainer.value
@@ -58,6 +51,7 @@ function scrollRight() {
   height: 100%;
   padding-top: 6px;
   position: relative; /* 确保箭头能够相对于此元素定位 */
+  align-items: center;
   background-color: #333;
 }
 
@@ -67,6 +61,7 @@ function scrollRight() {
   overflow-x: scroll; /* 始终显示水平滚动条 */
   height: 100%;
   align-items: center;
+  justify-content: space-around; /* 水平方向对齐 */
   -webkit-overflow-scrolling: touch; /* iOS Safari 惯性滚动 */
 }
 
@@ -85,24 +80,6 @@ function scrollRight() {
 .scroll-container {
   scrollbar-width: auto; /* “auto” 或 “thin” */
   scrollbar-color: rgba(0, 0, 0, 0.5) #ffffff; /* 滚动条颜色和轨道颜色 */
-}
-
-.nav-item {
-  flex: 0 0 auto; /* 不要伸缩，避免被压缩 */
-  margin: 5px;
-  width: 75px;
-  text-align: center;
-  color: white;
-  text-decoration: none;
-}
-
-.icon {
-  display: block;
-  font-size: 24px;
-}
-
-.text {
-  font-size: 11px;
 }
 
 .arrow {

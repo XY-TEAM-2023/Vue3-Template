@@ -1,7 +1,6 @@
 <template>
   <div id="app">
     <el-container>
-      12312312
       <el-main style="height: 0; flex-grow: 1">
         <el-scrollbar>
           <RouterView />
