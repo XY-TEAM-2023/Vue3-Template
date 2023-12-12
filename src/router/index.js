@@ -174,10 +174,11 @@ router.reloadRoutes = function (curRoles) {
   constantRoutes[layoutIndex].children = asyncRoutes
   const refreshRouteIndex = constantRoutes[layoutIndex].children.findIndex((route) => route.name === 'refresh')
   if (refreshRouteIndex === -1) {
+    const page_path = `/src/ui/${platform}/views/base/refresh.vue`
     constantRoutes[layoutIndex].children.push({
       path: 'refresh',
       name: 'refresh',
-      component: () => import(`/src/ui/${platform}/views/base/refresh.vue`),
+      component: () => import(page_path),
       meta: {
         title: 'refresh',
         hidden: true,

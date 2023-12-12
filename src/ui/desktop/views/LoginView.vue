@@ -39,6 +39,7 @@ onMounted(() => {
   const redirectTo = route.query.redirect || config.router.loginSuccessPage
   console.log(redirectTo)
 })
+
 /** 登录按钮事件 */
 function onLogin() {
   isRequesting.value = true
