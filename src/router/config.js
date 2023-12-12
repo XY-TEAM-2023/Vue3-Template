@@ -38,119 +38,47 @@ export const constantRoutes = [
     },
   },
   {
+    path: '/login',
+    name: 'login',
+    component: () => import(`/src/ui/${platform}/views/LoginView.vue`),
+    meta: { title: 'Login', needLogin: false },
+  },
+  {
     path: '/',
     name: '/',
     component: () => import(`/src/ui/${platform}/layout/${layoutFile}`),
-    meta: { title: 'home', icon: House, needLogin: false },
+    meta: { title: 'home', needLogin: true },
+    children: [],
+  },
+]
+
+/**
+ * 异步路由，登录后根据角色权限动态添加路由
+ */
+export const asyncRoutes = [
+  {
+    path: 'test',
+    name: 'test',
+    component: () => import(`/src/ui/${platform}/views/test.vue`),
+    meta: {
+      title: 'test',
+      icon: House,
+      // hidden: true,
+      needLogin: false,
+      public: {
+        desktop: true,
+        mobile: true,
+      },
+    },
     children: [
       {
-        path: 'refresh',
-        name: 'refresh',
-        component: () => import(`/src/ui/${platform}/views/base/refresh.vue`),
-        meta: {
-          title: 'refresh',
-          hidden: true,
-          needLogin: false,
-        },
-      },
-      {
-        path: 'test',
-        name: 'test',
-        component: () => import(`/src/ui/${platform}/views/test.vue`),
-        meta: {
-          title: 'test',
-          icon: House,
-          // hidden: true,
-          needLogin: false,
-          public: {
-            desktop: false,
-            mobile: true,
-          },
-        },
-      },
-      {
-        path: 'AboutView',
-        name: 'AboutView',
+        path: 'AboutView333',
+        name: 'AboutVie333w',
         component: () => import(`/src/ui/${platform}/views/AboutView.vue`),
         meta: {
           title: 'AboutView',
           icon: House,
           // hidden: true,
-          needLogin: false,
-          public: {
-            desktop: true,
-            mobile: true,
-          },
-        },
-      },
-      {
-        path: 'noPermission',
-        name: 'noPermission',
-        component: () => import(`/src/ui/${platform}/views/base/NoPermission.vue`),
-        meta: {
-          title: 'Export Zip',
-          icon: House,
-          hidden: false,
-          needLogin: false,
-          public: {
-            desktop: true,
-            mobile: true,
-          },
-        },
-      },
-      {
-        path: 'AboutView1',
-        name: 'AboutView1',
-        component: () => import(`/src/ui/${platform}/views/AboutView.vue`),
-        meta: {
-          title: 'AboutView',
-          icon: House,
-          // hidden: true,
-          needLogin: false,
-          public: {
-            desktop: true,
-            mobile: true,
-          },
-        },
-      },
-      {
-        path: 'noPermission2',
-        name: 'noPermission2',
-        component: () => import(`/src/ui/${platform}/views/base/NoPermission.vue`),
-        meta: {
-          title: 'Export Zip',
-          icon: House,
-          hidden: false,
-          needLogin: false,
-          public: {
-            desktop: true,
-            mobile: true,
-          },
-        },
-      },
-      {
-        path: 'AboutView3',
-        name: 'AboutView3',
-        component: () => import(`/src/ui/${platform}/views/AboutView.vue`),
-        meta: {
-          title: 'AboutView',
-          icon: House,
-          // hidden: true,
-          needLogin: false,
-          public: {
-            desktop: true,
-            mobile: true,
-          },
-        },
-      },
-      {
-        path: 'noPermission3',
-        name: 'noPermission3',
-        component: () => import(`/src/ui/${platform}/views/base/NoPermission.vue`),
-        meta: {
-          title: 'Export Zip',
-          icon: House,
-          hidden: false,
           needLogin: false,
           public: {
             desktop: true,
@@ -160,27 +88,94 @@ export const constantRoutes = [
       },
     ],
   },
-]
-
-/**
- * 异步路由，登录后根据角色权限动态添加路由
- */
-export const asyncRoutes = [
-  // {
-  //   path: '/zip',
-  //   component: Layout,
-  //   redirect: '/zip/download',
-  //   alwaysShow: true,
-  //   name: 'Zip',
-  //   meta: { title: 'Zip', icon: 'zip', needLogin: true, roles: [] },
-  //   children: [
-  //     {
-  //       path: 'download',
-  //       component: () => import('@/views/zip/index'),
-  //       name: 'ExportZip',
-  //       meta: { title: 'Export Zip' },
-  //     },
-  //   ],
-  // },
-  // 404 page must be placed at the end !!!
+  {
+    path: 'AboutView',
+    name: 'AboutView',
+    component: () => import(`/src/ui/${platform}/views/AboutView.vue`),
+    meta: {
+      title: 'AboutView',
+      icon: House,
+      // hidden: true,
+      needLogin: false,
+      public: {
+        desktop: true,
+        mobile: true,
+      },
+    },
+  },
+  {
+    path: 'noPermission',
+    name: 'noPermission',
+    component: () => import(`/src/ui/${platform}/views/base/NoPermission.vue`),
+    meta: {
+      title: 'Export Zip',
+      icon: House,
+      hidden: false,
+      needLogin: false,
+      public: {
+        desktop: true,
+        mobile: true,
+      },
+    },
+  },
+  {
+    path: 'AboutView1',
+    name: 'AboutView1',
+    component: () => import(`/src/ui/${platform}/views/AboutView.vue`),
+    meta: {
+      title: 'AboutView',
+      icon: House,
+      // hidden: true,
+      needLogin: false,
+      public: {
+        desktop: true,
+        mobile: true,
+      },
+    },
+  },
+  {
+    path: 'noPermission2',
+    name: 'noPermission2',
+    component: () => import(`/src/ui/${platform}/views/base/NoPermission.vue`),
+    meta: {
+      title: 'Export Zip',
+      icon: House,
+      hidden: false,
+      needLogin: false,
+      public: {
+        desktop: true,
+        mobile: true,
+      },
+    },
+  },
+  {
+    path: 'AboutView3',
+    name: 'AboutView3',
+    component: () => import(`/src/ui/${platform}/views/AboutView.vue`),
+    meta: {
+      title: 'AboutView',
+      icon: House,
+      // hidden: true,
+      needLogin: false,
+      public: {
+        desktop: true,
+        mobile: true,
+      },
+    },
+  },
+  {
+    path: 'noPermission3',
+    name: 'noPermission3',
+    component: () => import(`/src/ui/${platform}/views/base/NoPermission.vue`),
+    meta: {
+      title: 'Export Zip',
+      icon: House,
+      hidden: false,
+      needLogin: false,
+      public: {
+        desktop: true,
+        mobile: true,
+      },
+    },
+  },
 ]

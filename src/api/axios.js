@@ -31,6 +31,7 @@
 
 import axios from 'axios'
 import { useUserStore } from '@/stores/user'
+import { config } from '@/config'
 
 class HttpService {
   /**
@@ -38,7 +39,7 @@ class HttpService {
    */
   constructor() {
     this.http = axios.create({
-      baseURL: import.meta.env.VITE_APP_BASE_API, // 设置API的基本URL
+      baseURL: config.server, // 设置API的基本URL
       timeout: 15000, // 请求超时时间（毫秒）
       headers: {
         'Content-Type': 'application/json', // 设置默认的Content-Type
@@ -65,8 +66,8 @@ class HttpService {
     this.http.interceptors.response.use(
       (response) => {
         // 对响应数据做些什么，例如处理特定的返回状态码
-        console.log('响应头', response.headers)
-        this.useStore._jwt = response.headers['Authorization']
+        // console.log('响应头', response.headers)
+        this.useStore.setJwt(response.headers['Authorization'])
         return response.data
       },
       (error) => {
@@ -115,7 +116,7 @@ class HttpService {
           .catch((error) => {
             if (retry >= retryCount - 1) {
               // TODO: 弹窗提示请求失败，是否重试
-              console.error(error)
+              // console.error(error)
               reject(0)
             } else {
               retry++

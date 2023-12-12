@@ -10,9 +10,9 @@ export const useUserStore = defineStore('user', {
     /**用户id */
     userId: 0,
     /**用户账号 */
-    account: '',
+    account: 'coco',
     /**用户角色，比如: 普通用户、测试用户、管理员账号 */
-    roles: [],
+    roles: ['admin', 'dev'],
     /**
      * jwt字符串
      * "_"代表这是个不希望外界调用的属性
@@ -33,13 +33,34 @@ export const useUserStore = defineStore('user', {
     },
 
     /**
-     * 是否为开发账号
-     * @returns {boolean}
+     * jwt的数据
+     * @returns {Object}
      */
-    isDevAccount() {
-      return this.role === 2
-    },
+    jwtData() {
+      if (!this._jwt) {
+        return {}
+      }
 
+      // 解析JWT中间payload数据
+      const tokenParts = this._jwt.split('.')
+      if (tokenParts.length !== 3) {
+        return {}
+      }
+      // 尝试将数据转成json对象
+      let payload = null
+      try {
+        payload = JSON.parse(atob(tokenParts[1]))
+      } catch (error) {
+        return {}
+      }
+
+      // jwt已经失效
+      if (!payload.exp || Math.floor(Date.now() / 1000) > payload.exp) {
+        return {}
+      }
+
+      return payload
+    },
     /**
      * 登录状态
      * @returns {number} -1未登录；0已登录；1登录失效；
@@ -102,15 +123,13 @@ export const useUserStore = defineStore('user', {
     },
 
     /**
-     * 设置登录后的信息
-     * @param {*} id 用户唯一ID
-     * @param {*} account 用户账号
-     * @param {*} role 用户角色。0普通用户；1测试用户；2管理员账号
+     * 登录成功，设置登录后信息
      */
-    setLoginData(id, account, role) {
-      this.userId = id
-      this.account = account
-      this.role = role
+    loginSuccess() {
+      const jwt_data = this.jwtData
+      this.userId = jwt_data.userId
+      this.account = jwt_data.account
+      this.roles = jwt_data.roles
     },
   },
 

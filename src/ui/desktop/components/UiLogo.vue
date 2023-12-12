@@ -1,5 +1,5 @@
 <template>
-  <div v-if="config.logo.display" class="ui-logo">
+  <div v-if="config.logo.display" class="ui-logo unselect">
     <img src="/favicon.ico" alt="logo" class="icon" />
     <!-- 使用计算属性来显示标题 -->
     <div class="text unselect">{{ appStore.logoLabel }}</div>
@@ -49,21 +49,21 @@ onBeforeUnmount(() => {
 })
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 /* 组件样式 */
 
 .ui-logo {
-  height: 50px;
   min-height: 50px;
-  background-color: #393d42;
   display: flex;
   justify-content: center;
   align-items: center;
-  border-right: solid 1px var(--el-menu-border-color);
+  height: 100%;
+  margin-left: 20px;
+  //border-right: solid 1px var(--el-menu-border-color);
 
   .icon {
-    width: 30px;
-    height: 30px;
+    width: 32px;
+    height: 32px;
     margin-right: 10px;
   }
   .text {

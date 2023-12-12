@@ -14,12 +14,15 @@ export const config = {
   websiteModel: 'admin',
   /** 无手机模式：没有开发手机版时开启 */
   noMobileModel: false,
+  /** 服务器 */
+  server: 'http://192.168.1.2',
+  // server: '',
   /** 导航栏相关 */
   router: {
     /** 登录页面路径, 如果设置了该值, 当页面需要登录才能访问时, 用户点击了确定按钮会自动跳转页面 */
-    loginPage: '/',
+    loginPage: '/login',
     /** 登录成功后访问的路径，需要在登录逻辑中处理 */
-    loginSuccessPage: '/test',
+    loginSuccessPage: '/AboutView',
     /** 点击已经激活的页面导航时，重新加载页面 */
     clickSamePageReload: true,
     mobile: {
@@ -29,7 +32,7 @@ export const config = {
     /** 管理后台相关 */
     admin: {
       /** 背景颜色 */
-      backgroundColor: '#545c64',
+      backgroundColor: '#2f3243',
       /** 默认字体颜色 */
       textColor: '#fff',
       /** 选中后字体颜色 */

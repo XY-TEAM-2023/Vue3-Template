@@ -40,6 +40,7 @@ i18n.global.init = () => {
   const appStore = useAppStore()
 
   appStore.initLanguage(messages, (lang) => {
+    console.log(lang)
     if (messages[lang]) {
       i18n.global.locale = lang // 切换语言
       return true // 返回 true 表示切换成功并有相关配置

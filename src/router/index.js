@@ -169,9 +169,27 @@ router.reloadRoutes = function (curRoles) {
   console.log('重新加载Router配置')
 
   consoleIndex = 0
-  // 所有人都可以访问的页面
+
+  const layoutIndex = constantRoutes.findIndex((route) => route.name === '/')
+  constantRoutes[layoutIndex].children = asyncRoutes
+  const refreshRouteIndex = constantRoutes[layoutIndex].children.findIndex((route) => route.name === 'refresh')
+  if (refreshRouteIndex === -1) {
+    constantRoutes[layoutIndex].children.push({
+      path: 'refresh',
+      name: 'refresh',
+      component: () => import(`/src/ui/${platform}/views/base/refresh.vue`),
+      meta: {
+        title: 'refresh',
+        hidden: true,
+        needLogin: false,
+      },
+    })
+  }
+
+  console.warn(constantRoutes)
+
+  // 加载路径
   loadRouteConfig(constantRoutes, curRoles)
-  loadRouteConfig(asyncRoutes, curRoles)
 
   // 添加不存在的页面重定向
   router.addRoute({ path: '/:pathMatch(.*)*', redirect: '/404', meta: { hidden: true } })

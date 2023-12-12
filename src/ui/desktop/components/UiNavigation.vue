@@ -1,15 +1,15 @@
 <template>
   <el-menu
-    :background-color="config.router.admin.backgroundColor"
+    background-color="transparent"
     :text-color="config.router.admin.textColor"
     :active-text-color="config.router.admin.activeTextColor"
     :default-active="appStore.routerPath"
     :router="true"
     :mode="mode"
-    popper-effect="dark"
+    class="unselect menu"
   >
-    <template v-for="(route, index) in router.config" :key="index">
-      <ui-navigation-item :route="route" class="unselect" />
+    <template v-for="(route, index) in layoutRoutes" :key="index">
+      <ui-navigation-item :route="route" />
     </template>
   </el-menu>
 </template>
@@ -24,11 +24,18 @@ import { computed } from 'vue'
 const appStore = useAppStore()
 
 const mode = computed(() => (config.websiteModel === 'website' ? 'horizontal' : 'vertical'))
+
+const layoutRoutes = computed(() => {
+  const routes = router.config.find((obj) => obj.fullPath === '/')
+  return routes.children
+})
 </script>
-<style>
-.el-menu {
+<style scoped>
+.menu {
   width: 100%;
   height: 100%;
+  border-right: none;
+  border-bottom: none;
 }
 .el-header {
   padding: 0 0 0 0;

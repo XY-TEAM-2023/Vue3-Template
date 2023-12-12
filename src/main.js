@@ -14,6 +14,5 @@ pinia.use(piniaPluginPersist)
 app.use(pinia)
 app.use(i18n)
 app.use(router)
-i18n.global.init()
-
 app.mount('#app')
+i18n.global.init()
