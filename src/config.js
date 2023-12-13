@@ -11,7 +11,7 @@ export const config = {
   /** 默认语言: zh、en、ko */
   language: 'zh',
   /** 网站模式: website、admin、mobile(该模式下只有手机版本) */
-  websiteModel: 'mobile',
+  websiteModel: 'admin',
   /** 无手机模式：没有开发手机版时开启 */
   noMobileModel: false,
   /** 服务器 */
