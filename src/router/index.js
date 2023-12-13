@@ -174,11 +174,10 @@ router.reloadRoutes = function (curRoles) {
   constantRoutes[layoutIndex].children = asyncRoutes
   const refreshRouteIndex = constantRoutes[layoutIndex].children.findIndex((route) => route.name === 'refresh')
   if (refreshRouteIndex === -1) {
-    const page_path = `/src/ui/${platform}/views/base/refresh.vue`
     constantRoutes[layoutIndex].children.push({
       path: 'refresh',
       name: 'refresh',
-      component: () => import(page_path),
+      component: () => import(/* @vite-ignore */ `/src/ui/${platform}/views/base/refresh.vue`),
       meta: {
         title: 'refresh',
         hidden: true,
@@ -186,8 +185,6 @@ router.reloadRoutes = function (curRoles) {
       },
     })
   }
-
-  console.warn(constantRoutes)
 
   // 加载路径
   loadRouteConfig(constantRoutes, curRoles)

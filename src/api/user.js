@@ -5,7 +5,7 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 export const request_user_login = (account, password) => {
   return new Promise((resolve, reject) => {
     http
-      .post('/admin/user/login', { account: account, password: password, device: isMobile() ? 'mobile' : 'pc' })
+      .post('/api/admin/user/login', { account: account, password: password, device: isMobile() ? 'mobile' : 'pc' })
       .then((response) => {
         // 服务器返回数据的结构
         const { status, msg, data } = response

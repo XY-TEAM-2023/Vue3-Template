@@ -25,13 +25,15 @@ import { useUserStore } from '@/stores/user'
 import router from '@/router'
 import { useRoute } from 'vue-router'
 
-const account = ref('')
-const password = ref('')
+const userStore = useUserStore()
+
+// const account = ref('coco')
+const password = ref('13214566036')
+const account = ref(userStore.account)
+// const password = ref('')
 
 /** 是否正在登录中 */
 const isRequesting = ref(false)
-
-const userStore = useUserStore()
 
 const route = useRoute()
 onMounted(() => {

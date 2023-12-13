@@ -45,14 +45,16 @@ class HttpService {
         'Content-Type': 'application/json', // 设置默认的Content-Type
       },
     })
+    this.http.defaults.withCredentials = true
 
+    sessionStorage
     this.useStore = useUserStore()
 
     // 请求拦截器
     this.http.interceptors.request.use(
       (config) => {
         // 在发送请求之前做些什么，例如添加请求头、处理请求数据等
-        config.headers['Authorization'] = this.useStore._jwt
+        config.headers['token'] = this.useStore._jwt
         return config
       },
       (error) => {
@@ -65,9 +67,15 @@ class HttpService {
     // 响应拦截器
     this.http.interceptors.response.use(
       (response) => {
+        // 开发模式, TODO: 如果是开发者账号，也开启
+        if (import.meta.env.DEV) {
+          console.log(`[${response.config.method.toUpperCase()}][${response.status}]${response.config.url}`, response.data)
+        }
+
         // 对响应数据做些什么，例如处理特定的返回状态码
-        // console.log('响应头', response.headers)
-        this.useStore.setJwt(response.headers['Authorization'])
+        console.log('响应头', response.headers)
+        console.log('响应头', response.headers['token'])
+        this.useStore.setJwt(response.headers['token'])
         return response.data
       },
       (error) => {
