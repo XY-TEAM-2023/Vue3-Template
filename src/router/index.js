@@ -207,8 +207,10 @@ router.beforeEach(
     const userStore = useUserStore()
     // 登录状态 -1未登录；0已登录；1登录失效；
     const loginStatus = userStore.loginStatus
+    console.log('!!!!!!!!!!!!!!!!loginStatus', loginStatus)
 
     if (to.path === '/') {
+      console.log()
       // 如果访问的是根目录
       if (loginStatus === -1) {
         // 跳转到登录页面

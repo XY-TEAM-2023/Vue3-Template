@@ -1,5 +1,5 @@
 <template>
-  <div class="login-body">
+  <div class="login-body unselect">
     <div class="login-box">
       <h2>{{ config.logo.label }}</h2>
       <el-form style="width: 100%">
@@ -52,7 +52,9 @@ function onLogin() {
       // 跳转页面
       router.push(config.router.loginSuccessPage)
     })
+    .catch(() => {})
     .finally(() => {
+      console.log('请求结束')
       isRequesting.value = false
     })
 }

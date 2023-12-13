@@ -23,8 +23,8 @@
 <script>
 import UiNavigation from '@/ui/mobile/components/UiNavigation.vue'
 import { RouterView } from 'vue-router'
-import UiLogo from '@/ui/desktop/components/UiLogo.vue'
-import UiIconLogin from '@/ui/desktop/components/UiIconLogin.vue'
+import UiLogo from '@/ui/mobile/components/UiLogo.vue'
+import UiIconLogin from '@/ui/mobile/components/UiIconLogin.vue'
 
 export default {
   name: 'UiLayout',

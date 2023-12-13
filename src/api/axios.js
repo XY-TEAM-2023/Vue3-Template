@@ -72,8 +72,7 @@ class HttpService {
         }
 
         // 对响应数据做些什么，例如处理特定的返回状态码
-        console.log('响应头', response.headers)
-        console.log('响应头', response.headers['token'])
+        // console.log('响应头', response.headers)
         this.useStore.setJwt(response.headers['token'])
         return response.data
       },

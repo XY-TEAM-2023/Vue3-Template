@@ -3,7 +3,7 @@ export default {
     needLogin: 'You need to log in to access this page.',
     sessionTimeout: 'Login has expired.',
     needLoginBtn: 'Log in now',
-    signOut: 'Sign out',
+    signOut: 'sign out',
   },
   com: {
     btnYes: 'yes',
@@ -27,6 +27,6 @@ export default {
   },
   // 个人信息页面
   userInfoView: {
-    router: 'u  ser info',
+    router: 'user info',
   },
 }

@@ -1,5 +1,5 @@
 <template>
-  <el-dropdown :trigger="trigger">
+  <el-dropdown size="large" :trigger="trigger">
     <span class="el-dropdown-link">
       <el-avatar :size="props.size" :icon="UserFilled" />
     </span>
@@ -28,7 +28,7 @@ const props = defineProps({
   },
 })
 
-const trigger = 'click' // isMobile() ? 'click' : 'hover'
+const trigger = 'click' //  isMobile() ? 'click' : 'hover'
 
 /** 用户全局数据对象 */
 const userStore = useUserStore()

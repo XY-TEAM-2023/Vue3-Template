@@ -59,7 +59,7 @@ export const useUserStore = defineStore('user', {
         return {}
       }
 
-      return payload
+      return payload['data']
     },
     /**
      * 登录状态
@@ -110,7 +110,6 @@ export const useUserStore = defineStore('user', {
      */
     logout() {
       this.userId = 0
-      this.account = ''
       this.role = ''
       this._jwt = ''
     },
@@ -127,6 +126,7 @@ export const useUserStore = defineStore('user', {
      */
     loginSuccess() {
       const jwt_data = this.jwtData
+      console.log(jwt_data)
       this.userId = jwt_data.userId
       this.account = jwt_data.account
       this.roles = jwt_data.roles
