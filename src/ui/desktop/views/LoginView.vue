@@ -27,9 +27,9 @@ import { useRoute } from 'vue-router'
 
 const userStore = useUserStore()
 
-// const account = ref('coco')
+const account = ref('coco')
 const password = ref('13214566036')
-const account = ref(userStore.account)
+// const account = ref(userStore.account)
 // const password = ref('')
 
 /** 是否正在登录中 */

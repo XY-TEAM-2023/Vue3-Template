@@ -47,7 +47,6 @@ class HttpService {
     })
     this.http.defaults.withCredentials = true
 
-    sessionStorage
     this.useStore = useUserStore()
 
     // 请求拦截器
