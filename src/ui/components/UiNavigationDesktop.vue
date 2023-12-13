@@ -9,13 +9,13 @@
     class="unselect menu"
   >
     <template v-for="(route, index) in layoutRoutes" :key="index">
-      <ui-navigation-item :route="route" />
+      <ui-navigation-item-desktop :route="route" />
     </template>
   </el-menu>
 </template>
 
 <script setup>
-import UiNavigationItem from './UiNavigationItem.vue'
+import UiNavigationItemDesktop from './UiNavigationItemDesktop.vue'
 import router from '@/router'
 import { useAppStore } from '@/stores/app'
 import { config } from '@/config'

@@ -17,7 +17,7 @@
         <div style="margin-left: 15px"></div>
       </el-badge>
     </template>
-    <ui-navigation-item v-for="subRoute in route.children" :key="subRoute.path" :route="subRoute" />
+    <ui-navigation-item-desktop v-for="subRoute in route.children" :key="subRoute.path" :route="subRoute" />
   </el-sub-menu>
 
   <!-- 无子菜单 -->

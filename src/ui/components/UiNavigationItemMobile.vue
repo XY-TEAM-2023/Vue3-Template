@@ -1,6 +1,6 @@
 <template>
   <!-- 有子菜单 -->
-  <ui-navigation-item v-if="isShowGroup" v-for="subRoute in route.children" :key="subRoute.path" :route="subRoute" />
+  <ui-navigation-item-mobile v-if="isShowGroup" v-for="subRoute in route.children" :key="subRoute.path" :route="subRoute" />
 
   <!-- 菜单按钮 -->
   <router-link v-else-if="isShowItem" :to="route.fullPath" @click="navigateTo(route.fullPath)">
@@ -23,7 +23,6 @@ import { useRouter } from 'vue-router'
 import { defineProps, computed } from 'vue'
 import { useAppStore } from '@/stores/app'
 import { config } from '@/config'
-import UiNavigationItem from '@/ui/mobile/components/UiNavigationItem.vue'
 
 const router = useRouter()
 const props = defineProps({

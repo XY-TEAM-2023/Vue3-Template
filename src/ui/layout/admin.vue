@@ -3,14 +3,19 @@
     <el-container class="layout">
       <el-header class="layout-top">
         <ui-logo />
-        <div class="layout-top-icon">
-          <ui-icon-login :size="35" />
+
+        <!-- 自动填充 -->
+        <div class="layout-top-auto-margin" />
+
+        <div class="layout-top-i18n">
+          <ui-i18n />
         </div>
+        <ui-icon-login :size="35" class="layout-top-icon" />
       </el-header>
       <div class="layout-bottom">
         <el-aside width="200px" class="layout-bottom-aside">
           <el-scrollbar>
-            <ui-navigation :routes="routes"></ui-navigation>
+            <ui-navigation-desktop :routes="routes"></ui-navigation-desktop>
           </el-scrollbar>
         </el-aside>
         <el-main>
@@ -24,18 +29,20 @@
 </template>
 
 <script>
-import UiNavigation from '@/ui/desktop/components/UiNavigation.vue'
 import { RouterView } from 'vue-router'
-import UiLogo from '@/ui/desktop/components/UiLogo.vue'
-import UiIconLogin from '@/ui/desktop/components/UiIconLogin.vue'
+import UiLogo from '@/ui/components/UiLogo.vue'
+import UiIconLogin from '@/ui/components/UiIconLogin.vue'
+import UiI18n from '@/ui/components/UiI18n.vue'
+import UiNavigationDesktop from '@/ui/components/UiNavigationDesktop.vue'
 
 export default {
   name: 'UiLayout',
   components: {
+    UiNavigationDesktop,
+    UiI18n,
     UiIconLogin,
     UiLogo,
     RouterView,
-    UiNavigation,
   },
   data() {
     return {
@@ -60,15 +67,25 @@ $layout-aside-bg-color: #2f3243; // 左侧区域背景色
 .layout-top {
   height: $header-height;
   align-items: center;
+  display: flex;
+  flex-direction: row;
+  padding-right: 20px !important;
   // 背景颜色
   background-color: $layout-top-bg-color;
   // 底部阴影
   box-shadow: inset 0 -10px 4px -10px rgba(0, 0, 0, 1);
 }
 
-.layout-top-icon {
+.layout-top-auto-margin {
   margin-left: auto !important;
-  margin-right: 20px;
+}
+
+.layout-top-i18n {
+  display: flex;
+}
+
+.layout-top-icon {
+  margin-left: 15px;
 }
 
 .layout-bottom-aside {

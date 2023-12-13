@@ -28,7 +28,7 @@
 // ElementPlus 的国际化配置
 import { ref } from 'vue'
 
-import UiI18n from '@/ui/desktop/components/UiI18n.vue'
+import UiI18n from '@/ui/components/UiI18n.vue'
 
 const telWidth = ref(window.innerWidth)
 </script>

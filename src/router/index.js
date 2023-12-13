@@ -177,7 +177,7 @@ router.reloadRoutes = function (curRoles) {
     constantRoutes[layoutIndex].children.push({
       path: 'refresh',
       name: 'refresh',
-      component: () => import(/* @vite-ignore */ `/src/ui/${platform}/views/base/refresh.vue`),
+      component: () => import(/* @vite-ignore */ `/src/ui/base/refresh.vue`),
       meta: {
         title: 'refresh',
         hidden: true,

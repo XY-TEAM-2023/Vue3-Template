@@ -6,7 +6,7 @@ const useMobileRouter = config.websiteModel === 'mobile' || (!config.noMobileMod
 export const platform = useMobileRouter ? 'mobile' : 'desktop'
 let layoutFile = (() => {
   if (useMobileRouter) {
-    return 'index.vue'
+    return 'mobile.vue'
   }
   if (config.websiteModel === 'website') {
     return 'website.vue'
@@ -18,7 +18,7 @@ let layoutFile = (() => {
 })()
 
 // console.error('useMobileRouter', useMobileRouter)
-// console.error('platform', platform)
+console.error('platform', layoutFile)
 // console.error('layout file path', `/src/ui/${platform}/layout/${layoutFile}`)
 
 /**
@@ -28,7 +28,7 @@ export const constantRoutes = [
   {
     path: '/404',
     name: '404',
-    component: () => import(/* @vite-ignore */ `/src/ui/${platform}/views/base/404.vue`),
+    component: () => import(/* @vite-ignore */ `/src/ui/base/404.vue`),
     meta: {
       title: '404',
       icon: null,
@@ -40,13 +40,13 @@ export const constantRoutes = [
   {
     path: '/login',
     name: 'login',
-    component: () => import(/* @vite-ignore */ `/src/ui/${platform}/views/LoginView.vue`),
+    component: () => import(/* @vite-ignore */ `/src/ui/views/${platform}/LoginView.vue`),
     meta: { title: 'Login', needLogin: false },
   },
   {
     path: '/',
     name: '/',
-    component: () => import(/* @vite-ignore */ `/src/ui/${platform}/layout/${layoutFile}`),
+    component: () => import(/* @vite-ignore */ `/src/ui/layout/${layoutFile}`),
     meta: { title: 'home', needLogin: true },
     children: [],
   },
@@ -59,7 +59,7 @@ export const asyncRoutes = [
   {
     path: 'test',
     name: 'test',
-    component: () => import(/* @vite-ignore */ `/src/ui/${platform}/views/test.vue`),
+    component: () => import(/* @vite-ignore */ `/src/ui/views/${platform}/test.vue`),
     meta: {
       title: 'test',
       icon: House,
@@ -74,7 +74,7 @@ export const asyncRoutes = [
       {
         path: 'AboutView333',
         name: 'AboutVie333w',
-        component: () => import(/* @vite-ignore */ `/src/ui/${platform}/views/AboutView.vue`),
+        component: () => import(/* @vite-ignore */ `/src/ui/views/${platform}/AboutView.vue`),
         meta: {
           title: 'AboutView',
           icon: House,
@@ -91,7 +91,7 @@ export const asyncRoutes = [
   {
     path: 'AboutView',
     name: 'AboutView',
-    component: () => import(/* @vite-ignore */ `/src/ui/${platform}/views/AboutView.vue`),
+    component: () => import(/* @vite-ignore */ `/src/ui/views/${platform}/AboutView.vue`),
     meta: {
       title: 'AboutView',
       icon: House,
@@ -106,7 +106,7 @@ export const asyncRoutes = [
   {
     path: 'noPermission',
     name: 'noPermission',
-    component: () => import(/* @vite-ignore */ `/src/ui/${platform}/views/base/NoPermission.vue`),
+    component: () => import('/src/ui/base/NoPermission.vue'),
     meta: {
       title: 'Export Zip',
       icon: House,
@@ -121,7 +121,7 @@ export const asyncRoutes = [
   {
     path: 'AboutView1',
     name: 'AboutView1',
-    component: () => import(/* @vite-ignore */ `/src/ui/${platform}/views/AboutView.vue`),
+    component: () => import(/* @vite-ignore */ `/src/ui/views/${platform}/AboutView.vue`),
     meta: {
       title: 'AboutView',
       icon: House,
@@ -136,7 +136,7 @@ export const asyncRoutes = [
   {
     path: 'noPermission2',
     name: 'noPermission2',
-    component: () => import(/* @vite-ignore */ `/src/ui/${platform}/views/base/NoPermission.vue`),
+    component: () => import(/* @vite-ignore */ `/src/ui/base/NoPermission.vue`),
     meta: {
       title: 'Export Zip',
       icon: House,
@@ -151,7 +151,7 @@ export const asyncRoutes = [
   {
     path: 'AboutView3',
     name: 'AboutView3',
-    component: () => import(/* @vite-ignore */ `/src/ui/${platform}/views/AboutView.vue`),
+    component: () => import(/* @vite-ignore */ `/src/ui/views/${platform}/AboutView.vue`),
     meta: {
       title: 'AboutView',
       icon: House,
@@ -166,7 +166,7 @@ export const asyncRoutes = [
   {
     path: 'noPermission3',
     name: 'noPermission3',
-    component: () => import(/* @vite-ignore */ `/src/ui/${platform}/views/base/NoPermission.vue`),
+    component: () => import(/* @vite-ignore */ `/src/ui/base/NoPermission.vue`),
     meta: {
       title: 'Export Zip',
       icon: House,

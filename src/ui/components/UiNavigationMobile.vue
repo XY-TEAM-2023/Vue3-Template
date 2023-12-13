@@ -3,7 +3,7 @@
     <div class="arrow left-arrow" v-if="showLeftArrow" @click="scrollLeft">&lsaquo;</div>
     <div class="scroll-container" ref="scrollContainer" @scroll="checkScroll">
       <template v-for="(route, index) in router.config" :key="index">
-        <ui-navigation-item :route="route" />
+        <ui-navigation-item-mobile :route="route" />
       </template>
     </div>
     <div class="arrow right-arrow" v-if="showRightArrow" @click="scrollRight">&rsaquo;</div>
@@ -12,8 +12,8 @@
 
 <script setup>
 import router from '@/router'
-import UiNavigationItem from '@/ui/mobile/components/UiNavigationItem.vue'
 import { ref, onMounted } from 'vue'
+import UiNavigationItemMobile from './UiNavigationItemMobile.vue'
 
 const showLeftArrow = ref(false)
 const showRightArrow = ref(false)

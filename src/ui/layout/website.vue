@@ -1,38 +1,33 @@
 <template>
   <div id="app">
-    <el-container>
+    <el-container class="layout">
       <el-header class="layout-top">
         <ui-logo />
+        <ui-navigation-desktop :routes="routes" class="layout-navigation"></ui-navigation-desktop>
         <div class="layout-top-icon">
-          <ui-icon-login :size="38" />
+          <ui-icon-login :size="35" />
         </div>
       </el-header>
-      <el-main style="height: 0; flex-grow: 1">
-        <el-scrollbar style="width: 100%">
-          <RouterView />
-        </el-scrollbar>
+      <el-main>
+        <RouterView />
       </el-main>
-
-      <el-footer height="84px">
-        <ui-navigation :routes="routes"></ui-navigation>
-      </el-footer>
     </el-container>
   </div>
 </template>
 
 <script>
-import UiNavigation from '@/ui/mobile/components/UiNavigation.vue'
 import { RouterView } from 'vue-router'
-import UiLogo from '@/ui/mobile/components/UiLogo.vue'
-import UiIconLogin from '@/ui/mobile/components/UiIconLogin.vue'
+import UiLogo from '@/ui/components/UiLogo.vue'
+import UiIconLogin from '@/ui/components/UiIconLogin.vue'
+import UiNavigationDesktop from '@/ui/components/UiNavigationDesktop.vue'
 
 export default {
   name: 'UiLayout',
   components: {
+    UiNavigationDesktop,
     UiIconLogin,
     UiLogo,
     RouterView,
-    UiNavigation,
   },
   data() {
     return {
@@ -46,7 +41,18 @@ export default {
 // 顶部菜单高度
 $header-height: 60px;
 // 顶部背景颜色
-$header-background-color: #333333;
+$header-background-color: #2f3243;
+// 内容宽度
+$layout-width: 100%;
+
+.layout {
+  width: $layout-width;
+  display: flex;
+  margin-left: auto;
+  margin-right: auto;
+  flex-direction: column;
+  align-items: center;
+}
 
 .layout-top {
   width: 100%;
@@ -55,6 +61,10 @@ $header-background-color: #333333;
   background-color: $header-background-color;
   // 底部阴影
   box-shadow: inset 0 -10px 4px -10px rgba(0, 0, 0, 1);
+}
+
+.layout-navigation {
+  margin-left: 20px;
 }
 
 .layout-top-icon {

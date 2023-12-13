@@ -19,7 +19,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { config } from '@/config'
-import UiI18n from '@/ui/desktop/components/UiI18n.vue'
+import UiI18n from '@/ui/components/UiI18n.vue'
 import { request_user_login } from '@/api/user'
 import { useUserStore } from '@/stores/user'
 import router from '@/router'
