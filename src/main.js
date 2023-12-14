@@ -6,6 +6,7 @@ import i18n from './i18n' // 导入多语言配置
 import App from './App.vue'
 import router from './router'
 import 'element-plus/dist/index.css'
+import './styles/dark/vars.css'
 
 router.reloadRoutes()
 const app = createApp(App)

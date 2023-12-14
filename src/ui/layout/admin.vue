@@ -1,79 +1,90 @@
 <template>
   <div id="app">
     <el-container class="layout">
-      <el-header class="layout-top">
-        <ui-logo />
+      <el-aside :width="asideWidth" class="layout-aside">
+        <ui-logo class="layout-aside-logo" />
+        <el-scrollbar>
+          <ui-navigation-desktop :routes="router.options.routes" />
+        </el-scrollbar>
+      </el-aside>
 
-        <!-- 自动填充 -->
-        <div class="layout-top-auto-margin" />
+      <el-container>
+        <el-header class="layout-header">
+          <!--  菜单栏折叠按钮  -->
+          <el-icon size="21" class="layout-menu-btn" @click="appStore.menuIsCollapse = !appStore.menuIsCollapse">
+            <Expand v-if="appStore.menuIsCollapse" />
+            <Fold v-else />
+          </el-icon>
 
-        <div class="layout-top-i18n">
-          <ui-i18n />
+          <div style="width: 14px" />
+
+          <!--  面包屑  -->
+          <ui-breadcrumb />
+
+          <!-- 自动填充 -->
+          <div class="layout-top-auto-margin" />
+
+          <div class="layout-top-i18n">
+            <ui-i18n />
+          </div>
+
+          <ui-icon-login :size="35" class="layout-top-icon" />
+        </el-header>
+
+        <ui-toolbar></ui-toolbar>
+
+        <div class="layout-bottom">
+          <el-main class="layout-main">
+            <el-scrollbar class="layout-main">
+              <RouterView />
+            </el-scrollbar>
+          </el-main>
         </div>
-        <ui-icon-login :size="35" class="layout-top-icon" />
-      </el-header>
-      <div class="layout-bottom">
-        <el-aside width="200px" class="layout-bottom-aside">
-          <el-scrollbar>
-            <ui-navigation-desktop :routes="routes"></ui-navigation-desktop>
-          </el-scrollbar>
-        </el-aside>
-        <el-main>
-          <el-scrollbar class="layout-bottom-main">
-            <RouterView />
-          </el-scrollbar>
-        </el-main>
-      </div>
+      </el-container>
     </el-container>
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, computed } from 'vue'
 import { RouterView } from 'vue-router'
 import UiLogo from '@/ui/components/UiLogo.vue'
 import UiIconLogin from '@/ui/components/UiIconLogin.vue'
 import UiI18n from '@/ui/components/UiI18n.vue'
 import UiNavigationDesktop from '@/ui/components/UiNavigationDesktop.vue'
+import UiToolbar from '@/ui/components/UiToolbar.vue'
+import UiBreadcrumb from '@/ui/components/UiBreadcrumb.vue'
+// eslint-disable-next-line no-unused-vars
+import { Expand, Fold } from '@element-plus/icons-vue'
+import router from '@/router'
+import { useAppStore } from '@/stores/app'
 
-export default {
-  name: 'UiLayout',
-  components: {
-    UiNavigationDesktop,
-    UiI18n,
-    UiIconLogin,
-    UiLogo,
-    RouterView,
-  },
-  data() {
-    return {
-      routes: this.$router.options.routes, // 获取路由配置
-    }
-  },
-}
+const appStore = useAppStore()
+const asideWidth = computed(() => (appStore.menuIsCollapse ? '63px' : '255px'))
 </script>
 
 <style scoped lang="scss">
 $header-height: 60px; // 顶部区域高度
-$layout-top-bg-color: #2f3243; // 顶部区域背景色
-$layout-aside-bg-color: #2f3243; // 左侧区域背景色
+$layout-top-bg-color: #fff; // 顶部区域背景色
+$layout-aside-bg-color: #2f3447; // 左侧区域背景色
+$layout-main-bg-color: #2f3243; // 主区域背景色
 
 .layout {
   height: 100%;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   flex: 1;
 }
 
-.layout-top {
+.layout-header {
   height: $header-height;
+  width: 100%;
   align-items: center;
   display: flex;
   flex-direction: row;
-  padding-right: 20px !important;
-  // 背景颜色
+  padding: 0 10px !important;
   background-color: $layout-top-bg-color;
-  // 底部阴影
-  box-shadow: inset 0 -10px 4px -10px rgba(0, 0, 0, 1);
+  //box-shadow: inset 0 -10px 4px -10px rgba(0, 0, 0, 1); // 底部阴影
 }
 
 .layout-top-auto-margin {
@@ -88,14 +99,30 @@ $layout-aside-bg-color: #2f3243; // 左侧区域背景色
   margin-left: 15px;
 }
 
-.layout-bottom-aside {
+.layout-aside {
   display: flex;
   flex-direction: column;
   height: 100% !important;
   overflow-y: auto;
   // 右边阴影
-  box-shadow: inset -10px 0 4px -10px rgba(0, 0, 0, 1) !important;
+  //box-shadow: inset -10px 0 4px -10px rgba(0, 0, 0, 1) !important;
   background-color: $layout-aside-bg-color;
+  transition: width 0.2s;
+}
+
+.layout-menu-btn {
+  color: #2c3e4f;
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+}
+.layout-menu-btn:hover {
+  color: #2299dd;
+}
+
+.layout-aside-logo {
+  min-height: $header-height;
+  height: $header-height;
 }
 
 .layout-bottom {
@@ -105,7 +132,8 @@ $layout-aside-bg-color: #2f3243; // 左侧区域背景色
   overflow-y: auto;
 }
 
-.layout-bottom-main {
+.layout-main {
   width: 100%;
+  //background-color: $layout-main-bg-color;
 }
 </style>

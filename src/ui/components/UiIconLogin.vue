@@ -51,14 +51,16 @@ $color-icon: #f6f1f1;
 $color-bg: #1c1c1c;
 
 .el-avatar {
-  background-color: #1c1c1c;
-  color: #f6f1f1;
+  background-color: $color-bg;
+  color: $color-icon;
   font-size: 22px;
+  border: 2px solid $color-icon;
 }
 .el-avatar:hover {
   background-color: $color-icon;
   color: $color-bg;
   cursor: pointer;
+  border: 2px solid $color-bg;
 }
 
 .user-name {

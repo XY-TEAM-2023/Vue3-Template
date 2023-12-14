@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <el-container>
-      <el-header class="layout-top">
+      <el-header class="layout-header">
         <ui-logo />
         <div class="layout-top-icon">
           <ui-icon-login :size="38" />
@@ -48,7 +48,7 @@ $header-height: 60px;
 // 顶部背景颜色
 $header-background-color: #333333;
 
-.layout-top {
+.layout-header {
   width: 100%;
   height: $header-height;
   // 背景颜色

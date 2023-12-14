@@ -1,23 +1,20 @@
 <template>
-  <div>
-    <!-- 使用计算属性来显示标题 -->
-    <h3>{{ computedTitle }}</h3>
-
-    <!-- 数据双向绑定的输入框 -->
-    <input v-model="inputValue" @input="onInput" />
-
-    <!-- 按钮用于触发方法 -->
-    <button @click="emitCustomEvent">触发自定义事件</button>
-
-    <!-- 插槽用于从父组件插入内容 -->
-    <slot name="additional-content"></slot>
+  <div class="toolbar">
+    <!--  Router菜单快捷及  -->
+    <div class="toolbar-router">
+      <el-icon class="toolbar-router-btn"><ArrowLeft /></el-icon>
+      <div class="toolbar-router-btn-line"></div>
+      <el-icon class="toolbar-router-btn"><Refresh /></el-icon>
+      <el-icon class="toolbar-router-btn"><HomeFilled /></el-icon>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref, reactive, computed, watch, onMounted, onBeforeUnmount, defineProps, defineEmits } from 'vue'
+import { ref, computed, watch, onMounted, onBeforeUnmount, defineProps, defineEmits } from 'vue'
 import { useUserStore } from '@/stores/user'
 import { useAppStore } from '@/stores/app'
+import { ArrowLeft, ArrowLeftBold, HomeFilled, House, Refresh } from '@element-plus/icons-vue'
 
 /** 作为组件时，外部传参 */
 const props = defineProps({
@@ -70,5 +67,48 @@ onBeforeUnmount(() => {
 
 <style scoped lang="scss">
 /* 组件样式 */
-//$xxxx = 'test';
+
+// 背景色
+$toolbar-bg-color: #f5f5f5;
+.toolbar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 10px 10px;
+  width: 100%;
+  height: 50px;
+  background-color: $toolbar-bg-color;
+}
+
+.toolbar-router {
+  display: flex;
+  background-color: #fff;
+  height: 100%;
+  border-radius: 4px;
+  margin-right: 10px;
+  list-style: none;
+}
+
+.toolbar-router-btn {
+  width: 30px;
+  height: 100%;
+  color: #333;
+  cursor: pointer;
+  font-weight: 700;
+}
+.toolbar-router-btn:hover {
+  color: #42bb85;
+}
+// 分割竖线
+.toolbar-router-btn:not(:last-child):after {
+  display: block;
+  content: '';
+  position: absolute;
+  right: 0;
+  top: calc(50% - 5px);
+  height: 10px;
+  width: 1px;
+  background-color: #eee;
+}
 </style>

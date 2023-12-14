@@ -19,11 +19,12 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { config } from '@/config'
-import UiI18n from '@/ui/mobile/components/UiI18n.vue'
+import UiI18n from '@/ui/components/UiI18n.vue'
 import { request_user_login } from '@/api/user'
 import { useUserStore } from '@/stores/user'
 import router from '@/router'
 import { useRoute } from 'vue-router'
+
 const userStore = useUserStore()
 
 const account = ref('coco')
@@ -37,7 +38,7 @@ const isRequesting = ref(false)
 const route = useRoute()
 onMounted(() => {
   // 提取需要跳转回去的路由
-  const redirectTo = route.query.redirect || config.router.loginSuccessPage
+  const redirectTo = route.query.redirect || config.router.homePage
   console.log(redirectTo)
 })
 
@@ -49,7 +50,7 @@ function onLogin() {
       // 刷新用户全局数据，记录登录状态
       userStore.loginSuccess()
       // 跳转页面
-      router.push(config.router.loginSuccessPage)
+      router.push(config.router.homePage)
     })
     .catch(() => {})
     .finally(() => {

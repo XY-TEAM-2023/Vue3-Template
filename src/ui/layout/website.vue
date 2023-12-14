@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <el-container class="layout">
-      <el-header class="layout-top">
+      <el-header class="layout-header">
         <ui-logo />
         <ui-navigation-desktop :routes="routes" class="layout-navigation"></ui-navigation-desktop>
         <div class="layout-top-icon">
@@ -54,7 +54,7 @@ $layout-width: 100%;
   align-items: center;
 }
 
-.layout-top {
+.layout-header {
   width: 100%;
   height: $header-height;
   // 背景颜色

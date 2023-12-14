@@ -221,8 +221,8 @@ router.beforeEach(
         }
       } else {
         // 跳转到登录成功后的第一个页面
-        if (config.router.loginSuccessPage && config.router.loginSuccessPage !== to.path) {
-          next(config.router.loginSuccessPage)
+        if (config.router.homePage && config.router.homePage !== to.path) {
+          next(config.router.homePage)
         } else {
           next()
         }

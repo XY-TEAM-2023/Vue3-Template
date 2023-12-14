@@ -6,12 +6,12 @@ export const config = {
     /** 是否显示 */
     display: true,
     /** 默认Logo文本 */
-    label: 'Rube',
+    label: 'Ruby-Admin',
   },
   /** 默认语言: zh、en、ko */
   language: 'zh',
   /** 网站模式: website、admin、mobile(该模式下只有手机版本) */
-  websiteModel: 'mobile',
+  websiteModel: 'admin',
   /** 无手机模式：没有开发手机版时开启 */
   noMobileModel: false,
   /** 服务器 */
@@ -21,8 +21,8 @@ export const config = {
   router: {
     /** 登录页面路径, 如果设置了该值, 当页面需要登录才能访问时, 用户点击了确定按钮会自动跳转页面 */
     loginPage: '/login',
-    /** 登录成功后访问的路径，需要在登录逻辑中处理 */
-    loginSuccessPage: '/AboutView',
+    /** 登录成功后访问的页面, 首页 */
+    homePage: '/AboutView',
     /** 点击已经激活的页面导航时，重新加载页面 */
     clickSamePageReload: true,
     mobile: {

@@ -6,6 +6,8 @@
     :default-active="appStore.routerPath"
     :router="true"
     :mode="mode"
+    :collapse="appStore.menuIsCollapse"
+    :collapse-transition="false"
     class="unselect menu"
   >
     <template v-for="(route, index) in layoutRoutes" :key="index">
@@ -30,6 +32,7 @@ const layoutRoutes = computed(() => {
   return routes.children
 })
 </script>
+
 <style scoped>
 .menu {
   width: 100%;

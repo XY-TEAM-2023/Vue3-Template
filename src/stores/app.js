@@ -16,6 +16,8 @@ export const useAppStore = defineStore('app', {
     routerPath: '',
     /**路由菜单-显示小红点的路由*/
     _routerRedDot: {},
+    /** 导航栏菜单是否折叠 */
+    menuIsCollapse: false,
   }),
 
   getters: {},

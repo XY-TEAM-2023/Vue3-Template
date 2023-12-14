@@ -3,39 +3,37 @@
   <el-sub-menu v-if="isShowGroup" :index="route.fullPath">
     <template #title>
       <!--  图标  -->
-      <component
-        v-if="checkIsShowIcon(route)"
-        :is="route.meta.icon"
-        :width="config.router.admin.iconSize"
-        :height="config.router.admin.iconSize"
-        style="margin-right: 10px"
-      ></component>
-      <!--  菜单名  -->
-      {{ route.meta.title }}
-      <!--  小红点  -->
-      <el-badge :is-dot="true" :hidden="!showRedDotGroup">
-        <div style="margin-left: 15px"></div>
-      </el-badge>
+      <el-icon v-if="checkIsShowIcon(route)" :size="config.router.admin.iconSize">
+        <component :is="route.meta.icon" />
+      </el-icon>
+
+      <span>
+        <!--  菜单名  -->
+        {{ route.meta.title }}
+        <!--  小红点  -->
+        <el-badge :is-dot="true" :hidden="!showRedDotGroup">
+          <div style="margin-left: 15px"></div>
+        </el-badge>
+      </span>
     </template>
+
     <ui-navigation-item-desktop v-for="subRoute in route.children" :key="subRoute.path" :route="subRoute" />
   </el-sub-menu>
 
   <!-- 无子菜单 -->
   <el-menu-item v-else-if="isShowItem" :index="route.fullPath" @click="navigateTo(route.fullPath)">
-    <!--  图标  -->
-    <component
-      v-if="checkIsShowIcon(route)"
-      :is="route.meta.icon"
-      :width="config.router.admin.iconSize"
-      :height="config.router.admin.iconSize"
-      style="margin-right: 10px"
-    ></component>
-    <!--  菜单名  -->
-    {{ route.meta.title }}
-    <!--  小红点  -->
-    <el-badge :is-dot="!redDotValue" :value="redDotValue" :hidden="!showRedDot">
-      <div style="margin-left: 15px"></div>
-    </el-badge>
+    <el-icon v-if="checkIsShowIcon(route)" :size="config.router.admin.iconSize">
+      <component :is="route.meta.icon" />
+    </el-icon>
+
+    <template #title>
+      <!--  菜单名  -->
+      {{ route.meta.title }}
+      <!--  小红点  -->
+      <el-badge :is-dot="!redDotValue" :value="redDotValue" :hidden="!showRedDot">
+        <div style="margin-left: 15px"></div>
+      </el-badge>
+    </template>
   </el-menu-item>
 </template>
 
