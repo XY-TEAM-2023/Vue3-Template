@@ -45,7 +45,7 @@ class HttpService {
         'Content-Type': 'application/json', // 设置默认的Content-Type
       },
     })
-    this.http.defaults.withCredentials = true
+    this.http.defaults.withCredentials = config.serverUseCookie
 
     this.useStore = useUserStore()
 
