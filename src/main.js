@@ -9,9 +9,9 @@ import router from './router'
 import('./config.js')
   .then(({ websiteModel }) => {
     const app = createApp(App)
-
     // 只在
     if (websiteModel === 'admin') {
+      console.error('?????+++')
       import('element-plus')
         .then((ElementPlus) => {
           import('element-plus/dist/index.css')
@@ -20,6 +20,8 @@ import('./config.js')
         .catch((error) => {
           console.error('加载 Element Plus 失败:', error)
         })
+    } else if (websiteModel === 'website') {
+      import('element-plus/dist/index.css')
     }
 
     router.reloadRoutes()
