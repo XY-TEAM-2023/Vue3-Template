@@ -1,5 +1,6 @@
 // 于管理用户的相关数据
 import { defineStore } from 'pinia'
+import { useAppStore } from '@/stores/app'
 
 // 定义一个名为 "user" 的 store(数据管理对象)
 export const useUserStore = defineStore('user', {
@@ -112,6 +113,7 @@ export const useUserStore = defineStore('user', {
       this.userId = 0
       this.role = ''
       this._jwt = ''
+      useAppStore().openedTabs.splice(0)
     },
 
     /**

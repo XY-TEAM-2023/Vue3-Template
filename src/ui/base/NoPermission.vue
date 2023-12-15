@@ -11,9 +11,7 @@
 <style scoped>
 .no-access-page {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: #f0f0f0;
+  background-color: #007aff;
 }
 
 .no-access-content {

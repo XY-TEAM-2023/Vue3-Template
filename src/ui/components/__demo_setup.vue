@@ -19,19 +19,44 @@ import { ref, reactive, computed, watch, onMounted, onBeforeUnmount, defineProps
 import { useUserStore } from '@/stores/user'
 import { useAppStore } from '@/stores/app'
 
-/** 作为组件时，外部传参 */
-const props = defineProps({
-  title: String,
-  value: String,
-})
-
 /** 用户全局数据对象 */
 const userStore = useUserStore()
 /** 应用全局数据对象 */
 const appStore = useAppStore()
 
+const props = defineProps({
+  text: {
+    type: String,
+    default: '',
+  },
+  closable: {
+    type: Boolean,
+    default: false,
+  },
+})
+const text = ref(props.text)
+const closable = ref(props.closable)
+/* 实现外部修改了变量，内部同步变化 */
+watch(
+  () => [props.text, props.closable],
+  ([newText, newClosable], [oldText, oldClosable]) => {
+    console.log(newText, newClosable)
+    if (newText !== oldText) {
+      text.value = newText
+    }
+    if (newClosable !== oldClosable) {
+      closable.value = newClosable
+    }
+  },
+  { deep: true }
+)
+
 /** 作为子组件时，定义有什么事件 */
 const emit = defineEmits(['update:value', 'custom-event'])
+/** 触发外部事件 */
+const emitCustomEvent = () => {
+  emit('custom-event', { msg: '这是自定义事件的数据' })
+}
 
 /** 定义一个用于在Template中显示的变量 */
 const inputValue = ref(props.value)
@@ -39,22 +64,9 @@ const inputValue = ref(props.value)
 /** 定义一个将数据处理后返回结果的变量 */
 const computedTitle = computed(() => '计算后的标题: ' + props.title)
 
-/** 用于父组件如果更新了传入参数的值，同步更新组件内的数据 */
-watch(
-  () => props.value,
-  (newValue) => {
-    inputValue.value = newValue
-  }
-)
-
 /** 定义一个时间 */
 const onInput = (event) => {
   inputValue.value = event.target.value
-}
-
-/** 触发外部事件 */
-const emitCustomEvent = () => {
-  emit('custom-event', { msg: '这是自定义事件的数据' })
 }
 
 /** 组件加载事件 */

@@ -2,11 +2,21 @@
   <div class="toolbar">
     <!--  Router菜单快捷及  -->
     <div class="toolbar-router">
-      <el-icon class="toolbar-router-btn"><ArrowLeft /></el-icon>
-      <div class="toolbar-router-btn-line"></div>
-      <el-icon class="toolbar-router-btn"><Refresh /></el-icon>
-      <el-icon class="toolbar-router-btn"><HomeFilled /></el-icon>
+      <el-icon class="toolbar-router-btn" @click="onBtnLastPage"><ArrowLeft /></el-icon>
+      <el-icon class="toolbar-router-btn" @click="onBtnRefresh"><RefreshRight /></el-icon>
+      <el-icon class="toolbar-router-btn" @click="onBtnHome"><HomeFilled /></el-icon>
     </div>
+
+    <!--  已打开的页面  -->
+    <ui-opened-tag
+      v-for="(item, index) in appStore.openedTabs"
+      :key="index"
+      :text="item.title"
+      :is-select="item.fullPath === appStore.routerPath"
+      :closable="true"
+      @click="onChangeTab(item.fullPath)"
+      @close="onCloseTab(item.fullPath)"
+    ></ui-opened-tag>
   </div>
 </template>
 
@@ -14,7 +24,66 @@
 import { ref, computed, watch, onMounted, onBeforeUnmount, defineProps, defineEmits } from 'vue'
 import { useUserStore } from '@/stores/user'
 import { useAppStore } from '@/stores/app'
-import { ArrowLeft, ArrowLeftBold, HomeFilled, House, Refresh } from '@element-plus/icons-vue'
+import { ArrowLeft, HomeFilled, RefreshRight } from '@element-plus/icons-vue'
+import router from '@/router'
+import { config } from '@/config'
+import UiOpenedTag from '@/ui/components/UiOpenedTag.vue'
+
+function onBtnLastPage() {
+  router.back()
+}
+
+function onCloseTab(fullPath) {
+  console.log('>>>>>>>>>> ', fullPath)
+  let removeIndex = -1
+  for (let i = 0; i < appStore.openedTabs.length; i++) {
+    const tab = appStore.openedTabs[i]
+    if (tab.fullPath === fullPath) {
+      removeIndex = i
+      break
+    }
+  }
+
+  console.log('removeIndex', removeIndex)
+  if (removeIndex < 0) {
+    return
+  }
+  appStore.openedTabs.splice(removeIndex, 1)
+
+  // 关掉的不是正在显示的页面
+  console.log('fullPath !== appStore.routerPath', fullPath !== appStore.routerPath)
+  if (fullPath !== appStore.routerPath) {
+    return
+  }
+
+  // 当前没有已打开的Tab, 显示首页
+  console.log('appStore.openedTabs.length', appStore.openedTabs.length)
+  if (appStore.openedTabs.length === 0) {
+    router.push(config.router.homePage)
+    return
+  }
+
+  // 关掉的是最后一个tab
+  console.log('removeIndex + 1 === appStore.openedTabs.length', removeIndex + 1 === appStore.openedTabs.length)
+  if (removeIndex === appStore.openedTabs.length) {
+    removeIndex -= 1
+  }
+  console.log('appStore.openedTabs[removeIndex].fullPat', appStore.openedTabs[removeIndex].fullPat)
+  router.push(appStore.openedTabs[removeIndex].fullPath)
+}
+
+function onChangeTab(fullPath) {
+  router.push(fullPath)
+}
+
+function onBtnRefresh() {
+  test.value = 'aaaa'
+  // router.refreshCurPage()
+}
+
+function onBtnHome() {
+  router.push(config.router.homePage)
+}
 
 /** 作为组件时，外部传参 */
 const props = defineProps({
@@ -70,6 +139,7 @@ onBeforeUnmount(() => {
 
 // 背景色
 $toolbar-bg-color: #f5f5f5;
+
 .toolbar {
   display: flex;
   flex-direction: row;
@@ -84,9 +154,9 @@ $toolbar-bg-color: #f5f5f5;
 .toolbar-router {
   display: flex;
   background-color: #fff;
-  height: 100%;
+  height: 30px;
   border-radius: 4px;
-  margin-right: 10px;
+  margin-right: 20px;
   list-style: none;
 }
 

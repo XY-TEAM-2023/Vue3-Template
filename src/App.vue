@@ -1,5 +1,5 @@
 <template>
-  <el-config-provider :locale="locale">
+  <el-config-provider :locale="locale" :class="appStore.themeDarkMode ? 'theme-dark' : 'theme-light'">
     <RouterView />
   </el-config-provider>
 </template>
@@ -13,6 +13,7 @@ import { computed } from 'vue'
 import { useAppStore } from '@/stores/app'
 import { RouterView } from 'vue-router'
 import router from '@/router'
+import '@/styles/theme/index.scss'
 
 const appStore = useAppStore()
 const locale = computed(() => {

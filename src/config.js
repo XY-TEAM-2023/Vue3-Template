@@ -15,8 +15,8 @@ export const config = {
   /** 无手机模式：没有开发手机版时开启 */
   noMobileModel: false,
   /** 服务器 */
-  // server: 'http://192.168.1.2',
-  server: 'http://api.jadesoft.live',
+  server: 'http://192.168.1.2',
+  // server: 'http://api.jadesoft.live',
   /** 给服务器发送请求时，是否需要携带Cookie信息. 服务器Access-Control-Allow-Origin响应头必须指定具体值，不能为‘*’ */
   serverUseCookie: false,
   // server: '',
@@ -27,7 +27,7 @@ export const config = {
     /** 登录成功后访问的页面, 首页 */
     homePage: '/AboutView',
     /** 点击已经激活的页面导航时，重新加载页面 */
-    clickSamePageReload: true,
+    clickSamePageReload: false,
     mobile: {
       /** 图标大小 */
       iconSize: 28,

@@ -18,6 +18,10 @@ export const useAppStore = defineStore('app', {
     _routerRedDot: {},
     /** 导航栏菜单是否折叠 */
     menuIsCollapse: false,
+    /** 是否启用暗黑模式 */
+    themeDarkMode: false,
+    /** 当前打开过的Tabs */
+    openedTabs: [],
   }),
 
   getters: {},
@@ -113,6 +117,6 @@ export const useAppStore = defineStore('app', {
   persist: {
     key: 'app', // 区分不同store
     enabled: true,
-    strategies: [{ storage: localStorage, paths: ['language', 'routerPath'] }],
+    strategies: [{ storage: localStorage, paths: ['language', 'routerPath', 'themeDarkMode', 'openedTabs'] }],
   },
 })

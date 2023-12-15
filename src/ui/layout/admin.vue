@@ -35,9 +35,11 @@
 
         <div class="layout-bottom">
           <el-main class="layout-main">
-            <el-scrollbar class="layout-main">
-              <RouterView />
-            </el-scrollbar>
+            <div class="layout-main-content">
+              <el-scrollbar>
+                <RouterView />
+              </el-scrollbar>
+            </div>
           </el-main>
         </div>
       </el-container>
@@ -46,6 +48,7 @@
 </template>
 
 <script setup>
+// eslint-disable-next-line no-unused-vars
 import { ref, computed } from 'vue'
 import { RouterView } from 'vue-router'
 import UiLogo from '@/ui/components/UiLogo.vue'
@@ -67,7 +70,8 @@ const asideWidth = computed(() => (appStore.menuIsCollapse ? '63px' : '255px'))
 $header-height: 60px; // 顶部区域高度
 $layout-top-bg-color: #fff; // 顶部区域背景色
 $layout-aside-bg-color: #2f3447; // 左侧区域背景色
-$layout-main-bg-color: #2f3243; // 主区域背景色
+$layout-main-bg-color: #f5f5f5; // 主区域背景色
+$layout-main-content-bg-color: #fff; // 主区域内容背景色
 
 .layout {
   height: 100%;
@@ -119,6 +123,9 @@ $layout-main-bg-color: #2f3243; // 主区域背景色
 .layout-menu-btn:hover {
   color: #2299dd;
 }
+.layout-menu-btn:not(:last-child) {
+  margin-right: 4px;
+}
 
 .layout-aside-logo {
   min-height: $header-height;
@@ -134,6 +141,15 @@ $layout-main-bg-color: #2f3243; // 主区域背景色
 
 .layout-main {
   width: 100%;
-  //background-color: $layout-main-bg-color;
+  background-color: $layout-main-bg-color;
+  padding: 0 10px 10px !important;
+}
+
+.layout-main-content {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 10px;
+  background-color: $layout-main-content-bg-color;
 }
 </style>

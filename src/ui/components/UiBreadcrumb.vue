@@ -17,12 +17,7 @@ const breadcrumbs = computed(() => {
   const matchedRoutes = route.matched
 
   matchedRoutes.forEach((route) => {
-    if (route.name) {
-      // breadcrumbs.push({
-      //   label: route.meta.title,
-      //   to: route.path,
-      // })
-
+    if (route.meta.title && route.path !== '/') {
       breadcrumbs.push(route.meta.title)
     }
   })

@@ -207,7 +207,6 @@ router.beforeEach(
     const userStore = useUserStore()
     // 登录状态 -1未登录；0已登录；1登录失效；
     const loginStatus = userStore.loginStatus
-    console.log('!!!!!!!!!!!!!!!!loginStatus', loginStatus)
 
     if (to.path === '/') {
       console.log()
@@ -272,8 +271,35 @@ router.beforeEach(
 
 router.afterEach(() => {
   const appStore = useAppStore()
-  appStore.routerPath = router.currentRoute.value.fullPath
+  const new_full_path = router.currentRoute.value.fullPath
+  // 设置当前的页面
+  appStore.routerPath = new_full_path
+
+  // 如果跳转的是登录页面, 清空用户信息
+  if (new_full_path === config.router.loginPage) {
+    useUserStore().logout()
+  }
+
+  // 添加已打开的页面Tab
+  if (new_full_path !== config.router.homePage) {
+    if (!appStore.openedTabs.some((item) => item.fullPath === new_full_path)) {
+      const r = router.currentRoute.value
+      appStore.openedTabs.push({
+        name: r.name,
+        title: r.meta.title,
+        fullPath: r.fullPath,
+      })
+    }
+  }
+
   NProgress.done()
 })
+
+// 刷新当前页面
+router.refreshCurPage = () => {
+  const curPath = router.currentRoute.fullPath
+  router.push({ path: '/refresh', query: { redirect: curPath } })
+  useAppStore().tryHideRouteRedDot(curPath)
+}
 
 export default router

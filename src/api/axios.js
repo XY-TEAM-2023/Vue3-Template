@@ -78,7 +78,6 @@ class HttpService {
       },
       (error) => {
         // 处理响应错误
-        console.error('send http request fail:', error)
         return Promise.reject(error)
       }
     )

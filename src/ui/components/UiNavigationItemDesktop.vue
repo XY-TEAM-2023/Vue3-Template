@@ -115,6 +115,11 @@ function checkIsShowItem(obj) {
   if (checkIsGroup(obj)) {
     return false
   }
+  if (config.websiteModel === 'admin') {
+    if (obj.fullPath === config.router.homePage) {
+      return false
+    }
+  }
 
   return checkIsShow(obj)
 }
@@ -141,7 +146,9 @@ const isShowItem = computed(() => {
 
 const navigateTo = (path) => {
   if (path === router.currentRoute.value.fullPath) {
-    router.push({ path: '/refresh', query: { redirect: path } })
+    if (config.router.clickSamePageReload) {
+      router.push({ path: '/refresh', query: { redirect: path } })
+    }
   } else {
     router.push(path)
   }
