@@ -178,4 +178,19 @@ export const asyncRoutes = [
       },
     },
   },
+  {
+    path: 'members',
+    name: 'members',
+    component: () => import(/* @vite-ignore */ `/src/ui/views/${platform}/MemberListView.vue`),
+    meta: {
+      title: '用户列表',
+      icon: House,
+      hidden: false,
+      needLogin: false,
+      public: {
+        desktop: true,
+        mobile: true,
+      },
+    },
+  },
 ]

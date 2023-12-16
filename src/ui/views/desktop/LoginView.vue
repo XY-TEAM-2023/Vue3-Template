@@ -46,9 +46,9 @@ onMounted(() => {
 function onLogin() {
   isRequesting.value = true
   request_user_login(account.value, password.value)
-    .then(() => {
+    .then((data) => {
       // 刷新用户全局数据，记录登录状态
-      userStore.loginSuccess()
+      userStore.loginSuccess(account.value, data.roleName)
       // 跳转页面
       router.push(config.router.homePage)
     })

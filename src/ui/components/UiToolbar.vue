@@ -7,21 +7,24 @@
       <el-icon class="toolbar-router-btn" @click="onBtnHome"><HomeFilled /></el-icon>
     </div>
 
-    <!--  已打开的页面  -->
-    <ui-opened-tag
-      v-for="(item, index) in appStore.openedTabs"
-      :key="index"
-      :text="item.title"
-      :is-select="item.fullPath === appStore.routerPath"
-      :closable="true"
-      @click="onChangeTab(item.fullPath)"
-      @close="onCloseTab(item.fullPath)"
-    ></ui-opened-tag>
+    <div ref="scrollContainer" class="scroll-container">
+      <div class="scroll-content" :style="{ transform: `translateX(${scrollX}px)` }">
+        <ui-opened-tag
+          v-for="(item, index) in appStore.openedTabs"
+          :key="index"
+          :text="item.title"
+          :is-select="item.fullPath === appStore.routerPath"
+          :closable="true"
+          @click="onChangeTab(item.fullPath)"
+          @close="onCloseTab(item.fullPath)"
+        />
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted, onBeforeUnmount, defineProps, defineEmits } from 'vue'
+import { ref, computed, watch, onMounted, nextTick, onBeforeUnmount, defineProps, defineEmits } from 'vue'
 import { useUserStore } from '@/stores/user'
 import { useAppStore } from '@/stores/app'
 import { ArrowLeft, HomeFilled, RefreshRight } from '@element-plus/icons-vue'
@@ -29,6 +32,8 @@ import router from '@/router'
 import { config } from '@/config'
 import UiOpenedTag from '@/ui/components/UiOpenedTag.vue'
 
+/** 应用全局数据对象 */
+const appStore = useAppStore()
 function onBtnLastPage() {
   router.back()
 }
@@ -77,60 +82,32 @@ function onChangeTab(fullPath) {
 }
 
 function onBtnRefresh() {
-  test.value = 'aaaa'
-  // router.refreshCurPage()
+  router.refreshCurPage()
 }
 
 function onBtnHome() {
   router.push(config.router.homePage)
 }
 
-/** 作为组件时，外部传参 */
-const props = defineProps({
-  title: String,
-  value: String,
-})
-
-/** 用户全局数据对象 */
-const userStore = useUserStore()
-/** 应用全局数据对象 */
-const appStore = useAppStore()
-
-/** 作为子组件时，定义有什么事件 */
-const emit = defineEmits(['update:value', 'custom-event'])
-
-/** 定义一个用于在Template中显示的变量 */
-const inputValue = ref(props.value)
-
-/** 定义一个将数据处理后返回结果的变量 */
-const computedTitle = computed(() => '计算后的标题: ' + props.title)
-
-/** 用于父组件如果更新了传入参数的值，同步更新组件内的数据 */
-watch(
-  () => props.value,
-  (newValue) => {
-    inputValue.value = newValue
+// 鼠标滚轮让tabs滑动
+const scrollContainer = ref(null)
+const scrollX = ref(0)
+onMounted(async () => {
+  await nextTick() // 等待DOM更新
+  const container = scrollContainer.value
+  if (container) {
+    container.addEventListener('wheel', (e) => {
+      e.preventDefault()
+      scrollX.value += e.deltaY
+      if (scrollX.value > 0) {
+        scrollX.value = 0
+      } else if (scrollX.value < -container.scrollWidth) {
+        scrollX.value = -container.scrollWidth
+      }
+      console.log(container.scrollWidth, container.clientWidth)
+    })
+    container.style.willChange = 'transform' // 告诉浏览器元素可能会被滚动
   }
-)
-
-/** 定义一个时间 */
-const onInput = (event) => {
-  inputValue.value = event.target.value
-}
-
-/** 触发外部事件 */
-const emitCustomEvent = () => {
-  emit('custom-event', { msg: '这是自定义事件的数据' })
-}
-
-/** 组件加载事件 */
-onMounted(() => {
-  console.log('组件已挂载')
-})
-
-/** 组件卸载事件 */
-onBeforeUnmount(() => {
-  console.log('组件销毁之前')
 })
 </script>
 
@@ -180,5 +157,40 @@ $toolbar-bg-color: #f5f5f5;
   height: 10px;
   width: 1px;
   background-color: #eee;
+}
+
+///////////////////////////////////////
+
+.scroll-container {
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap; /* 内容不换行 */
+}
+
+.scroll-content {
+  display: flex;
+  flex-direction: row;
+  transition: all 0.3s;
+}
+
+/* 鼠标悬停时允许水平滚动 */
+.scroll-container:hover {
+  overflow-x: auto;
+}
+
+/* 鼠标悬停时隐藏滚动条 */
+.scroll-container::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+/* 鼠标悬停时禁用滚动条 */
+.scroll-container::-webkit-scrollbar-thumb {
+  background-color: transparent;
+}
+
+/* 鼠标悬停时禁用滚动条 */
+.scroll-container::-webkit-scrollbar-track {
+  background-color: transparent;
 }
 </style>

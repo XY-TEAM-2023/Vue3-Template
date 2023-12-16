@@ -1,3 +1,17 @@
+<template>
+  <div ref="tagBox" class="tag-box" :class="{ 'tag-box-active': isSelect }" @click="onClick">
+    <span class="tag-text unselect">{{ text }}</span>
+
+    <div v-if="closable" class="tag-icon" @click="onClose">
+      <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M195.2 195.2a64 64 0 0 1 90.496 0L512 421.504 738.304 195.2a64 64 0 0 1 90.496 90.496L602.496 512 828.8 738.304a64 64 0 0 1-90.496 90.496L512 602.496 285.696 828.8a64 64 0 0 1-90.496-90.496L421.504 512 195.2 285.696a64 64 0 0 1 0-90.496z"
+        />
+      </svg>
+    </div>
+  </div>
+</template>
+
 <script setup>
 import { defineProps, ref, watch } from 'vue'
 
@@ -51,20 +65,6 @@ function onClick() {
 }
 </script>
 
-<template>
-  <div ref="tagBox" class="tag-box" :class="{ 'tag-box-active': isSelect }" @click="onClick">
-    <span class="tag-text unselect">{{ text }}</span>
-
-    <div v-if="closable" class="tag-icon" @click="onClose">
-      <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
-        <path
-          d="M195.2 195.2a64 64 0 0 1 90.496 0L512 421.504 738.304 195.2a64 64 0 0 1 90.496 90.496L602.496 512 828.8 738.304a64 64 0 0 1-90.496 90.496L512 602.496 285.696 828.8a64 64 0 0 1-90.496-90.496L421.504 512 195.2 285.696a64 64 0 0 1 0-90.496z"
-        />
-      </svg>
-    </div>
-  </div>
-</template>
-
 <style scoped lang="scss">
 .tag-box {
   display: flex;
@@ -76,6 +76,8 @@ function onClick() {
   background-color: #fff;
   font-size: 12px;
   color: #909399;
+  min-width: 0; /* 允许元素宽度小于其内容的自然大小 */
+  flex-shrink: 0; /* 防止元素缩 */
   cursor: pointer;
 }
 .tag-box:hover {

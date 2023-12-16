@@ -281,7 +281,12 @@ router.afterEach(() => {
   }
 
   // 添加已打开的页面Tab
-  if (new_full_path !== config.router.homePage) {
+  if (
+    new_full_path !== config.router.homePage &&
+    !constantRoutes.some((item) => {
+      return item.fullPath === new_full_path
+    })
+  ) {
     if (!appStore.openedTabs.some((item) => item.fullPath === new_full_path)) {
       const r = router.currentRoute.value
       appStore.openedTabs.push({

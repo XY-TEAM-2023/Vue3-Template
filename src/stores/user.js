@@ -12,8 +12,8 @@ export const useUserStore = defineStore('user', {
     userId: 0,
     /**用户账号 */
     account: 'coco',
-    /**用户角色，比如: 普通用户、测试用户、管理员账号 */
-    roles: ['admin', 'dev'],
+    /**用户角色名，比如: 普通用户、测试用户、管理员账号 */
+    role: '',
     /**
      * jwt字符串
      * "_"代表这是个不希望外界调用的属性
@@ -126,12 +126,12 @@ export const useUserStore = defineStore('user', {
     /**
      * 登录成功，设置登录后信息
      */
-    loginSuccess() {
+    loginSuccess(account, role) {
       const jwt_data = this.jwtData
-      console.log(jwt_data)
       this.userId = jwt_data.userId
-      this.account = jwt_data.account
-      this.roles = jwt_data.roles
+      this.account = account
+      this.role = role
+      // this.roles = jwt_data.roles
     },
   },
 
