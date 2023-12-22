@@ -136,13 +136,28 @@ export const asyncRoutes = [
           },
         },
       },
+      {
+        path: 'FiRecords',
+        name: 'FiRecords',
+        component: `/src/ui/views/${platform}/FiManage/FiRecordsView.vue`,
+        meta: {
+          title: '充值提款记录',
+          icon: House,
+          // hidden: true,
+          needLogin: false,
+          public: {
+            desktop: true,
+            mobile: true,
+          },
+        },
+      },
     ],
   },
   {
     path: 'member',
     name: 'member',
     meta: {
-      title: '会员管理',
+      title: '用户管理',
       icon: House,
       // hidden: true,
       needLogin: true,
@@ -158,6 +173,37 @@ export const asyncRoutes = [
         component: `/src/ui/views/${platform}/Member/MemberListView.vue`,
         meta: {
           title: '会员列表',
+          icon: House,
+          // hidden: true,
+          needLogin: false,
+          public: {
+            desktop: true,
+            mobile: true,
+          },
+        },
+      },
+    ],
+  },
+  {
+    path: 'agent',
+    name: 'agent',
+    meta: {
+      title: '代理商管理',
+      icon: House,
+      // hidden: true,
+      needLogin: true,
+      public: {
+        desktop: true,
+        mobile: true,
+      },
+    },
+    children: [
+      {
+        path: 'agentlist',
+        name: 'agentlist',
+        component: `/src/ui/views/${platform}/Agent/AgentListView.vue`,
+        meta: {
+          title: '代理商列表',
           icon: House,
           // hidden: true,
           needLogin: false,
