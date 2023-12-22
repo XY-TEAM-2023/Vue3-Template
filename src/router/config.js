@@ -62,6 +62,37 @@ export const constantRoutes = [
  */
 export const asyncRoutes = [
   {
+    path: 'statistics',
+    name: 'statistics',
+    meta: {
+      title: '统计管理',
+      icon: House,
+      // hidden: true,
+      needLogin: true,
+      public: {
+        desktop: true,
+        mobile: true,
+      },
+    },
+    children: [
+      {
+        path: 'ggrstatistics',
+        name: 'ggrstatistics',
+        component: `/src/ui/views/${platform}/Statistics/GGRStatisticsView.vue`,
+        meta: {
+          title: 'ggr统计',
+          icon: House,
+          // hidden: true,
+          needLogin: false,
+          public: {
+            desktop: true,
+            mobile: true,
+          },
+        },
+      },
+    ],
+  },
+  {
     path: 'FiManage',
     name: 'FiManage',
     meta: {
@@ -90,8 +121,148 @@ export const asyncRoutes = [
           },
         },
       },
+      {
+        path: 'withdrawal',
+        name: 'withdrawal',
+        component: `/src/ui/views/${platform}/FiManage/WithdrawalView.vue`,
+        meta: {
+          title: '提款列表',
+          icon: House,
+          // hidden: true,
+          needLogin: false,
+          public: {
+            desktop: true,
+            mobile: true,
+          },
+        },
+      },
     ],
   },
+  {
+    path: 'member',
+    name: 'member',
+    meta: {
+      title: '会员管理',
+      icon: House,
+      // hidden: true,
+      needLogin: true,
+      public: {
+        desktop: true,
+        mobile: true,
+      },
+    },
+    children: [
+      {
+        path: 'memberlist',
+        name: 'memberlist',
+        component: `/src/ui/views/${platform}/Member/MemberListView.vue`,
+        meta: {
+          title: '会员列表',
+          icon: House,
+          // hidden: true,
+          needLogin: false,
+          public: {
+            desktop: true,
+            mobile: true,
+          },
+        },
+      },
+    ],
+  },
+  {
+    path: 'event',
+    name: 'event',
+    meta: {
+      title: '活动管理',
+      icon: House,
+      // hidden: true,
+      needLogin: true,
+      public: {
+        desktop: true,
+        mobile: true,
+      },
+    },
+    children: [
+      {
+        path: 'eventmanage',
+        name: 'eventmanage',
+        component: `/src/ui/views/${platform}/Event/EventView.vue`,
+        meta: {
+          title: '活动设置',
+          icon: House,
+          // hidden: true,
+          needLogin: false,
+          public: {
+            desktop: true,
+            mobile: true,
+          },
+        },
+      },
+    ],
+  },
+  {
+    path: 'gamelog',
+    name: 'gamelog',
+    meta: {
+      title: '游戏记录',
+      icon: House,
+      // hidden: true,
+      needLogin: true,
+      public: {
+        desktop: true,
+        mobile: true,
+      },
+    },
+    children: [
+      {
+        path: 'livegamelog',
+        name: 'livegamelog',
+        meta: {
+          title: '真人娱乐场',
+          icon: House,
+          // hidden: true,
+          needLogin: false,
+          public: {
+            desktop: true,
+            mobile: true,
+          },
+        },
+        children: [
+          {
+            path: 'evogamelog',
+            name: 'evogamelog',
+            component: `/src/ui/views/${platform}/GameLog/EvologView.vue`,
+            meta: {
+              title: 'EVO游戏记录',
+              icon: House,
+              // hidden: true,
+              needLogin: false,
+              public: {
+                desktop: true,
+                mobile: true,
+              },
+            },
+          },
+          {
+            path: 'pp-slotlog',
+            name: 'pp-slotlog',
+            component: `/src/ui/views/${platform}/GameLog/PP-slotView.vue`,
+            meta: {
+              title: 'PP-slot记录',
+              icon: House,
+              // hidden: true,
+              needLogin: false,
+              public: {
+                desktop: true,
+                mobile: true,
+              },
+            },
+          },
+        ],
+      },
+    ],
+  },
+
   {
     path: 'test',
     name: 'test',

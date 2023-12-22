@@ -1,7 +1,7 @@
 <script setup></script>
 
 <template>
-  <h1>evo游戏记录</h1>
+  <h1>活动设置页面</h1>
 </template>
 
 <style scoped lang="scss"></style>
