@@ -48,6 +48,9 @@ function checkRouterIsPublic(r) {
  * @param curRoles 当前拥有的角色列表
  */
 function checkRouterHasRole(route, curRoles) {
+  if (route.meta === undefined) {
+    return true
+  }
   if (route.meta.roles === undefined) {
     return true
   }
@@ -62,6 +65,9 @@ function checkRouterHasRole(route, curRoles) {
 }
 
 let consoleIndex = 0
+
+const comps = import.meta.glob('/src/ui/**/*.vue')
+// console.warn('comps', comps)
 
 /**
  * 加载Route的配置
@@ -147,7 +153,11 @@ function tryLoadRouteGroup(route, curRoles, parentPath = '') {
     }
   }
   if (canLoad) {
-    console.log(`${++consoleIndex}. ${route.fullPath}`)
+    if (typeof route.component === 'string') {
+      // console.warn(route.component, ' || ', comps[route.component])
+      route.component = comps[route.component]
+    }
+    // console.log(`${++consoleIndex}. ${route.fullPath}`)
   }
 
   return canLoad
@@ -208,8 +218,8 @@ router.beforeEach(
     // 登录状态 -1未登录；0已登录；1登录失效；
     const loginStatus = userStore.loginStatus
 
+    console.error('to.path', to.path)
     if (to.path === '/') {
-      console.log()
       // 如果访问的是根目录
       if (loginStatus === -1) {
         // 跳转到登录页面
@@ -264,6 +274,8 @@ router.beforeEach(
           // 无权限访问
           next('/noPermission')
         }
+      } else {
+        next()
       }
     }
   }
@@ -283,6 +295,7 @@ router.afterEach(() => {
   // 添加已打开的页面Tab
   if (
     new_full_path !== config.router.homePage &&
+    !new_full_path.startsWith('/refresh') &&
     !constantRoutes.some((item) => {
       return item.fullPath === new_full_path
     })
@@ -302,7 +315,8 @@ router.afterEach(() => {
 
 // 刷新当前页面
 router.refreshCurPage = () => {
-  const curPath = router.currentRoute.fullPath
+  // console.error(router.currentRoute.value)
+  const curPath = router.currentRoute.value.fullPath
   router.push({ path: '/refresh', query: { redirect: curPath } })
   useAppStore().tryHideRouteRedDot(curPath)
 }

@@ -19,6 +19,8 @@ export const config = {
   // server: 'http://api.jadesoft.live',
   /** 给服务器发送请求时，是否需要携带Cookie信息. 服务器Access-Control-Allow-Origin响应头必须指定具体值，不能为‘*’ */
   serverUseCookie: false,
+  /** 时区。中国时区：Asia/Shanghai，韩国时区：Asia/Seoul，日本时区：Asia/Tokyo，美国东部时区：America/New_York */
+  timezone: 'Asia/Shanghai',
   // server: '',
   /** 导航栏相关 */
   router: {

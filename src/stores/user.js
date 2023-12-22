@@ -12,8 +12,10 @@ export const useUserStore = defineStore('user', {
     userId: 0,
     /**用户账号 */
     account: 'coco',
-    /**用户角色名，比如: 普通用户、测试用户、管理员账号 */
-    role: '',
+    /**角色名，比如: 普通用户、测试用户、管理员账号 */
+    role_name: '',
+    /**角色ID */
+    role_id: -1,
     /**
      * jwt字符串
      * "_"代表这是个不希望外界调用的属性
@@ -25,14 +27,6 @@ export const useUserStore = defineStore('user', {
    * 取值：对 state 里的数据加工后返回
    *****************************************/
   getters: {
-    /**
-     * 是否为测试账号
-     * @returns {boolean}
-     */
-    isTestAccount() {
-      return this.roles.includes('test')
-    },
-
     /**
      * jwt的数据
      * @returns {Object}
@@ -111,7 +105,8 @@ export const useUserStore = defineStore('user', {
      */
     logout() {
       this.userId = 0
-      this.role = ''
+      this.role_name = ''
+      this.role_id = -1
       this._jwt = ''
       useAppStore().openedTabs.splice(0)
     },
@@ -126,12 +121,12 @@ export const useUserStore = defineStore('user', {
     /**
      * 登录成功，设置登录后信息
      */
-    loginSuccess(account, role) {
+    loginSuccess(account, role_name) {
       const jwt_data = this.jwtData
       this.userId = jwt_data.userId
       this.account = account
-      this.role = role
-      // this.roles = jwt_data.roles
+      this.role_name = role_name
+      this.role_id = jwt_data.roleId
     },
   },
 

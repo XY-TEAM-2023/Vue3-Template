@@ -25,7 +25,6 @@
 
 <script setup>
 import { ref, computed, watch, onMounted, nextTick, onBeforeUnmount, defineProps, defineEmits } from 'vue'
-import { useUserStore } from '@/stores/user'
 import { useAppStore } from '@/stores/app'
 import { ArrowLeft, HomeFilled, RefreshRight } from '@element-plus/icons-vue'
 import router from '@/router'
@@ -34,12 +33,13 @@ import UiOpenedTag from '@/ui/components/UiOpenedTag.vue'
 
 /** 应用全局数据对象 */
 const appStore = useAppStore()
+
 function onBtnLastPage() {
   router.back()
 }
 
 function onCloseTab(fullPath) {
-  console.log('>>>>>>>>>> ', fullPath)
+  // console.log('>>>>>>>>>> ', fullPath)
   let removeIndex = -1
   for (let i = 0; i < appStore.openedTabs.length; i++) {
     const tab = appStore.openedTabs[i]
@@ -49,31 +49,30 @@ function onCloseTab(fullPath) {
     }
   }
 
-  console.log('removeIndex', removeIndex)
+  // console.log('removeIndex', removeIndex)
   if (removeIndex < 0) {
     return
   }
   appStore.openedTabs.splice(removeIndex, 1)
 
   // 关掉的不是正在显示的页面
-  console.log('fullPath !== appStore.routerPath', fullPath !== appStore.routerPath)
+  // console.log('fullPath !== appStore.routerPath', fullPath !== appStore.routerPath)
   if (fullPath !== appStore.routerPath) {
     return
   }
 
   // 当前没有已打开的Tab, 显示首页
-  console.log('appStore.openedTabs.length', appStore.openedTabs.length)
+  // console.log('appStore.openedTabs.length', appStore.openedTabs.length)
   if (appStore.openedTabs.length === 0) {
     router.push(config.router.homePage)
     return
   }
 
   // 关掉的是最后一个tab
-  console.log('removeIndex + 1 === appStore.openedTabs.length', removeIndex + 1 === appStore.openedTabs.length)
   if (removeIndex === appStore.openedTabs.length) {
     removeIndex -= 1
   }
-  console.log('appStore.openedTabs[removeIndex].fullPat', appStore.openedTabs[removeIndex].fullPat)
+  // console.log('appStore.openedTabs[removeIndex].fullPat', appStore.openedTabs[removeIndex].fullPat)
   router.push(appStore.openedTabs[removeIndex].fullPath)
 }
 

@@ -152,4 +152,7 @@ $layout-main-content-bg-color: #fff; // 主区域内容背景色
   padding: 10px;
   background-color: $layout-main-content-bg-color;
 }
+.el-scrollbar__wrap {
+  padding: 5px;
+}
 </style>

@@ -22,6 +22,10 @@ export const useAppStore = defineStore('app', {
     themeDarkMode: false,
     /** 当前打开过的Tabs */
     openedTabs: [],
+    /** 每页显示的数据*/
+    pageSizes: [3, 20, 50, 100],
+    /** 搜索数据列表时，每页返回的数据 */
+    pageNum_userList: -1,
   }),
 
   getters: {},
@@ -117,6 +121,6 @@ export const useAppStore = defineStore('app', {
   persist: {
     key: 'app', // 区分不同store
     enabled: true,
-    strategies: [{ storage: localStorage, paths: ['language', 'routerPath', 'themeDarkMode', 'openedTabs'] }],
+    strategies: [{ storage: localStorage, paths: ['language', 'routerPath', 'themeDarkMode', 'openedTabs', 'pageNum_userList'] }],
   },
 })

@@ -1,6 +1,6 @@
 import { House } from '@element-plus/icons-vue'
 import { config } from '@/config'
-import isMobile from '@/utils'
+import { isMobile } from '@/utils'
 
 const useMobileRouter = config.websiteModel === 'mobile' || (!config.noMobileModel && isMobile())
 export const platform = useMobileRouter ? 'mobile' : 'desktop'
@@ -28,7 +28,7 @@ export const constantRoutes = [
   {
     path: '/404',
     name: '404',
-    component: () => import(/* @vite-ignore */ `/src/ui/base/404.vue`),
+    component: `/src/ui/base/404.vue`,
     meta: {
       title: '404',
       icon: null,
@@ -40,15 +40,20 @@ export const constantRoutes = [
   {
     path: '/login',
     name: 'login',
-    component: () => import(/* @vite-ignore */ `/src/ui/views/${platform}/LoginView.vue`),
+    component: `/src/ui/views/${platform}/LoginView.vue`,
     meta: { title: 'Login', needLogin: false },
   },
+
   {
     path: '/',
     name: '/',
-    component: () => import(/* @vite-ignore */ `/src/ui/layout/${layoutFile}`),
+    component: `/src/ui/layout/${layoutFile}`,
     meta: { title: 'home', needLogin: true },
     children: [],
+  },
+  {
+    path: '/index.html',
+    redirect: '/',
   },
 ]
 
@@ -57,9 +62,24 @@ export const constantRoutes = [
  */
 export const asyncRoutes = [
   {
+    path: 'devTools',
+    name: 'devTools',
+    component: `/src/ui/views/${platform}/devToolsView.vue`,
+    meta: {
+      title: 'devTools',
+      icon: House,
+      // hidden: true,
+      needLogin: true,
+      public: {
+        desktop: true,
+        mobile: true,
+      },
+    },
+  },
+  {
     path: 'test',
     name: 'test',
-    component: () => import(/* @vite-ignore */ `/src/ui/views/${platform}/test.vue`),
+    component: `/src/ui/views/${platform}/test.vue`,
     meta: {
       title: 'test',
       icon: House,
@@ -74,7 +94,7 @@ export const asyncRoutes = [
       {
         path: 'AboutView333',
         name: 'AboutVie333w',
-        component: () => import(/* @vite-ignore */ `/src/ui/views/${platform}/AboutView.vue`),
+        component: `/src/ui/views/${platform}/AboutView.vue`,
         meta: {
           title: 'AboutView',
           icon: House,
@@ -91,7 +111,7 @@ export const asyncRoutes = [
   {
     path: 'AboutView',
     name: 'AboutView',
-    component: () => import(/* @vite-ignore */ `/src/ui/views/${platform}/AboutView.vue`),
+    component: `/src/ui/views/${platform}/AboutView.vue`,
     meta: {
       title: 'AboutView',
       icon: House,
@@ -121,7 +141,7 @@ export const asyncRoutes = [
   {
     path: 'AboutView1',
     name: 'AboutView1',
-    component: () => import(/* @vite-ignore */ `/src/ui/views/${platform}/AboutView.vue`),
+    component: `/src/ui/views/${platform}/AboutView.vue`,
     meta: {
       title: 'AboutView',
       icon: House,
@@ -136,7 +156,7 @@ export const asyncRoutes = [
   {
     path: 'noPermission2',
     name: 'noPermission2',
-    component: () => import(/* @vite-ignore */ `/src/ui/base/NoPermission.vue`),
+    component: `/src/ui/base/NoPermission.vue`,
     meta: {
       title: 'Export Zip',
       icon: House,
@@ -151,7 +171,7 @@ export const asyncRoutes = [
   {
     path: 'AboutView3',
     name: 'AboutView3',
-    component: () => import(/* @vite-ignore */ `/src/ui/views/${platform}/AboutView.vue`),
+    component: `/src/ui/views/${platform}/AboutView.vue`,
     meta: {
       title: 'AboutView',
       icon: House,
@@ -166,7 +186,7 @@ export const asyncRoutes = [
   {
     path: 'noPermission3',
     name: 'noPermission3',
-    component: () => import(/* @vite-ignore */ `/src/ui/base/NoPermission.vue`),
+    component: `/src/ui/base/NoPermission.vue`,
     meta: {
       title: 'Export Zip',
       icon: House,
@@ -181,9 +201,24 @@ export const asyncRoutes = [
   {
     path: 'members',
     name: 'members',
-    component: () => import(/* @vite-ignore */ `/src/ui/views/${platform}/MemberListView.vue`),
+    component: `/src/ui/views/${platform}/User/UserListView.vue`,
     meta: {
       title: '用户列表',
+      icon: House,
+      hidden: false,
+      needLogin: false,
+      public: {
+        desktop: true,
+        mobile: true,
+      },
+    },
+  },
+  {
+    path: 'roles',
+    name: 'roles',
+    component: `/src/ui/views/${platform}/Role/RoleListView.vue`,
+    meta: {
+      title: '角色列表',
       icon: House,
       hidden: false,
       needLogin: false,

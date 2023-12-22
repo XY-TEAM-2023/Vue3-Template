@@ -17,3 +17,77 @@
 .el-footer {
     padding: 0 0 0 0 !important;
 }
+
+/************************************ 对话框 *****************************/
+.el-dialog {
+    display: flex !important;
+    flex-direction: column !important;
+    border-radius: 6px !important;
+}
+.el-dialog__header {
+    position: relative !important;
+    height: 40px;
+    padding: 0 0 !important;
+    margin-right: 0 !important;
+    border-bottom: 1px solid #f2f6fc !important;
+    text-align: center !important;
+    justify-content: center !important;
+    -webkit-user-select: none !important;
+    -moz-user-select: none !important;
+    user-select: none !important;
+    font-size: 15px !important;
+}
+.el-dialog__title{
+    line-height: 40px !important;
+    display: block !important;
+    font-size: 15px !important;
+    color: #000000 !important;
+}
+.el-dialog__headerbtn {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    top: 0 !important;
+    height: 40px !important;
+    width: 40px !important;
+    cursor: pointer !important;
+}
+.el-dialog__body{
+    padding: 18px 20px !important;
+}
+.el-dialog__footer{
+    border-top: 1px solid #f2f6fc;
+    padding: 12px 20px !important;
+}
+
+/********************************************************
+                          el-form
+ ********************************************************/
+.el-form-item{
+    margin-bottom: 0 !important;
+
+}
+.el-form-item:not(:last-child){
+    margin-bottom: 18px !important;
+}
+
+/********************************************************
+                          loading
+ ********************************************************/
+/* 按钮 */
+.el-button .circular{
+    height: 16px !important;
+    width: 16px !important;
+}
+.el-button .el-loading-mask{
+    display: flex !important;
+    justify-items: center !important;
+    align-items: center !important;
+    height: 100% !important;
+    width: 100% !important;
+}
+.el-button .el-loading-spinner {
+    margin-top: 2px !important;
+    text-align: center !important;
+    position: static !important;
+}

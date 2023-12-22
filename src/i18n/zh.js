@@ -1,15 +1,25 @@
 export default {
   app: {
     needLogin: '需要登录后才能访问该页面',
+    loginOtherDevice: '账号在其他设备上登录',
     sessionTimeout: '登录已经失效',
     needLoginBtn: '立即登录',
     signOut: '退出登录',
+    requestFail: '请求失败，请稍后再试',
   },
   com: {
     btnYes: '是',
     btnNo: '否',
     btnOk: '确定',
+    btnSubmit: '提交',
     btnCancel: '取消',
+    btnCancelSearch: '取消搜索',
+    btnEdit: '编辑',
+    btnCreate: '创建',
+    btnDelete: '删除',
+    handler: '操作',
+    creatTime: '创建时间',
+    updateTime: '更新时间',
   },
   language: '中文',
   person: {
@@ -28,5 +38,50 @@ export default {
   // 个人信息页面
   userInfoView: {
     router: '个人信息',
+  },
+  // 用户列表页面
+  userListView: {
+    router: '用户列表',
+    account: '账号',
+    role: '角色',
+    note: '备注',
+    accountStatus: '账号状态',
+    lock: '封禁',
+    normal: '正常',
+    otpStatus: 'otp状态',
+    otpStatusBind: '已绑定',
+    otpStatusUnbind: '待绑定',
+    otpStatusClose: '未开启',
+    creator: '创建者',
+    searchAccount: '搜索账号',
+    createAccount: '创建账号',
+    disableAccount: '封禁账号',
+    clearOtp: '重置OTP',
+  },
+  createUserDialog: {
+    account: '账号',
+    password: '密码',
+    role: '角色',
+    note: '备注',
+    accountMustInput: '账号不能为空',
+    accountLengthError: '账号有效长度为4~20',
+    passwordMustInput: '密码不能为空',
+    passwordLengthError: '账号有效长度为6~20',
+  },
+  changeUserInfoDialog: {
+    title: '修改用户信息',
+    account: '账号',
+    password: '密码',
+    role: '角色',
+    note: '备注',
+  },
+  // 角色列表页面
+  roleListView: {
+    router: '角色',
+    name: '角色名',
+    note: '备注',
+    parent: '上级',
+    status: '状态',
+    groupStatus: '分组状态',
   },
 }

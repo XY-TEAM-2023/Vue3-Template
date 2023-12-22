@@ -1,15 +1,25 @@
 export default {
   app: {
     needLogin: 'You need to log in to access this page.',
+    loginOtherDevice: 'Your account has been logged in on another device',
     sessionTimeout: 'Login has expired.',
     needLoginBtn: 'Log in now',
     signOut: 'sign out',
+    requestFail: 'Request failed, please try again later.',
   },
   com: {
     btnYes: 'yes',
     btnNo: 'no',
     btnOk: 'ok',
+    btnSubmit: 'Submit',
     btnCancel: 'cancel',
+    btnCancelSearch: 'Cancel Search',
+    btnEdit: 'Edit',
+    btnCreate: 'Create',
+    btnDelete: 'Delete',
+    handler: 'Operation',
+    creatTime: 'Creation Time',
+    updateTime: 'Update Time',
   },
   language: '英语',
   person: {
@@ -28,5 +38,40 @@ export default {
   // 个人信息页面
   userInfoView: {
     router: 'user info',
+  },
+  // 用户列表页面
+  userListView: {
+    router: 'User List',
+    account: 'Account',
+    role: 'Role',
+    note: 'Note',
+    accountStatus: 'Account Status',
+    lock: 'Lock',
+    normal: 'Normal',
+    otpStatus: 'OTP Status',
+    otpStatusBind: 'Bound',
+    otpStatusUnbind: 'Pending Binding',
+    otpStatusClose: 'Not Enabled',
+    creator: 'Creator',
+    searchAccount: 'Search Account',
+    disableAccount: 'Disable Account',
+    clearOtp: 'Clear OTP',
+  },
+  createUserDialog: {
+    account: 'Account',
+    password: 'Password',
+    role: 'Role',
+    note: 'Note',
+    accountMustInput: 'Account cannot be empty',
+    accountLengthError: 'Account must be between 4 to 20 characters',
+    passwordMustInput: 'Password cannot be empty',
+    passwordLengthError: 'Password must be between 6 to 20 characters',
+  },
+  changeUserInfoDialog: {
+    title: 'Modify User Information',
+    account: 'Account',
+    password: 'Password',
+    role: 'Role',
+    note: 'Note',
   },
 }

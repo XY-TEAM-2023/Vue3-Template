@@ -6,9 +6,11 @@ import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import { config } from './src/config'
+import vueGlobals from 'vite-plugin-vue-globals'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: './', // 设置 base 为相对路径
   server: {
     proxy: {
       // 匹配所有请求
@@ -21,6 +23,10 @@ export default defineConfig({
   },
   plugins: [
     vue(),
+    vueGlobals({
+      // 指定你想要全局可用的 Vue API
+      vue: ['ref', 'reactive', 'computed', 'watch', 'onMounted', 'onBeforeUnmount', 'defineProps', 'defineEmits', 'defineExpose'],
+    }),
     AutoImport({
       // imports: ['vue', 'vue-router'],
       resolvers: [ElementPlusResolver()],

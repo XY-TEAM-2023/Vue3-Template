@@ -11,6 +11,7 @@ export default {
     // 使用$nextTick确保DOM更新完成后执行
     this.$nextTick(() => {
       // 重定向回原页面
+      console.log('>>>>>>>>>>>>>>>')
       this.$router.replace(redirectTo)
     })
   },

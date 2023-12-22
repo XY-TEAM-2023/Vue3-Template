@@ -27,8 +27,8 @@ import { useRoute } from 'vue-router'
 
 const userStore = useUserStore()
 
-const account = ref('coco')
-const password = ref('13214566036')
+const account = ref('admin')
+const password = ref('123456')
 // const account = ref(userStore.account)
 // const password = ref('')
 

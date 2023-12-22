@@ -1,6 +1,6 @@
 <template>
   <div v-if="config.logo.display" class="ui-logo unselect">
-    <img src="/favicon.ico" alt="logo" class="icon" />
+    <!--    <img src="/favicon.ico" alt="logo" class="icon" />-->
     <!-- 使用计算属性来显示标题 -->
     <div v-if="!appStore.menuIsCollapse" class="text unselect">{{ appStore.logoLabel }}</div>
   </div>
