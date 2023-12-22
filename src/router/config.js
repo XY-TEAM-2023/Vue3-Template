@@ -62,11 +62,10 @@ export const constantRoutes = [
  */
 export const asyncRoutes = [
   {
-    path: 'devTools',
-    name: 'devTools',
-    component: `/src/ui/views/${platform}/devToolsView.vue`,
+    path: 'FiManage',
+    name: 'FiManage',
     meta: {
-      title: 'devTools',
+      title: '财务管理',
       icon: House,
       // hidden: true,
       needLogin: true,
@@ -75,6 +74,23 @@ export const asyncRoutes = [
         mobile: true,
       },
     },
+    children: [
+      {
+        path: 'recharge',
+        name: 'recharge',
+        component: `/src/ui/views/${platform}/FiManage/RechargeView.vue`,
+        meta: {
+          title: '充值列表',
+          icon: House,
+          // hidden: true,
+          needLogin: false,
+          public: {
+            desktop: true,
+            mobile: true,
+          },
+        },
+      },
+    ],
   },
   {
     path: 'test',
