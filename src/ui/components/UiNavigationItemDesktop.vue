@@ -4,12 +4,13 @@
     <template #title>
       <!--  图标  -->
       <el-icon v-if="checkIsShowIcon(route)" :size="config.router.admin.iconSize">
-        <component :is="route.meta.icon" />
+        <component v-if="isElementIcon(route.meta.icon)" :is="route.meta.icon" />
+        <ui-svg v-else :svg-path="route.meta.icon" />
       </el-icon>
 
       <span>
         <!--  菜单名  -->
-        {{ route.meta.title }}
+        {{ getTitle(route) }}
         <!--  小红点  -->
         <el-badge :is-dot="true" :hidden="!showRedDotGroup">
           <div style="margin-left: 15px"></div>
@@ -23,12 +24,22 @@
   <!-- 无子菜单 -->
   <el-menu-item v-else-if="isShowItem" :index="route.fullPath" @click="navigateTo(route.fullPath)">
     <el-icon v-if="checkIsShowIcon(route)" :size="config.router.admin.iconSize">
-      <component :is="route.meta.icon" />
+      <component v-if="isElementIcon(route.meta.icon)" :is="route.meta.icon" />
+      <ui-svg
+        v-else
+        :svg-path="route.meta.icon"
+        :size="config.router.admin.iconSize + 'px'"
+        :svg-color="config.router.admin.textColor"
+        :svg-hover-color="config.router.admin.activeTextColor"
+        :disable-mouse-hover="true"
+        :force-hover="route.fullPath === appStore.routerPath"
+        :style="{ transition: 'fill 0.3s' }"
+      />
     </el-icon>
 
     <template #title>
       <!--  菜单名  -->
-      {{ route.meta.title }}
+      {{ getTitle(route) }}
       <!--  小红点  -->
       <el-badge :is-dot="!redDotValue" :value="redDotValue" :hidden="!showRedDot">
         <div style="margin-left: 15px"></div>
@@ -42,6 +53,8 @@ import { useRouter } from 'vue-router'
 import { defineProps, computed } from 'vue'
 import { useAppStore } from '@/stores/app'
 import { config } from '@/config'
+import UiSvg from '@/ui/components/UiSvg.vue'
+import i18n from '@/i18n'
 
 const router = useRouter()
 const props = defineProps({
@@ -49,6 +62,24 @@ const props = defineProps({
 })
 
 const appStore = useAppStore()
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+// icon相关
+
+function isElementIcon(icon) {
+  return !icon.includes('.')
+}
+
+function getTitle(obj) {
+  if (obj.meta) {
+    if (obj.meta.title) {
+      return i18n.global.t(obj.meta.title)
+    }
+  }
+  return obj.name
+}
+
+function getIconColor(fullPath) {}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 // 路由相关

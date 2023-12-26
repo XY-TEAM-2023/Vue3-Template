@@ -117,6 +117,14 @@ export default {
     name: '역할 이름',
     note: '비고',
   },
+  // 路由配置页面
+  routerListView: {
+    icon: '아이콘',
+    title: '제목',
+    korean: '한국어',
+    chinese: '중국어',
+    english: '영어',
+  },
   // 以下为自定义页面的翻译 --------------------------------------
   //财务管理菜单-相关内容
   FIListView: {

@@ -25,7 +25,7 @@ if (config.websiteModel === 'admin') {
 
   // 注册所有 Element Plus 图标
   for (const iconName in ElIconModules) {
-    console.log(iconName)
+    // console.log(iconName)
     app.component(iconName, ElIconModules[iconName])
   }
 }

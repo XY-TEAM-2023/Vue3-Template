@@ -117,5 +117,13 @@ export default {
     name: 'Role Name',
     note: 'Note',
   },
+  // 路由配置页面
+  routerListView: {
+    icon: 'Icon',
+    title: 'Title',
+    korean: 'Korean',
+    chinese: 'Chinese',
+    english: 'English',
+  },
   // 以下为自定义页面的翻译 --------------------------------------
 }

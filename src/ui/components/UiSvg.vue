@@ -7,7 +7,7 @@
     @click="onClick"
   >
     <svg :width="svgSize" :height="svgSize" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
-      <path :d="svgPath" :fill="isHovered ? svgHoverColor : svgColor" />
+      <path :d="svgPath" :fill="(!disableMouseHover && isHovered) || forceHover ? svgHoverColor : svgColor" :style="props.style" />
     </svg>
   </div>
 </template>
@@ -47,6 +47,20 @@ const props = defineProps({
     default: 'transparent',
   },
   bgHoverColor: {
+    type: String,
+    default: '',
+  },
+  forceHover: {
+    type: Boolean,
+    default: false,
+  },
+  // 禁止鼠标指向时高亮
+  disableMouseHover: {
+    type: Boolean,
+    default: false,
+  },
+  // 动态style
+  style: {
     type: String,
     default: '',
   },

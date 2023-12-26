@@ -6,6 +6,7 @@ export default {
     needLoginBtn: '立即登录',
     signOut: '退出登录',
     requestFail: '请求失败，请稍后再试',
+    editI18nLabel: '请输入修改后的内容',
   },
   com: {
     btnYes: '是',
@@ -121,10 +122,14 @@ export default {
   routerListView: {
     icon: '图标',
     title: '标题',
+    korean: '韩文',
+    chinese: '中文',
+    english: '英文',
   },
   // 以下为自定义页面的翻译 --------------------------------------
   //会员列表页面
   memberListView: {
+    router: '用户管理1',
     Date: '日期',
     MemberLevel: '会员等级',
     SiteName: '网站名称',

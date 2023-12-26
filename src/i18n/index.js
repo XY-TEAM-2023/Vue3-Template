@@ -32,7 +32,7 @@ function getLanguageFromLocalStorage() {
 
 const i18n = createI18n({
   locale: getLanguageFromLocalStorage(), // 设置当前语言类型
-  // fallbackLocale: 'en', // 如果当前语言没有相应翻译时使用的后备语言
+  fallbackLocale: 'en', // 如果当前语言没有相应翻译时使用的后备语言
   messages,
 })
 

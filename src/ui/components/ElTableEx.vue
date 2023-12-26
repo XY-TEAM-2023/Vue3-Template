@@ -13,6 +13,7 @@
       :load="props.load"
       :tree-props="props.treeProps"
       :default-expand-all="props.defaultExpandAll"
+      :cell-style="cellStyle"
     >
       <template v-for="(_, name) in $slots" v-slot:[name]="scope">
         <slot :name="name" v-bind="scope"></slot>
@@ -75,6 +76,7 @@ const props = defineProps({
   treeProps: {
     type: Object,
   },
+  cellStyle: Function,
   // 分页相关----------------------
   /**
    * 是否显示分页
