@@ -4,7 +4,16 @@
       <el-aside :width="asideWidth" class="layout-aside">
         <ui-logo class="layout-aside-logo" />
         <el-scrollbar>
-          <ui-navigation-desktop :routes="router.options.routes" />
+          <ui-navigation-desktop
+            :routes="router.options.routes"
+            background-color="transparent"
+            :text-color="config.router.admin.textColor"
+            :active-text-color="config.router.admin.activeTextColor"
+            :default-active="appStore.routerPath"
+            :router="true"
+            :mode="mode"
+            :collapse="appStore.menuIsCollapse"
+          />
         </el-scrollbar>
       </el-aside>
 
@@ -61,8 +70,10 @@ import UiBreadcrumb from '@/ui/components/UiBreadcrumb.vue'
 import { Expand, Fold } from '@element-plus/icons-vue'
 import router from '@/router'
 import { useAppStore } from '@/stores/app'
+import { config } from '@/config'
 
 const appStore = useAppStore()
+const mode = computed(() => (config.websiteModel === 'website' ? 'horizontal' : 'vertical'))
 const asideWidth = computed(() => (appStore.menuIsCollapse ? '63px' : '255px'))
 </script>
 

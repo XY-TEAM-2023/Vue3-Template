@@ -476,4 +476,19 @@ export const asyncRoutes = [
       },
     },
   },
+  {
+    path: 'routers',
+    name: 'routers',
+    component: `/src/ui/views/${platform}/Router/RouterListView.vue`,
+    meta: {
+      title: '路由列表',
+      icon: House,
+      hidden: false,
+      needLogin: false,
+      public: {
+        desktop: true,
+        mobile: true,
+      },
+    },
+  },
 ]

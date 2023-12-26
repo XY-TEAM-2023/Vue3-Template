@@ -1,12 +1,13 @@
 <template>
   <el-menu
-    background-color="transparent"
-    :text-color="config.router.admin.textColor"
-    :active-text-color="config.router.admin.activeTextColor"
-    :default-active="appStore.routerPath"
-    :router="true"
-    :mode="mode"
-    :collapse="appStore.menuIsCollapse"
+    :background-color="props.backgroundColor"
+    :text-color="props.textColor"
+    :active-text-color="props.activeTextColor"
+    :default-active="props.defaultActive"
+    :router="props.router"
+    :mode="props.mode"
+    :collapse="props.collapse"
+    :menu-trigger="props.menuTrigger"
     :collapse-transition="false"
     class="unselect menu"
   >
@@ -19,13 +20,42 @@
 <script setup>
 import UiNavigationItemDesktop from './UiNavigationItemDesktop.vue'
 import router from '@/router'
-import { useAppStore } from '@/stores/app'
-import { config } from '@/config'
-import { computed } from 'vue'
+import { computed, defineProps } from 'vue'
 
-const appStore = useAppStore()
-
-const mode = computed(() => (config.websiteModel === 'website' ? 'horizontal' : 'vertical'))
+const props = defineProps({
+  backgroundColor: {
+    type: String,
+    default: '',
+  },
+  textColor: {
+    type: String,
+    default: '',
+  },
+  activeTextColor: {
+    type: String,
+    default: '',
+  },
+  defaultActive: {
+    type: String,
+    default: '',
+  },
+  mode: {
+    type: String,
+    default: '',
+  },
+  router: {
+    type: Boolean,
+    default: true,
+  },
+  collapse: {
+    type: Boolean,
+    default: false,
+  },
+  menuTrigger: {
+    type: String,
+    default: 'hover',
+  },
+})
 
 const layoutRoutes = computed(() => {
   const routes = router.config.find((obj) => obj.fullPath === '/')

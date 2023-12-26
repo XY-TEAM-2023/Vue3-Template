@@ -36,8 +36,8 @@
         </template>
       </el-table-column>
 
-      <el-table-cloumn-ts prop="update_ts" align="center" width="180" label="com.updateTime" />
-      <el-table-cloumn-ts prop="create_ts" align="center" width="180" label="com.creatTime" />
+      <el-table-column-ts prop="update_ts" align="center" width="180" label="com.updateTime" />
+      <el-table-column-ts prop="create_ts" align="center" width="180" label="com.creatTime" />
       <el-table-column :label="$t('com.handler')" align="center" width="216">
         <template #default="scope">
           <div v-if="checkPermission(scope.row)">
@@ -94,7 +94,7 @@
 <script setup>
 import { ref, reactive, onBeforeMount, computed, watch, onMounted, onBeforeUnmount, defineProps, defineEmits } from 'vue'
 import { request_role_delete, request_role_lock, request_role_tree, request_role_unlock } from '@/api/role'
-import ElTableCloumnTs from '@/ui/components/ElTableCloumnTs.vue'
+import ElTableColumnTs from '@/ui/components/ElTableColumnTs.vue'
 import ElTableEx from '@/ui/components/ElTableEx.vue'
 import { useAppStore } from '@/stores/app'
 import { useUserStore } from '@/stores/user'

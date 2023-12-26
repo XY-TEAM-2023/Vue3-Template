@@ -3,7 +3,6 @@
     <!-- 添加 height: 100%; -->
     <div style="margin-bottom: 10px">
       <!--  创建账号  -->
-      <creat-user-dialog :is-show="showCreateUser" @close="showCreateUser = false" @refresh="requestUserListByRefresh" />
       <el-button type="primary" @click="onCreateAccount">
         {{ $t('com.btnCreate') }}
       </el-button>
@@ -19,20 +18,9 @@
       />
     </div>
 
-    <el-table-ex
-      :data="userList"
-      v-loading="isRequestUserList"
-      v-model:current-page="searchPage"
-      v-model:page-size="appStore.pageNum_userList"
-      :page-sizes="appStore.pageSizes"
-      :total="total"
-      :show-select="true"
-      @current-change="requestUserList"
-      @size-change="requestUserList"
-      @selection-change="onSelectionChange"
-    >
+    <el-table-ex :data="routerConfig" :show-select="true">
       <!--      <el-table-column type="selection" width="55" align="center" />-->
-      <el-table-column type="index" width="80" align="center" :label="$t('com.index')" />
+      <!--      <el-table-column type="index" width="80" align="center" :label="$t('com.index')" />-->
       <el-table-column prop="account" align="center" :label="$t('userListView.account')" />
 
       <!--   角色名   -->
@@ -118,14 +106,6 @@
         </template>
       </el-table-column>
     </el-table-ex>
-
-    <!-- 修改用户信息窗口 -->
-    <change-user-info-dialog
-      :is-show="showEditorUserInfo"
-      :user-data="editorUserInfoData"
-      @close="showEditorUserInfo = false"
-      @refresh="requestUserListByRefresh"
-    ></change-user-info-dialog>
   </div>
 </template>
 
@@ -134,14 +114,19 @@ import { ref, reactive, onBeforeMount, computed, watch, onMounted, onBeforeUnmou
 import { request_user_clear_otp, request_user_delete_account, request_user_list, request_user_lock } from '@/api/user'
 import ElTableColumnTs from '@/ui/components/ElTableColumnTs.vue'
 import ElInputSearch from '@/ui/components/ElInputSearch.vue'
-import CreatUserDialog from './CreatUserDialog.vue'
-import ChangeUserInfoDialog from './ChangeUserInfoDialog.vue'
 import ElTableEx from '@/ui/components/ElTableEx.vue'
 import { useAppStore } from '@/stores/app'
 import { useUserStore } from '@/stores/user'
 import { ElMessageBox } from 'element-plus'
 import i18n from '@/i18n'
 import { request_role_list } from '@/api/role'
+import router from '@/router'
+import UiNavigationDesktop from '@/ui/components/UiNavigationDesktop.vue'
+import { asyncRoutes } from '@/router/config'
+import { config } from '@/config'
+
+const routerConfig = ref(reactive(asyncRoutes))
+// -------------------------------------
 
 const appStore = useAppStore()
 if (appStore.pageNum_userList <= 0) {
