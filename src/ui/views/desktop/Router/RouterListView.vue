@@ -6,103 +6,21 @@
       <el-button type="primary" @click="onCreateAccount">
         {{ $t('com.btnCreate') }}
       </el-button>
-
-      <!--  搜索账号  -->
-      <el-input-search
-        v-model="searchAccount"
-        placeholder="userListView.searchAccount"
-        width="200"
-        @search="requestUserList"
-        max-length="20"
-        style="margin-left: 10px"
-      />
     </div>
 
     <el-table-ex :data="routerConfig" :show-select="true">
-      <el-table-column prop="account" align="center" :label="$t('userListView.account')" />
+      <!--  组件图标  -->
+      <el-table-column prop="meta.icon" align="center" :label="$t('routerListView.icon')">
+        <template #default="scope">
+          <div v-if="isElementIcon(scope.row.meta.icon)">
+            <component :is="scope.row.meta.icon" />
+          </div>
+          <div v-else>ScgIcon</div>
+        </template>
+      </el-table-column>
 
       <!--   角色名   -->
-      <el-table-column prop="role_name" align="center" width="140" :label="$t('userListView.role')" />
-
-      <!--  是否在线  -->
-      <el-table-column :label="$t('userListView.onlineStatus')" align="center" width="130">
-        <template #default="scope">
-          <span v-if="scope.row.isOnline" class="color-green">
-            {{ $t('userListView.onlineStatus_on') }}
-          </span>
-          <div v-else class="color-gray">
-            {{ $t('userListView.onlineStatus_off') }}
-          </div>
-        </template>
-      </el-table-column>
-
-      <!--  OTP状态  -->
-      <el-table-column prop="otp_status" align="center" width="180" :label="$t('userListView.otpStatus')">
-        <template #default="scope">
-          <div v-if="scope.row.otp_status === 0">
-            <span class="color-gray">
-              {{ $t('userListView.otpStatusClose') }}
-            </span>
-          </div>
-          <div v-else-if="scope.row.otp_status === 1">
-            <span class="color-yellow">
-              {{ $t('userListView.otpStatusUnbind') }}
-            </span>
-          </div>
-          <div v-else-if="scope.row.otp_status === 2">
-            <span class="color-green">
-              {{ $t('userListView.otpStatusBind') }}
-            </span>
-          </div>
-        </template>
-      </el-table-column>
-      <!--  账号状态  -->
-      <el-table-column :label="$t('userListView.accountStatus')" align="center" width="140">
-        <template #default="scope">
-          <div v-if="scope.row.status === 0">
-            <span class="color-green">
-              {{ $t('userListView.normal') }}
-            </span>
-          </div>
-          <div v-else-if="scope.row.status === 1">
-            <span class="color-red">
-              {{ $t('userListView.lock') }}
-            </span>
-          </div>
-        </template>
-      </el-table-column>
-      <el-table-column-ts prop="update_ts" align="center" width="220" label="com.updateTime" />
-      <el-table-column-ts prop="create_ts" align="center" width="220" label="com.creatTime" />
-
-      <!--  操作按钮  -->
-      <el-table-column :label="$t('com.handler')" align="center" width="270">
-        <template #default="scope">
-          <div v-if="checkPermission(scope.row)">
-            <el-button class="loading-small" style="width: 50px" type="primary" size="small" @click="onEditorUserInfo(scope.row)">
-              {{ $t('com.btnEdit') }}
-            </el-button>
-            <!--  清除OTP  -->
-            <el-button
-              class="loading-small"
-              :disabled="scope.row.otp_status !== 2"
-              type="warning"
-              size="small"
-              style="width: 88px"
-              v-loading="scope.row.isRequestingClear"
-              @click="onClearOtp(scope.$index)"
-            >
-              {{ $t('userListView.clearOtp') }}
-            </el-button>
-            <!--  删除账号  -->
-            <el-button type="danger" style="width: 50px" size="small" @click="onDeleteAccount(scope.$index)">
-              {{ $t('com.btnDelete') }}
-            </el-button>
-          </div>
-          <el-tag v-else type="info" effect="plain" class="unselect" style="width: 212px">
-            {{ $t('com.noPermission') }}
-          </el-tag>
-        </template>
-      </el-table-column>
+      <el-table-column prop="meta.title" align="center" width="140" :label="$t('routerListView.title')" />
     </el-table-ex>
   </div>
 </template>
@@ -110,27 +28,29 @@
 <script setup>
 import { ref, reactive, onBeforeMount, computed, watch, onMounted, onBeforeUnmount, defineProps, defineEmits } from 'vue'
 import { request_user_clear_otp, request_user_delete_account, request_user_list, request_user_lock } from '@/api/user'
-import ElTableColumnTs from '@/ui/components/ElTableColumnTs.vue'
-import ElInputSearch from '@/ui/components/ElInputSearch.vue'
 import ElTableEx from '@/ui/components/ElTableEx.vue'
 import { useAppStore } from '@/stores/app'
 import { useUserStore } from '@/stores/user'
 import { ElMessageBox } from 'element-plus'
 import i18n from '@/i18n'
 import { request_role_list } from '@/api/role'
-import router from '@/router'
-import UiNavigationDesktop from '@/ui/components/UiNavigationDesktop.vue'
-import { asyncRoutes } from '@/router/config'
-import { config } from '@/config'
+import { asyncRoutes } from './test'
 
 const routerConfig = ref(reactive(asyncRoutes))
+
+function isElementIcon(icon) {
+  return !icon.includes('.')
+}
+
 // -------------------------------------
 
 const appStore = useAppStore()
 if (appStore.pageNum_userList <= 0) {
   appStore.pageNum_userList = appStore.pageSizes[0]
 }
-
+function log(val) {
+  console.log(val)
+}
 const userStore = useUserStore()
 
 /** 搜索的账号 */
@@ -277,7 +197,7 @@ function onClearOtp(index) {
 function onDeleteAccount(index) {
   const userData = userList[index]
 
-  ElMessageBox.confirm(i18n.global.t('userListView.deleteAccountTip', { account: userData.account }), '', {
+  ElMessageBox.confirm(i18n.global.t('routerListView.deleteAccountTip', { account: userData.account }), '', {
     confirmButtonText: i18n.global.t('com.btnOk'),
     cancelButtonText: i18n.global.t('com.btnCancel'),
     type: 'warning',

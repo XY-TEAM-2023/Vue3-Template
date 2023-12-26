@@ -6,7 +6,7 @@
         <el-scrollbar>
           <ui-navigation-desktop
             :routes="router.options.routes"
-            background-color="transparent"
+            :background-color="config.router.admin.backgroundColor"
             :text-color="config.router.admin.textColor"
             :active-text-color="config.router.admin.activeTextColor"
             :default-active="appStore.routerPath"

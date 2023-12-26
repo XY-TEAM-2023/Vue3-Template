@@ -3,7 +3,16 @@
     <el-container class="layout">
       <el-header class="layout-header">
         <ui-logo />
-        <ui-navigation-desktop :routes="routes" class="layout-navigation"></ui-navigation-desktop>
+        <ui-navigation-desktop
+          :routes="router.options.routes"
+          :background-color="config.router.admin.backgroundColor"
+          :text-color="config.router.admin.textColor"
+          :active-text-color="config.router.admin.activeTextColor"
+          :default-active="appStore.routerPath"
+          :router="true"
+          mode="horizontal"
+          class="layout-navigation"
+        />
         <div class="layout-top-icon">
           <ui-icon-login :size="35" />
         </div>
@@ -17,26 +26,18 @@
   </div>
 </template>
 
-<script>
+<script setup>
+// eslint-disable-next-line no-unused-vars
+import { ref, computed } from 'vue'
 import { RouterView } from 'vue-router'
 import UiLogo from '@/ui/components/UiLogo.vue'
 import UiIconLogin from '@/ui/components/UiIconLogin.vue'
 import UiNavigationDesktop from '@/ui/components/UiNavigationDesktop.vue'
+import router from '@/router'
+import { useAppStore } from '@/stores/app'
+import { config } from '@/config'
 
-export default {
-  name: 'UiLayout',
-  components: {
-    UiNavigationDesktop,
-    UiIconLogin,
-    UiLogo,
-    RouterView,
-  },
-  data() {
-    return {
-      routes: this.$router.options.routes, // 获取路由配置
-    }
-  },
-}
+const appStore = useAppStore()
 </script>
 
 <style scoped lang="scss">

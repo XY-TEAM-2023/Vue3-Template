@@ -5,8 +5,11 @@ import piniaPluginPersist from 'pinia-plugin-persist' // pinia数据持久化
 import i18n from './i18n' // 导入多语言配置
 import App from './App.vue'
 import router from './router'
-import 'element-plus/dist/index.css'
 import { useUserStore } from '@/stores/user'
+import ElementPlus from 'element-plus'
+import 'element-plus/dist/index.css'
+import * as ElIconModules from '@element-plus/icons-vue'
+import { config } from '@/config'
 
 router.reloadRoutes()
 const app = createApp(App)
@@ -15,6 +18,17 @@ pinia.use(piniaPluginPersist)
 app.use(pinia)
 app.use(i18n)
 app.use(router)
+
+// 如果是管理后台, 全局引用
+if (config.websiteModel === 'admin') {
+  app.use(ElementPlus)
+
+  // 注册所有 Element Plus 图标
+  for (const iconName in ElIconModules) {
+    console.log(iconName)
+    app.component(iconName, ElIconModules[iconName])
+  }
+}
 
 app.directive('permission', {
   mounted(el, binding) {
