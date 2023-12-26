@@ -106,12 +106,12 @@ export const asyncRoutes = [
     },
     children: [
       {
-        path: 'autoconfim',
-        name: 'autoconfim',
-        component: `/src/ui/views/${platform}/FiManage/AutoConfimView.vue`,
+        path: 'withdrawal',
+        name: 'withdrawal',
+        component: `/src/ui/views/${platform}/FiManage/WithdrawalView.vue`,
         meta: {
-          title: '自动对账列表',
-          icon: 'Finished',
+          title: '提款订单',
+          icon: 'Back',
           // hidden: true,
           needLogin: false,
           public: {
@@ -125,7 +125,7 @@ export const asyncRoutes = [
         name: 'recharge',
         component: `/src/ui/views/${platform}/FiManage/RechargeView.vue`,
         meta: {
-          title: '新充值订单',
+          title: '充值订单',
           icon: 'Right',
           // hidden: true,
           needLogin: false,
@@ -136,12 +136,12 @@ export const asyncRoutes = [
         },
       },
       {
-        path: 'withdrawal',
-        name: 'withdrawal',
-        component: `/src/ui/views/${platform}/FiManage/WithdrawalView.vue`,
+        path: 'autoconfim',
+        name: 'autoconfim',
+        component: `/src/ui/views/${platform}/FiManage/AutoConfimView.vue`,
         meta: {
-          title: '新提款订单',
-          icon: 'Back',
+          title: '自动短信列表',
+          icon: 'Finished',
           // hidden: true,
           needLogin: false,
           public: {

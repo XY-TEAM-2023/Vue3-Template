@@ -83,18 +83,19 @@
       @selection-change="onSelectionChange"
     >
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column prop="role_id" align="center" :label="$t('FIListView.RequestTime')" />
+      <el-table-column prop="role_id" width="100%" align="center" :label="$t('FIListView.RequestTime')" />
       <el-table-column prop="account" width="100%" align="center" :label="$t('FIListView.MemberName')" />
       <el-table-column prop="account" width="100%" align="center" :label="$t('FIListView.PhoneNumber')" />
       <el-table-column prop="role_id" width="100%" align="center" :label="$t('FIListView.DepositorName')" />
-      <el-table-column prop="role_id" sortable width="100%" align="center" :label="$t('FIListView.RequestAmount')" />
-      <el-table-column prop="account" sortable width="100%" align="center" :label="$t('FIListView.BalanceAtDeposit')" />
-      <el-table-column prop="role_id" sortable width="100%" align="center" :label="$t('FIListView.DepositBonus')" />
-      <el-table-column prop="account" align="center" :label="$t('FIListView.DepositBankAccount')" />
-      <el-table-column prop="SiteName" sortable width="100%" align="center" :label="$t('FIListView.SiteName')" />
+      <el-table-column prop="account" width="140px" align="center" :label="$t('FIListView.LastWithdrawalName')" />
+      <el-table-column prop="role_id" sortable width="130px" align="center" :label="$t('FIListView.RequestAmount')" />
+      <el-table-column prop="account" sortable width="140px" align="center" :label="$t('FIListView.BalanceAtDeposit')" />
+      <el-table-column prop="role_id" sortable width="140px" align="center" :label="$t('FIListView.DepositBonus')" />
+      <el-table-column prop="account" width="140px" align="center" :label="$t('FIListView.DepositBankAccount')" />
+      <el-table-column prop="SiteName" sortable width="130px" align="center" :label="$t('FIListView.SiteName')" />
       <el-table-column prop="GameName" sortable width="100%" align="center" :label="$t('FIListView.GameName')" />
-      <el-table-column prop="MemberStatus" sortable width="100%" align="center" :label="$t('FIListView.MemberStatus')" />
-      <el-table-column prop="role_id" sortable width="100%" align="center" :label="$t('FIListView.MemberLv')" />
+      <el-table-column prop="MemberStatus" sortable width="130px" align="center" :label="$t('FIListView.MemberStatus')" />
+      <el-table-column prop="role_id" sortable width="130px" align="center" :label="$t('FIListView.MemberLv')" />
       <el-table-column prop="account" width="100%" align="center" :label="$t('FIListView.MemberAccount')" />
       <el-table-column prop="role_id" width="100%" align="center" :label="$t('FIListView.MemberID')" />
       <el-table-column prop="account" width="100%" align="center" :label="$t('FIListView.Agent')" />
