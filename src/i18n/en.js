@@ -13,6 +13,7 @@ export default {
     btnOk: 'ok',
     btnSubmit: 'Submit',
     btnCancel: 'cancel',
+    btnSearch: 'Search',
     btnCancelSearch: 'Cancel Search',
     btnEdit: 'Edit',
     btnCreate: 'Create',
