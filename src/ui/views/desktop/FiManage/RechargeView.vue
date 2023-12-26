@@ -7,7 +7,7 @@
             <el-form class="inline-form">
               <el-row :gutter="20">
                 <el-col :xs="24" :sm="12" :md="4">
-                  <el-form-item :label="$t('memberListView.Date')">
+                  <el-form-item :label="$t('FIListView.Date')">
                     <el-date-picker
                       v-model="value01"
                       type="daterange"
@@ -18,41 +18,41 @@
                   </el-form-item>
                 </el-col>
                 <el-col :xs="24" :sm="12" :md="4">
-                  <el-form-item :label="$t('memberListView.SiteName')">
+                  <el-form-item :label="$t('FIListView.SiteName')">
                     <el-select v-model="value" class="m-2" placeholder="Select">
                       <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
                     </el-select>
                   </el-form-item>
                 </el-col>
                 <el-col :xs="24" :sm="12" :md="4">
-                  <el-form-item :label="$t('memberListView.MemberStatus')">
+                  <el-form-item :label="$t('FIListView.MemberStatus')">
                     <el-select v-model="value" class="m-2" placeholder="Select">
                       <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
                     </el-select>
                   </el-form-item>
                 </el-col>
                 <el-col :xs="24" :sm="12" :md="4">
-                  <el-form-item :label="$t('memberListView.MemberLevel')">
+                  <el-form-item :label="$t('FIListView.MemberLv')">
                     <el-input v-model="filterId" placeholder=""></el-input>
                   </el-form-item>
                 </el-col>
                 <el-col :xs="24" :sm="12" :md="4">
-                  <el-form-item :label="$t('memberListView.MemberAccount')">
+                  <el-form-item :label="$t('FIListView.MemberAccount')">
                     <el-input v-model="filterId" placeholder=""></el-input>
                   </el-form-item>
                 </el-col>
                 <el-col :xs="24" :sm="12" :md="4">
-                  <el-form-item :label="$t('memberListView.DepositorName')">
+                  <el-form-item :label="$t('FIListView.DepositorName')">
                     <el-input v-model="filterId" placeholder=""></el-input>
                   </el-form-item>
                 </el-col>
                 <el-col :xs="24" :sm="12" :md="4" style="margin-top: 10px">
-                  <el-form-item :label="$t('memberListView.PhoneNumber')">
+                  <el-form-item :label="$t('FIListView.PhoneNumber')">
                     <el-input v-model="filterId" placeholder=""></el-input>
                   </el-form-item>
                 </el-col>
                 <el-col :xs="24" :sm="12" :md="4" style="margin-top: 10px">
-                  <el-form-item :label="$t('memberListView.ShooterID')">
+                  <el-form-item :label="$t('FIListView.ShooterID')">
                     <el-input v-model="filterId" placeholder=""></el-input>
                   </el-form-item>
                 </el-col>
@@ -83,27 +83,24 @@
       @selection-change="onSelectionChange"
     >
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column prop="Date" width="100%" align="center" :label="$t('memberListView.Date')" />
-      <el-table-column prop="SiteName" sortable width="100%" align="center" :label="$t('memberListView.SiteName')" />
-      <el-table-column prop="GameName" sortable width="100%" align="center" :label="$t('memberListView.GameName')" />
-      <el-table-column prop="MemberStatus" sortable width="100%" align="center" :label="$t('memberListView.MemberStatus')" />
-      <el-table-column prop="role_id" sortable width="100%" align="center" :label="$t('memberListView.MemberLevel')" />
-      <el-table-column prop="account" width="100%" align="center" :label="$t('memberListView.MemberAccount')" />
-      <el-table-column prop="role_id" width="100%" align="center" :label="$t('memberListView.MemberID')" />
-      <el-table-column prop="account" width="100%" align="center" :label="$t('memberListView.Agent')" />
-      <el-table-column prop="account" width="100%" align="center" :label="$t('memberListView.MemberName')" />
-      <el-table-column prop="role_id" width="100%" align="center" :label="$t('memberListView.DepositorName')" />
-      <el-table-column prop="account" align="center" :label="$t('memberListView.LastWithdrawalName')" />
-      <el-table-column prop="role_id" sortable width="100%" align="center" :label="$t('memberListView.MemberLv')" />
-      <el-table-column prop="account" width="100%" align="center" :label="$t('memberListView.PhoneNumber')" />
-      <el-table-column prop="role_id" sortable width="100%" align="center" :label="$t('memberListView.RequestAmount')" />
-      <el-table-column prop="account" sortable width="100%" align="center" :label="$t('memberListView.BalanceAtDeposit')" />
-      <el-table-column prop="role_id" sortable width="100%" align="center" :label="$t('memberListView.DepositBonus')" />
-      <el-table-column prop="account" align="center" :label="$t('memberListView.DepositBankAccount')" />
-      <el-table-column prop="role_id" width="100%" align="center" :label="$t('memberListView.ShooterID')" />
-      <el-table-column prop="account" width="100%" align="center" :label="$t('memberListView.Memo')" />
-      <el-table-column prop="role_id" align="center" :label="$t('memberListView.RequestTime')" />
-      <el-table-column prop="role_id" align="center" :label="$t('memberListView.Edit')" />
+      <el-table-column prop="role_id" align="center" :label="$t('FIListView.RequestTime')" />
+      <el-table-column prop="account" width="100%" align="center" :label="$t('FIListView.MemberName')" />
+      <el-table-column prop="account" width="100%" align="center" :label="$t('FIListView.PhoneNumber')" />
+      <el-table-column prop="role_id" width="100%" align="center" :label="$t('FIListView.DepositorName')" />
+      <el-table-column prop="role_id" sortable width="100%" align="center" :label="$t('FIListView.RequestAmount')" />
+      <el-table-column prop="account" sortable width="100%" align="center" :label="$t('FIListView.BalanceAtDeposit')" />
+      <el-table-column prop="role_id" sortable width="100%" align="center" :label="$t('FIListView.DepositBonus')" />
+      <el-table-column prop="account" align="center" :label="$t('FIListView.DepositBankAccount')" />
+      <el-table-column prop="SiteName" sortable width="100%" align="center" :label="$t('FIListView.SiteName')" />
+      <el-table-column prop="GameName" sortable width="100%" align="center" :label="$t('FIListView.GameName')" />
+      <el-table-column prop="MemberStatus" sortable width="100%" align="center" :label="$t('FIListView.MemberStatus')" />
+      <el-table-column prop="role_id" sortable width="100%" align="center" :label="$t('FIListView.MemberLv')" />
+      <el-table-column prop="account" width="100%" align="center" :label="$t('FIListView.MemberAccount')" />
+      <el-table-column prop="role_id" width="100%" align="center" :label="$t('FIListView.MemberID')" />
+      <el-table-column prop="account" width="100%" align="center" :label="$t('FIListView.Agent')" />
+      <el-table-column prop="role_id" width="100%" align="center" :label="$t('FIListView.ShooterID')" />
+      <el-table-column prop="account" width="100%" align="center" :label="$t('FIListView.Memo')" />
+      <el-table-column prop="role_id" align="center" :label="$t('FIListView.Edit')" />
     </el-table-ex>
   </el-card>
 </template>

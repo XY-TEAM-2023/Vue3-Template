@@ -1,4 +1,18 @@
-import { Histogram, House, List } from '@element-plus/icons-vue'
+import {
+  Avatar,
+  Back,
+  Finished,
+  Histogram,
+  House,
+  List,
+  Management,
+  Memo,
+  Promotion,
+  Right,
+  Shop,
+  Ticket,
+  WalletFilled,
+} from '@element-plus/icons-vue'
 import { config } from '@/config'
 import { isMobile } from '@/utils'
 
@@ -97,7 +111,8 @@ export const asyncRoutes = [
     name: 'FiManage',
     meta: {
       title: '财务管理',
-      icon: List,
+      // eslint-disable-next-line no-undef
+      icon: WalletFilled,
       // hidden: true,
       needLogin: true,
       public: {
@@ -112,7 +127,7 @@ export const asyncRoutes = [
         component: `/src/ui/views/${platform}/FiManage/AutoConfimView.vue`,
         meta: {
           title: '自动对账列表',
-          icon: House,
+          icon: Finished,
           // hidden: true,
           needLogin: false,
           public: {
@@ -127,7 +142,7 @@ export const asyncRoutes = [
         component: `/src/ui/views/${platform}/FiManage/RechargeView.vue`,
         meta: {
           title: '新充值订单',
-          icon: House,
+          icon: Right,
           // hidden: true,
           needLogin: false,
           public: {
@@ -142,7 +157,7 @@ export const asyncRoutes = [
         component: `/src/ui/views/${platform}/FiManage/WithdrawalView.vue`,
         meta: {
           title: '新提款订单',
-          icon: House,
+          icon: Back,
           // hidden: true,
           needLogin: false,
           public: {
@@ -157,7 +172,7 @@ export const asyncRoutes = [
         component: `/src/ui/views/${platform}/FiManage/FiRecordsView.vue`,
         meta: {
           title: '充值提款记录',
-          icon: House,
+          icon: Memo,
           // hidden: true,
           needLogin: false,
           public: {
@@ -173,7 +188,7 @@ export const asyncRoutes = [
     name: 'member',
     meta: {
       title: '用户管理',
-      icon: House,
+      icon: Avatar,
       // hidden: true,
       needLogin: true,
       public: {
@@ -204,7 +219,7 @@ export const asyncRoutes = [
     name: 'agent',
     meta: {
       title: '代理商管理',
-      icon: House,
+      icon: Shop,
       // hidden: true,
       needLogin: true,
       public: {
@@ -235,7 +250,7 @@ export const asyncRoutes = [
     name: 'event',
     meta: {
       title: '活动管理',
-      icon: House,
+      icon: Promotion,
       // hidden: true,
       needLogin: true,
       public: {
@@ -266,7 +281,8 @@ export const asyncRoutes = [
     name: 'gamelog',
     meta: {
       title: '游戏记录',
-      icon: House,
+      // eslint-disable-next-line no-undef
+      icon: Ticket,
       // hidden: true,
       needLogin: true,
       public: {
