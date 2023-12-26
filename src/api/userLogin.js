@@ -1,5 +1,5 @@
 import http from './axios'
-import isMobile from '@/utils'
+import { isMobile } from '@/utils'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import i18n from '@/i18n'
 

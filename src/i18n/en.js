@@ -20,6 +20,8 @@ export default {
     handler: 'Operation',
     creatTime: 'Creation Time',
     updateTime: 'Update Time',
+    index: 'Index',
+    noPermission: 'No permission',
   },
   language: '英语',
   person: {
@@ -54,8 +56,13 @@ export default {
     otpStatusClose: 'Not Enabled',
     creator: 'Creator',
     searchAccount: 'Search Account',
+    createAccount: 'Create account',
     disableAccount: 'Disable Account',
     clearOtp: 'Clear OTP',
+    onlineStatus: 'Online Status',
+    onlineStatus_on: 'online',
+    onlineStatus_off: 'offline',
+    deleteAccountTip: 'Are you sure you want to delete user {account}?',
   },
   createUserDialog: {
     account: 'Account',
@@ -66,6 +73,7 @@ export default {
     accountLengthError: 'Account must be between 4 to 20 characters',
     passwordMustInput: 'Password cannot be empty',
     passwordLengthError: 'Password must be between 6 to 20 characters',
+    chooseRoleTip: 'Please select a user role',
   },
   changeUserInfoDialog: {
     title: 'Modify User Information',
@@ -73,5 +81,8 @@ export default {
     password: 'Password',
     role: 'Role',
     note: 'Note',
+    accountStatus: 'Account Status',
+    lock: 'Lock',
+    normal: 'Normal',
   },
 }

@@ -53,6 +53,7 @@ class HttpService {
 
     this.useStore = useUserStore()
     this.appStore = useAppStore()
+    this.isShowMsgBox = false
 
     // 请求拦截器
     this.http.interceptors.request.use(
@@ -72,19 +73,22 @@ class HttpService {
     // 响应拦截器
     this.http.interceptors.response.use(
       (response) => {
-        console.warn(response)
+        // console.warn(response)
+        const isKeepOnline = response.config.url === '/api/admin/user/keepOnline'
         // 开发模式, TODO: 如果是开发者账号，也开启
-        if (import.meta.env.DEV) {
+        if (import.meta.env.DEV && !isKeepOnline) {
           console.log(
             `[${response.config.method.toUpperCase()}][${response.status}]${response.config.url}`,
             response.data,
             response.config.data
           )
         }
+        if (!isKeepOnline) {
+          // 对响应数据做些什么，例如处理特定的返回状态码
+          // console.log('响应头', response.headers)
+          this.useStore.setJwt(response.headers['token'])
+        }
 
-        // 对响应数据做些什么，例如处理特定的返回状态码
-        // console.log('响应头', response.headers)
-        this.useStore.setJwt(response.headers['token'])
         return response.data
       },
       (error) => {
@@ -117,28 +121,37 @@ class HttpService {
           })
           .then((response) => {
             const { status, msg, data } = response
+            const isKeepOnline = url === '/api/admin/user/keepOnline'
             if (status === -1) {
-              // 提示需要登录
-              ElMessageBox.alert(i18n.global.t('app.needLogin'), '', {
-                showClose: false,
-                type: 'warning',
-                confirmButtonText: i18n.global.t('com.btnOk'),
-                callback: () => {
-                  // 如果有登录页面, 访问登录页面
-                  router.push(config.router.loginPage)
-                },
-              })
+              if (!this.isShowMsgBox && !isKeepOnline) {
+                // 提示需要登录
+                ElMessageBox.alert(i18n.global.t('app.needLogin'), '', {
+                  showClose: false,
+                  type: 'warning',
+                  confirmButtonText: i18n.global.t('com.btnOk'),
+                  callback: () => {
+                    this.isShowMsgBox = false
+                    // 如果有登录页面, 访问登录页面
+                    router.push(config.router.loginPage)
+                  },
+                })
+              }
+              this.isShowMsgBox = true
             } else if (status === -2) {
-              // 提示需要登录
-              ElMessageBox.alert(i18n.global.t('app.loginOtherDevice'), '', {
-                showClose: false,
-                type: 'error',
-                confirmButtonText: i18n.global.t('com.btnOk'),
-                callback: () => {
-                  // 如果有登录页面, 访问登录页面
-                  router.push(config.router.loginPage)
-                },
-              })
+              if (!this.isShowMsgBox && !isKeepOnline) {
+                // 提示需要登录
+                ElMessageBox.alert(i18n.global.t('app.loginOtherDevice'), '', {
+                  showClose: false,
+                  type: 'error',
+                  confirmButtonText: i18n.global.t('com.btnOk'),
+                  callback: () => {
+                    this.isShowMsgBox = false
+                    // 如果有登录页面, 访问登录页面
+                    router.push(config.router.loginPage)
+                  },
+                })
+              }
+              this.isShowMsgBox = true
             } else if (status !== 0) {
               // 服务器返回的status不为0，代表处理失败，catch返回status，自己处理弹窗提示
               reject({ status, msg, data })
@@ -149,7 +162,6 @@ class HttpService {
           })
           .catch((error) => {
             if (retry >= retryCount - 1) {
-              console.error(error)
               reject({
                 status: 99999,
                 msg: i18n.global.t('app.requestFail'),
@@ -188,28 +200,37 @@ class HttpService {
           })
           .then((response) => {
             const { status, msg, data } = response
+            const isKeepOnline = url === '/api/admin/user/keepOnline'
             if (status === -1) {
-              // 提示需要登录
-              ElMessageBox.alert(i18n.global.t('app.needLogin'), '', {
-                showClose: false,
-                type: 'warning',
-                confirmButtonText: i18n.global.t('com.btnOk'),
-                callback: () => {
-                  // 如果有登录页面, 访问登录页面
-                  router.push(config.router.loginPage)
-                },
-              })
+              if (!this.isShowMsgBox && !isKeepOnline) {
+                // 提示需要登录
+                ElMessageBox.alert(i18n.global.t('app.needLogin'), '', {
+                  showClose: false,
+                  type: 'warning',
+                  confirmButtonText: i18n.global.t('com.btnOk'),
+                  callback: () => {
+                    this.isShowMsgBox = false
+                    // 如果有登录页面, 访问登录页面
+                    router.push(config.router.loginPage)
+                  },
+                })
+              }
+              this.isShowMsgBox = true
             } else if (status === -2) {
-              // 提示需要登录
-              ElMessageBox.alert(i18n.global.t('app.loginOtherDevice'), '', {
-                showClose: false,
-                type: 'error',
-                confirmButtonText: i18n.global.t('com.btnOk'),
-                callback: () => {
-                  // 如果有登录页面, 访问登录页面
-                  router.push(config.router.loginPage)
-                },
-              })
+              if (!this.isShowMsgBox && !isKeepOnline) {
+                // 提示需要登录
+                ElMessageBox.alert(i18n.global.t('app.loginOtherDevice'), '', {
+                  showClose: false,
+                  type: 'error',
+                  confirmButtonText: i18n.global.t('com.btnOk'),
+                  callback: () => {
+                    this.isShowMsgBox = false
+                    // 如果有登录页面, 访问登录页面
+                    router.push(config.router.loginPage)
+                  },
+                })
+              }
+              this.isShowMsgBox = true
             } else if (status !== 0) {
               // 服务器返回的status不为0，代表处理失败，catch返回status，自己处理弹窗提示
               reject({ status, msg, data })
@@ -221,7 +242,6 @@ class HttpService {
           .catch((error) => {
             // 网络异常
             if (retry >= retryCount - 1) {
-              console.error(error)
               reject({
                 status: 99999,
                 msg: i18n.global.t('app.requestFail'),
@@ -243,12 +263,15 @@ class HttpService {
    * @param resolve
    * @param data
    * @param msg
+   * @param displayMsg
    */
-  requestSuccessCommonHandler(resolve, data, msg) {
-    ElMessage({
-      message: msg,
-      type: 'success',
-    })
+  requestSuccessCommonHandler(resolve, data, msg, displayMsg = true) {
+    if (displayMsg) {
+      ElMessage({
+        message: msg,
+        type: 'success',
+      })
+    }
     resolve(data)
   }
 

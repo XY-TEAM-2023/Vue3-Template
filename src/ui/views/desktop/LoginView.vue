@@ -9,7 +9,9 @@
         <div style="height: 20px" />
         <div class="login-box-btnArea">
           <ui-i18n class="login-i18n" color="#ffffff" />
-          <el-button type="primary" :loading="isRequesting" @click="onLogin">{{ $t('loginView.loginBtn') }}</el-button>
+          <el-button v-permission="1" type="primary" :loading="isRequesting" @click="onLogin">
+            {{ $t('loginView.loginBtn') }}
+          </el-button>
         </div>
       </el-form>
     </div>
@@ -24,10 +26,13 @@ import { request_user_login } from '@/api/user'
 import { useUserStore } from '@/stores/user'
 import router from '@/router'
 import { useRoute } from 'vue-router'
+import { ElMessageBox } from 'element-plus'
+import i18n from '@/i18n'
 
 const userStore = useUserStore()
 
-const account = ref('admin')
+// const account = ref('coco')
+const account = ref('123456')
 const password = ref('123456')
 // const account = ref(userStore.account)
 // const password = ref('')
@@ -43,16 +48,29 @@ onMounted(() => {
 })
 
 /** 登录按钮事件 */
-function onLogin() {
+function onLogin(isForce = false) {
   isRequesting.value = true
-  request_user_login(account.value, password.value)
+  request_user_login(account.value, password.value, isForce)
     .then((data) => {
       // 刷新用户全局数据，记录登录状态
       userStore.loginSuccess(account.value, data.roleName)
       // 跳转页面
       router.push(config.router.homePage)
     })
-    .catch(() => {})
+    .catch(({ status, msg }) => {
+      // 已经有人登录过了
+      if (status === 106) {
+        ElMessageBox.confirm(msg, '', {
+          confirmButtonText: i18n.global.t('com.btnOk'),
+          cancelButtonText: i18n.global.t('com.btnCancel'),
+          type: 'warning',
+        })
+          .then(() => {
+            onLogin(true)
+          })
+          .catch(() => {})
+      }
+    })
     .finally(() => {
       console.log('请求结束')
       isRequesting.value = false

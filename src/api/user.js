@@ -5,18 +5,40 @@ import { isMobile } from '@/utils'
  * 用户登录
  * @param account 账号
  * @param password 密码
+ * @param force 是否强制登录
  * @returns {Promise<unknown>}
  */
-export const request_user_login = (account, password) => {
+export const request_user_login = (account, password, force) => {
   return new Promise((resolve, reject) => {
     http
-      .post('/api/admin/user/login', { account: account, password: password, device: isMobile() ? 'mobile' : 'pc' })
+      .post('/api/admin/user/login', { account: account, password: password, force: force, device: isMobile() ? 'mobile' : 'pc' })
       .then(({ data, msg }) => {
         http.requestSuccessCommonHandler(resolve, data, msg) // 请求成功
         // resolve(data) // 自定义处理
       })
       .catch(({ status, msg, data }) => {
-        http.requestFailCommonHandler(reject, status, msg, data, 0) // 请求失败
+        if (status === 106) {
+          reject({ status, msg })
+        } else {
+          http.requestFailCommonHandler(reject, status, msg, data, 0) // 请求失败
+        }
+      })
+  })
+}
+
+/**
+ * 保持用户在线
+ * @returns {Promise<unknown>}
+ */
+export const request_user_keepLogin = () => {
+  return new Promise((resolve, reject) => {
+    http
+      .post('/api/admin/user/keepOnline', {})
+      .then(({ data }) => {
+        resolve(data) // 自定义处理
+      })
+      .catch(({ msg }) => {
+        reject(msg)
       })
   })
 }
@@ -28,12 +50,12 @@ export const request_user_login = (account, password) => {
  * @param page_num 煤业显示数量
  * @returns {Promise<unknown>}
  */
-export const request_user_list = (search, page, page_num) => {
+export const request_user_list = (initView, search, page, page_num) => {
   return new Promise((resolve, reject) => {
     http
       .post('/api/admin/user/list', { search: search, page: page, page_num: page_num })
       .then(({ data, msg }) => {
-        http.requestSuccessCommonHandler(resolve, data, msg) // 请求成功
+        http.requestSuccessCommonHandler(resolve, data, msg, !initView) // 请求成功
         // resolve(data) // 自定义处理
       })
       .catch(({ status, msg, data }) => {
@@ -66,17 +88,17 @@ export const request_user_register = (account, password, role_id, note) => {
 
 /**
  * 修改用户西南西
- * @param account 账号
+ * @param user_id
  * @param password 密码
  * @param role_id 角色ID
+ * @param status
  * @param note 备注
- * @param status 账号状态，0正常，1封号
  * @returns {Promise<unknown>}
  */
-export const request_user_change_info = (user_id, password, role_id, note) => {
+export const request_user_change_info = (user_id, password, role_id, status, note) => {
   return new Promise((resolve, reject) => {
     http
-      .post('/api/admin/user/updateInfo', { user_id: user_id, password: password, role_id: role_id, note: note })
+      .post('/api/admin/user/updateInfo', { user_id: user_id, password: password, role_id: role_id, status: status, note: note })
       .then(({ data, msg }) => {
         http.requestSuccessCommonHandler(resolve, data, msg) // 请求成功
         // resolve(data) // 自定义处理
@@ -116,6 +138,25 @@ export const request_user_clear_otp = (user_id) => {
   return new Promise((resolve, reject) => {
     http
       .post('/api/admin/user/resetOtp', { user_id: user_id })
+      .then(({ data, msg }) => {
+        http.requestSuccessCommonHandler(resolve, data, msg) // 请求成功
+        // resolve(data) // 自定义处理
+      })
+      .catch(({ status, msg, data }) => {
+        http.requestFailCommonHandler(reject, status, msg, data, 0) // 请求失败
+      })
+  })
+}
+
+/**
+ * 删除账号
+ * @param user_id 账号
+ * @returns {Promise<unknown>}
+ */
+export const request_user_delete_account = (user_id) => {
+  return new Promise((resolve, reject) => {
+    http
+      .post('/api/admin/user/delete', { user_id: user_id })
       .then(({ data, msg }) => {
         http.requestSuccessCommonHandler(resolve, data, msg) // 请求成功
         // resolve(data) // 自定义处理

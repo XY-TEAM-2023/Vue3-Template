@@ -2,6 +2,23 @@
 import { defineStore } from 'pinia'
 import { useAppStore } from '@/stores/app'
 
+let keepAliveTimerId = null
+
+async function tryRunKeepAliveTimer() {
+  if (keepAliveTimerId) {
+    return
+  }
+
+  // 动态导入 request_user_keepLogin 函数
+  const { request_user_keepLogin } = await import('@/api/user')
+  // 启动保持在线的定时器
+  keepAliveTimerId = setInterval(async () => {
+    await request_user_keepLogin()
+      .then(() => {})
+      .catch(() => {})
+  }, 20000) // 每20秒发送一次请求
+}
+
 // 定义一个名为 "user" 的 store(数据管理对象)
 export const useUserStore = defineStore('user', {
   /*****************************************
@@ -91,6 +108,7 @@ export const useUserStore = defineStore('user', {
         return 1
       }
 
+      tryRunKeepAliveTimer()
       // 已登录
       return 0
     },
@@ -101,24 +119,6 @@ export const useUserStore = defineStore('user', {
    *****************************************/
   actions: {
     /**
-     * 注销登录
-     */
-    logout() {
-      this.userId = 0
-      this.role_name = ''
-      this.role_id = -1
-      this._jwt = ''
-      useAppStore().openedTabs.splice(0)
-    },
-
-    /**
-     * 更新JWT
-     */
-    setJwt(jwt) {
-      this._jwt = jwt
-    },
-
-    /**
      * 登录成功，设置登录后信息
      */
     loginSuccess(account, role_name) {
@@ -127,6 +127,31 @@ export const useUserStore = defineStore('user', {
       this.account = account
       this.role_name = role_name
       this.role_id = jwt_data.roleId
+
+      tryRunKeepAliveTimer()
+    },
+    /**
+     * 注销登录
+     */
+    logout() {
+      this.userId = 0
+      this.role_name = ''
+      this.role_id = -1
+      this._jwt = ''
+      useAppStore().openedTabs.splice(0)
+
+      // 停止保持在线的定时器
+      if (keepAliveTimerId) {
+        clearInterval(keepAliveTimerId)
+        keepAliveTimerId = null
+      }
+    },
+
+    /**
+     * 更新JWT
+     */
+    setJwt(jwt) {
+      this._jwt = jwt
     },
   },
 

@@ -25,7 +25,7 @@
           <div class="layout-top-auto-margin" />
 
           <div class="layout-top-i18n">
-            <ui-i18n />
+            <ui-i18n color="#4d5056" />
           </div>
 
           <ui-icon-login :size="35" class="layout-top-icon" />

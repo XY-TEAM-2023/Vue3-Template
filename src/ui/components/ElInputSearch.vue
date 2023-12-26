@@ -6,6 +6,7 @@
       :maxlength="maxLength"
       :show-word-limit="showWordLimit"
       :style="inputStyle"
+      :clearable="clearable"
       @input="updateModel"
     >
       <template #append>
@@ -37,6 +38,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  clearable: {
+    type: Boolean,
+    default: true,
+  },
 })
 const { placeholder, showWordLimit } = props
 const modelValue = ref(props.modelValue)
@@ -57,6 +62,9 @@ const updateModel = (newValue) => {
 const showCancelSearch = ref(false)
 
 function onSearch() {
+  if (modelValue.value === '') {
+    return
+  }
   showCancelSearch.value = true
   emit('search', modelValue)
 }

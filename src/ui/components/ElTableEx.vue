@@ -20,6 +20,7 @@
     </el-table>
 
     <el-pagination
+      v-if="showPagination"
       v-model:current-page="currentPage"
       v-model:page-size="pageSize"
       :page-sizes="props.pageSizes"
@@ -57,12 +58,6 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
-  // 显示多选按钮
-  showSelect: {
-    type: Boolean,
-    default: false,
-  },
-  //
   rowKey: String,
   //是否默认展开所有行，当 Table 包含展开行存在或者为树形表格时有效
   defaultExpandAll: Boolean,

@@ -7,6 +7,7 @@
     :autofocus="false"
     @close="onClose"
     @cancel="onClose"
+    @open="onOpen"
     class="unselect"
   >
     <el-form-ex ref="formEx" :model="userData">
@@ -18,6 +19,28 @@
       <!--   密码   -->
       <el-form-item :label="$t('changeUserInfoDialog.password')" prop="password">
         <el-input v-model="userData.password" />
+      </el-form-item>
+
+      <!--   角色   -->
+      <el-form-item :label="$t('createUserDialog.role')" prop="role">
+        <el-select v-model="userData.role_id" :v-loading="needInit" clearable style="width: 100%">
+          <el-option v-for="item in roles" :key="item.id" :label="item.name" :value="item.id">
+            <span style="float: left">{{ item.name }}</span>
+            <span v-if="item.note.length > 10" style="float: right; color: var(--el-text-color-secondary); font-size: 13px">
+              {{ item.note.substring(0, 10) + '...' }}
+            </span>
+            <span v-else-if="item.note.length > 0" style="float: right; color: var(--el-text-color-secondary); font-size: 13px">
+              {{ item.note.substring(0, 10) }}
+            </span>
+          </el-option>
+        </el-select>
+      </el-form-item>
+
+      <el-form-item :label="$t('changeUserInfoDialog.accountStatus')">
+        <el-radio-group v-model="userData.status">
+          <el-radio :label="0">{{ $t('changeUserInfoDialog.normal') }}</el-radio>
+          <el-radio :label="1">{{ $t('changeUserInfoDialog.lock') }}</el-radio>
+        </el-radio-group>
       </el-form-item>
 
       <!--   备注   -->
@@ -38,7 +61,9 @@
 import { defineEmits, reactive, ref, watch } from 'vue'
 import ElFormEx from '@/ui/components/ElFormEx.vue'
 import { request_user_change_info } from '@/api/user'
+import { request_role_list } from '@/api/role'
 import i18n from '@/i18n'
+import { cloneDeep } from 'lodash-es'
 
 const props = defineProps({
   isShow: {
@@ -52,7 +77,9 @@ const props = defineProps({
     },
   },
 })
-const userData = ref(reactive(props.userData))
+
+// eslint-disable-next-line vue/no-dupe-keys
+const userData = ref(cloneDeep(props.userData))
 const isShow = ref(props.isShow)
 /* 实现外部修改了变量，内部同步变化 */
 watch(
@@ -62,11 +89,26 @@ watch(
       isShow.value = newIsShow
     }
     if (newUserData !== oldUserData) {
-      userData.value = newUserData
+      userData.value = cloneDeep(newUserData)
     }
-  },
-  { deep: true }
+  }
 )
+
+const needInit = ref(true)
+const roles = ref(reactive([]))
+function onOpen() {
+  if (!needInit.value) {
+    return
+  }
+
+  request_role_list(true, true)
+    .then((data) => {
+      roles.value = data.result
+      console.log(roles.value)
+      needInit.value = false
+    })
+    .catch(() => {})
+}
 
 const isRequesting = ref(false)
 function onRegister() {
@@ -76,7 +118,7 @@ function onRegister() {
     }
 
     isRequesting.value = true
-    request_user_change_info(userData.value.id, userData.value.password, userData.value.role_id, userData.value.note)
+    request_user_change_info(userData.value.id, userData.value.password, userData.value.role_id, userData.value.status, userData.value.note)
       .then(() => {
         onClose()
         emit('refresh')

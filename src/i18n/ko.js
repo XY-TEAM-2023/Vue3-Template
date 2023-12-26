@@ -20,6 +20,8 @@ export default {
     handler: '조작',
     creatTime: '생성 시간',
     updateTime: '업데이트 시간',
+    index: '인덱스',
+    noPermission: '권한 없음',
   },
   language: '韩语',
   person: {
@@ -54,8 +56,13 @@ export default {
     otpStatusClose: '비활성화',
     creator: '생성자',
     searchAccount: '계정 검색',
+    createAccount: '계정 생성',
     disableAccount: '계정 비활성화',
     clearOtp: 'OTP 초기화',
+    onlineStatus: '온라인 상태',
+    onlineStatus_on: '온라인',
+    onlineStatus_off: '오프라인',
+    deleteAccountTip: '사용자 {account}를 삭제하시겠습니까?',
   },
   // 创建账号
   createUserDialog: {
@@ -67,6 +74,7 @@ export default {
     accountLengthError: '계정은 4자에서 20자 사이여야 합니다',
     passwordMustInput: '비밀번호를 입력해주세요',
     passwordLengthError: '비밀번호는 6자에서 20자 사이여야 합니다',
+    chooseRoleTip: '사용자 역할을 선택하세요',
   },
   // 修改用户信息
   changeUserInfoDialog: {
@@ -75,5 +83,8 @@ export default {
     password: '비밀번호',
     role: '역할',
     note: '참고',
+    accountStatus: '계정 상태',
+    lock: '잠금',
+    normal: '정상',
   },
 }

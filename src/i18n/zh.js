@@ -20,6 +20,8 @@ export default {
     handler: '操作',
     creatTime: '创建时间',
     updateTime: '更新时间',
+    index: '索引',
+    noPermission: '无权限',
   },
   language: '中文',
   person: {
@@ -57,6 +59,10 @@ export default {
     createAccount: '创建账号',
     disableAccount: '封禁账号',
     clearOtp: '重置OTP',
+    onlineStatus: '在线状态',
+    onlineStatus_on: '在线',
+    onlineStatus_off: '离线',
+    deleteAccountTip: '是否确定删除用户{account}?',
   },
   createUserDialog: {
     account: '账号',
@@ -67,6 +73,7 @@ export default {
     accountLengthError: '账号有效长度为4~20',
     passwordMustInput: '密码不能为空',
     passwordLengthError: '账号有效长度为6~20',
+    chooseRoleTip: '请选择用户角色',
   },
   changeUserInfoDialog: {
     title: '修改用户信息',
@@ -74,14 +81,39 @@ export default {
     password: '密码',
     role: '角色',
     note: '备注',
+    accountStatus: '账号状态',
+    lock: '封禁',
+    normal: '正常',
   },
   // 角色列表页面
   roleListView: {
     router: '角色',
     name: '角色名',
     note: '备注',
-    parent: '上级',
     status: '状态',
+    lock: '封禁',
+    unlock: '解封',
+    normal: '正常',
     groupStatus: '分组状态',
+    lockTip: '是否确定封禁该角色({name})?',
+    lockChildrenTip: '是否同步封禁所有子角色',
+    unlockTip: '是否确定解封该角色({name})?',
+    unlockChildrenTip: '是否同步解封所有子角色',
+    deleteEnableTip: '只有处于封禁状态的角色才可以删除',
+    deleteTip: '是否确定删除该角色({name})?',
+  },
+  // 创建角色窗口
+  createRoleDialog: {
+    title: '创建角色',
+    name: '角色名',
+    note: '备注',
+    roleInputTip: '请输入角色名',
+    roleLengthTip: '角色名长度有效范围4~20',
+  },
+  // 修改角色信息窗口
+  changeRoleInfoDialog: {
+    title: '编辑角色信息',
+    name: '角色名',
+    note: '备注',
   },
 }

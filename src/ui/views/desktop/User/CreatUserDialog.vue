@@ -8,6 +8,7 @@
     @close="onClose"
     @cancel="onClose"
     class="unselect"
+    @open="onOpen"
   >
     <el-form-ex ref="formEx" :model="form" :rules="rules">
       <!--   账号   -->
@@ -18,6 +19,21 @@
       <!--   密码   -->
       <el-form-item :label="$t('createUserDialog.password')" prop="password">
         <el-input v-model="form.password" />
+      </el-form-item>
+
+      <!--   角色   -->
+      <el-form-item :label="$t('createUserDialog.role')" prop="role_id">
+        <el-select v-model="form.role_id" :v-loading="needInit" clearable style="width: 100%">
+          <el-option v-for="item in roles" :key="item.id" :label="item.name" :value="item.id">
+            <span style="float: left">{{ item.name }}</span>
+            <span v-if="item.note.length > 10" style="float: right; color: var(--el-text-color-secondary); font-size: 13px">
+              {{ item.note.substring(0, 10) + '...' }}
+            </span>
+            <span v-else-if="item.note.length > 0" style="float: right; color: var(--el-text-color-secondary); font-size: 13px">
+              {{ item.note.substring(0, 10) }}
+            </span>
+          </el-option>
+        </el-select>
       </el-form-item>
 
       <!--   备注   -->
@@ -38,6 +54,7 @@
 import { defineEmits, reactive, ref, watch } from 'vue'
 import ElFormEx from '@/ui/components/ElFormEx.vue'
 import { request_user_register } from '@/api/user'
+import { request_role_list } from '@/api/role'
 import i18n from '@/i18n'
 
 const props = defineProps({
@@ -62,7 +79,7 @@ watch(
 const defaultFormData = {
   account: '',
   password: '',
-  role_id: 1, //-1,
+  role_id: '',
   note: '',
 }
 
@@ -86,6 +103,13 @@ const rules = reactive({
     },
     { min: 6, max: 20, message: i18n.global.t('createUserDialog.passwordLengthError'), trigger: 'blur' },
   ],
+  role_id: [
+    {
+      required: true,
+      message: i18n.global.t('createUserDialog.chooseRoleTip'),
+      trigger: 'blur',
+    },
+  ],
 })
 
 const isRequesting = ref(false)
@@ -108,6 +132,22 @@ function onRegister() {
         isRequesting.value = false
       })
   })
+}
+
+const needInit = ref(true)
+const roles = ref(reactive([]))
+function onOpen() {
+  if (!needInit.value) {
+    return
+  }
+
+  request_role_list(true, true)
+    .then((data) => {
+      roles.value = data.result
+      console.log(roles.value)
+      needInit.value = false
+    })
+    .catch(() => {})
 }
 
 /** 作为子组件时，定义有什么事件 */
