@@ -126,7 +126,6 @@ const userStore = useUserStore()
 const searchAccount = ref('')
 /** 搜索第几页 */
 const searchPage = ref(1)
-
 /** 用户列表 */
 const userList = reactive([])
 /** 是否正在拉取用户列表 */
@@ -139,7 +138,6 @@ function requestUserList() {
   if (isRequestUserList.value) {
     return
   }
-
   isRequestUserList.value = true
   request_user_list(searchAccount.value, searchPage.value, appStore.pageNum_userList)
     .then((data) => {

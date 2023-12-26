@@ -1,4 +1,4 @@
-import { House } from '@element-plus/icons-vue'
+import { Histogram, House, List } from '@element-plus/icons-vue'
 import { config } from '@/config'
 import { isMobile } from '@/utils'
 
@@ -66,7 +66,7 @@ export const asyncRoutes = [
     name: 'statistics',
     meta: {
       title: '统计管理',
-      icon: House,
+      icon: Histogram,
       // hidden: true,
       needLogin: true,
       public: {
@@ -97,7 +97,7 @@ export const asyncRoutes = [
     name: 'FiManage',
     meta: {
       title: '财务管理',
-      icon: House,
+      icon: List,
       // hidden: true,
       needLogin: true,
       public: {
@@ -107,11 +107,26 @@ export const asyncRoutes = [
     },
     children: [
       {
+        path: 'autoconfim',
+        name: 'autoconfim',
+        component: `/src/ui/views/${platform}/FiManage/AutoConfimView.vue`,
+        meta: {
+          title: '自动对账列表',
+          icon: House,
+          // hidden: true,
+          needLogin: false,
+          public: {
+            desktop: true,
+            mobile: true,
+          },
+        },
+      },
+      {
         path: 'recharge',
         name: 'recharge',
         component: `/src/ui/views/${platform}/FiManage/RechargeView.vue`,
         meta: {
-          title: '充值列表',
+          title: '新充值订单',
           icon: House,
           // hidden: true,
           needLogin: false,
@@ -126,7 +141,7 @@ export const asyncRoutes = [
         name: 'withdrawal',
         component: `/src/ui/views/${platform}/FiManage/WithdrawalView.vue`,
         meta: {
-          title: '提款列表',
+          title: '新提款订单',
           icon: House,
           // hidden: true,
           needLogin: false,
