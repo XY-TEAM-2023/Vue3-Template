@@ -19,8 +19,6 @@
     </div>
 
     <el-table-ex :data="routerConfig" :show-select="true">
-      <!--      <el-table-column type="selection" width="55" align="center" />-->
-      <!--      <el-table-column type="index" width="80" align="center" :label="$t('com.index')" />-->
       <el-table-column prop="account" align="center" :label="$t('userListView.account')" />
 
       <!--   角色名   -->
