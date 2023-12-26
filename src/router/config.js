@@ -156,7 +156,7 @@ export const asyncRoutes = [
         component: `/src/ui/views/${platform}/FiManage/FiRecordsView.vue`,
         meta: {
           title: '充值提款记录',
-          icon: Memo,
+          icon: 'Memo',
           // hidden: true,
           needLogin: false,
           public: {
@@ -265,7 +265,7 @@ export const asyncRoutes = [
     name: 'gamelog',
     meta: {
       title: '游戏记录',
-      icon: 'Ticket',
+      icon: 'List',
       // hidden: true,
       needLogin: true,
       public: {
