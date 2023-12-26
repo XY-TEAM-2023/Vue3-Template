@@ -1,60 +1,4 @@
-import { config } from '@/config'
-import { isMobile } from '@/utils'
-
-const useMobileRouter = config.websiteModel === 'mobile' || (!config.noMobileModel && isMobile())
-export const platform = useMobileRouter ? 'mobile' : 'desktop'
-let layoutFile = (() => {
-  if (useMobileRouter) {
-    return 'mobile.vue'
-  }
-  if (config.websiteModel === 'website') {
-    return 'website.vue'
-  }
-  if (config.websiteModel === 'admin') {
-    return 'admin.vue'
-  }
-  return 'website.vue'
-})()
-
-// console.error('useMobileRouter', useMobileRouter)
-console.error('platform', layoutFile)
-// console.error('layout file path', `/src/ui/${platform}/layout/${layoutFile}`)
-
-/**
- * 固定路由，没有登录可以看到的页面
- */
-export const constantRoutes = [
-  {
-    path: '/404',
-    name: '404',
-    component: `/src/ui/base/404.vue`,
-    meta: {
-      title: '404',
-      icon: null,
-      hidden: true,
-      needLogin: false,
-      roles: [], // 需要有权限之一才可以访问
-    },
-  },
-  {
-    path: '/login',
-    name: 'login',
-    component: `/src/ui/views/${platform}/LoginView.vue`,
-    meta: { title: 'Login', needLogin: false },
-  },
-
-  {
-    path: '/',
-    name: '/',
-    component: `/src/ui/layout/${layoutFile}`,
-    meta: { title: 'home', needLogin: true },
-    children: [],
-  },
-  {
-    path: '/index.html',
-    redirect: '/',
-  },
-]
+import { Histogram, House, List } from '@element-plus/icons-vue'
 
 /**
  * 异步路由，登录后根据角色权限动态添加路由
@@ -77,7 +21,6 @@ export const asyncRoutes = [
       {
         path: 'ggrstatistics',
         name: 'ggrstatistics',
-        component: `/src/ui/views/${platform}/Statistics/GGRStatisticsView.vue`,
         meta: {
           title: 'ggr统计',
           icon: 'House',
@@ -96,7 +39,7 @@ export const asyncRoutes = [
     name: 'FiManage',
     meta: {
       title: '财务管理',
-      icon: 'WalletFilled',
+      icon: 'List',
       // hidden: true,
       needLogin: true,
       public: {
@@ -108,10 +51,9 @@ export const asyncRoutes = [
       {
         path: 'autoconfim',
         name: 'autoconfim',
-        component: `/src/ui/views/${platform}/FiManage/AutoConfimView.vue`,
         meta: {
           title: '自动对账列表',
-          icon: 'Finished',
+          icon: 'M834.1 469.2c-19.5-43.8-47.4-82.6-82.9-115.2l-29.1-26.7c-4.3-3.8-11.1-2.1-13 3.3l-13 37.3c-8.1 23.4-23 47.3-44.1 70.8-1.4 1.5-3 1.9-4.1 2-1.1 0.1-2.8-0.1-4.3-1.5-1.4-1.2-2.1-3-2-4.8 3.7-60.2-14.3-128.1-53.7-202C555.3 171 510 123.1 453.4 89.7l-41.3-24.3c-5.4-3.2-12.3 1-12 7.3l2.2 48c1.5 32.8-2.3 61.8-11.3 85.9-11 29.5-26.8 56.9-47 81.5-14.2 17.2-30.1 32.7-47.5 46.1-42.1 32.3-76.8 74.4-100.3 121.5C172.5 503.3 160 556.6 160 610c0 47.2 9.3 92.9 27.7 136 17.8 41.5 43.2 78.9 75.5 110.9 32.4 32 70 57.2 111.9 74.7C418.5 949.8 464.5 959 512 959s93.5-9.2 136.9-27.3c41.9-17.5 79.6-42.6 111.9-74.7 32.4-32 57.8-69.4 75.5-110.9 18.4-43.1 27.7-88.8 27.7-136 0-48.8-10-96.2-29.9-140.9z',
           // hidden: true,
           needLogin: false,
           public: {
@@ -123,10 +65,9 @@ export const asyncRoutes = [
       {
         path: 'recharge',
         name: 'recharge',
-        component: `/src/ui/views/${platform}/FiManage/RechargeView.vue`,
         meta: {
           title: '新充值订单',
-          icon: 'Right',
+          icon: 'House',
           // hidden: true,
           needLogin: false,
           public: {
@@ -138,10 +79,9 @@ export const asyncRoutes = [
       {
         path: 'withdrawal',
         name: 'withdrawal',
-        component: `/src/ui/views/${platform}/FiManage/WithdrawalView.vue`,
         meta: {
           title: '新提款订单',
-          icon: 'Back',
+          icon: 'House',
           // hidden: true,
           needLogin: false,
           public: {
@@ -153,10 +93,9 @@ export const asyncRoutes = [
       {
         path: 'FiRecords',
         name: 'FiRecords',
-        component: `/src/ui/views/${platform}/FiManage/FiRecordsView.vue`,
         meta: {
           title: '充值提款记录',
-          icon: Memo,
+          icon: 'House',
           // hidden: true,
           needLogin: false,
           public: {
@@ -172,7 +111,7 @@ export const asyncRoutes = [
     name: 'member',
     meta: {
       title: '用户管理',
-      icon: 'Avatar',
+      icon: 'House',
       // hidden: true,
       needLogin: true,
       public: {
@@ -184,7 +123,6 @@ export const asyncRoutes = [
       {
         path: 'memberlist',
         name: 'memberlist',
-        component: `/src/ui/views/${platform}/Member/MemberListView.vue`,
         meta: {
           title: '会员列表',
           icon: 'House',
@@ -203,7 +141,7 @@ export const asyncRoutes = [
     name: 'agent',
     meta: {
       title: '代理商管理',
-      icon: 'Shop',
+      icon: 'House',
       // hidden: true,
       needLogin: true,
       public: {
@@ -215,7 +153,6 @@ export const asyncRoutes = [
       {
         path: 'agentlist',
         name: 'agentlist',
-        component: `/src/ui/views/${platform}/Agent/AgentListView.vue`,
         meta: {
           title: '代理商列表',
           icon: 'House',
@@ -234,7 +171,7 @@ export const asyncRoutes = [
     name: 'event',
     meta: {
       title: '活动管理',
-      icon: 'Promotion',
+      icon: 'House',
       // hidden: true,
       needLogin: true,
       public: {
@@ -246,7 +183,6 @@ export const asyncRoutes = [
       {
         path: 'eventmanage',
         name: 'eventmanage',
-        component: `/src/ui/views/${platform}/Event/EventView.vue`,
         meta: {
           title: '活动设置',
           icon: 'House',
@@ -265,7 +201,7 @@ export const asyncRoutes = [
     name: 'gamelog',
     meta: {
       title: '游戏记录',
-      icon: 'Ticket',
+      icon: 'House',
       // hidden: true,
       needLogin: true,
       public: {
@@ -291,7 +227,6 @@ export const asyncRoutes = [
           {
             path: 'evogamelog',
             name: 'evogamelog',
-            component: `/src/ui/views/${platform}/GameLog/EvologView.vue`,
             meta: {
               title: 'EVO游戏记录',
               icon: 'House',
@@ -306,7 +241,6 @@ export const asyncRoutes = [
           {
             path: 'pp-slotlog',
             name: 'pp-slotlog',
-            component: `/src/ui/views/${platform}/GameLog/PP-slotView.vue`,
             meta: {
               title: 'PP-slot记录',
               icon: 'House',
@@ -326,7 +260,6 @@ export const asyncRoutes = [
   {
     path: 'test',
     name: 'test',
-    component: `/src/ui/views/${platform}/test.vue`,
     meta: {
       title: 'test',
       icon: 'House',
@@ -341,7 +274,6 @@ export const asyncRoutes = [
       {
         path: 'AboutView333',
         name: 'AboutVie333w',
-        component: `/src/ui/views/${platform}/AboutView.vue`,
         meta: {
           title: 'AboutView',
           icon: 'House',
@@ -358,7 +290,6 @@ export const asyncRoutes = [
   {
     path: 'AboutView',
     name: 'AboutView',
-    component: `/src/ui/views/${platform}/AboutView.vue`,
     meta: {
       title: 'AboutView',
       icon: 'House',
@@ -373,7 +304,6 @@ export const asyncRoutes = [
   {
     path: 'noPermission',
     name: 'noPermission',
-    component: () => import('/src/ui/base/NoPermission.vue'),
     meta: {
       title: 'Export Zip',
       icon: 'House',
@@ -388,7 +318,6 @@ export const asyncRoutes = [
   {
     path: 'AboutView1',
     name: 'AboutView1',
-    component: `/src/ui/views/${platform}/AboutView.vue`,
     meta: {
       title: 'AboutView',
       icon: 'House',
@@ -403,7 +332,6 @@ export const asyncRoutes = [
   {
     path: 'noPermission2',
     name: 'noPermission2',
-    component: `/src/ui/base/NoPermission.vue`,
     meta: {
       title: 'Export Zip',
       icon: 'House',
@@ -418,7 +346,6 @@ export const asyncRoutes = [
   {
     path: 'AboutView3',
     name: 'AboutView3',
-    component: `/src/ui/views/${platform}/AboutView.vue`,
     meta: {
       title: 'AboutView',
       icon: 'House',
@@ -433,7 +360,6 @@ export const asyncRoutes = [
   {
     path: 'noPermission3',
     name: 'noPermission3',
-    component: `/src/ui/base/NoPermission.vue`,
     meta: {
       title: 'Export Zip',
       icon: 'House',
@@ -448,7 +374,6 @@ export const asyncRoutes = [
   {
     path: 'members',
     name: 'members',
-    component: `/src/ui/views/${platform}/User/UserListView.vue`,
     meta: {
       title: '用户列表',
       icon: 'House',
@@ -463,7 +388,6 @@ export const asyncRoutes = [
   {
     path: 'roles',
     name: 'roles',
-    component: `/src/ui/views/${platform}/Role/RoleListView.vue`,
     meta: {
       title: '角色列表',
       icon: 'House',
@@ -478,7 +402,6 @@ export const asyncRoutes = [
   {
     path: 'routers',
     name: 'routers',
-    component: `/src/ui/views/${platform}/Router/RouterListView.vue`,
     meta: {
       title: '路由列表',
       icon: 'House',

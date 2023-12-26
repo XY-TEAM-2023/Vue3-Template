@@ -12,7 +12,6 @@ import ko from 'element-plus/dist/locale/ko.mjs'
 import { computed } from 'vue'
 import { useAppStore } from '@/stores/app'
 import { RouterView } from 'vue-router'
-import router from '@/router'
 import '@/styles/theme/index.scss'
 
 const appStore = useAppStore()
@@ -28,8 +27,6 @@ const locale = computed(() => {
       return en
   }
 })
-
-router.reloadRoutes()
 </script>
 
 <style></style>

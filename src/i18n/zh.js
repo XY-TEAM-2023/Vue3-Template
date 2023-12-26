@@ -117,6 +117,12 @@ export default {
     name: '角色名',
     note: '备注',
   },
+  // 路由配置页面
+  routerListView: {
+    icon: '图标',
+    title: '标题',
+  },
+  // 以下为自定义页面的翻译 --------------------------------------
   //会员列表页面
   memberListView: {
     Date: '日期',
