@@ -136,12 +136,12 @@ export const asyncRoutes = [
         },
       },
       {
-        path: 'autoconfim',
-        name: 'autoconfim',
-        component: `/src/ui/views/${platform}/FiManage/AutoConfimView.vue`,
+        path: 'FiRecords',
+        name: 'FiRecords',
+        component: `/src/ui/views/${platform}/FiManage/FiRecordsView.vue`,
         meta: {
-          title: '自动短信列表',
-          icon: 'Finished',
+          title: '交易记录',
+          icon: 'Memo',
           // hidden: true,
           needLogin: false,
           public: {
@@ -151,12 +151,12 @@ export const asyncRoutes = [
         },
       },
       {
-        path: 'FiRecords',
-        name: 'FiRecords',
-        component: `/src/ui/views/${platform}/FiManage/FiRecordsView.vue`,
+        path: 'autoconfim',
+        name: 'autoconfim',
+        component: `/src/ui/views/${platform}/FiManage/AutoConfimView.vue`,
         meta: {
-          title: '充值提款记录',
-          icon: 'Memo',
+          title: '自动短信列表',
+          icon: 'Finished',
           // hidden: true,
           needLogin: false,
           public: {
