@@ -15,8 +15,8 @@ export const config = {
   /** 无手机模式：没有开发手机版时开启 */
   noMobileModel: false,
   /** 服务器 */
-  // server: 'http://192.168.1.2',
-  server: 'http://api.jadesoft.live',
+  server: 'http://192.168.1.2',
+  // server: 'http://api.jadesoft.live',
   /** 给服务器发送请求时，是否需要携带Cookie信息. 服务器Access-Control-Allow-Origin响应头必须指定具体值，不能为‘*’ */
   serverUseCookie: false,
   /** 时区。中国时区：Asia/Shanghai，韩国时区：Asia/Seoul，日本时区：Asia/Tokyo，美国东部时区：America/New_York */
@@ -46,4 +46,5 @@ export const config = {
       iconSize: 18,
     },
   },
+  elementPlusIconNames: [],
 }

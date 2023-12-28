@@ -7,7 +7,21 @@
     @click="onClick"
   >
     <svg :width="svgSize" :height="svgSize" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
-      <path :d="svgPath" :fill="(!disableMouseHover && isHovered) || forceHover ? svgHoverColor : svgColor" :style="props.style" />
+      <path
+        v-if="svgPath"
+        :d="svgPath"
+        :fill="(!disableMouseHover && isHovered) || forceHover ? svgHoverColor : svgColor"
+        :style="props.style"
+      />
+
+      <path
+        v-else-if="svgPaths"
+        v-for="(pathData, index) in svgPaths"
+        :key="index"
+        :d="pathData"
+        :fill="(!disableMouseHover && isHovered) || forceHover ? svgHoverColor : svgColor"
+        :style="props.style"
+      />
     </svg>
   </div>
 </template>
@@ -21,6 +35,10 @@ const props = defineProps({
   svgPath: {
     type: String,
     default: '',
+  },
+  svgPaths: {
+    type: Array(Object), // {  }
+    default: () => [],
   },
   /** 30px */
   size: {

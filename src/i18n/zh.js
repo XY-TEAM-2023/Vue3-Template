@@ -120,11 +120,20 @@ export default {
   },
   // 路由配置页面
   routerListView: {
+    name: '名字',
     icon: '图标',
     title: '标题',
     korean: '韩文',
     chinese: '中文',
     english: '英文',
+    display: '是否显示',
+    path: '页面地址',
+    cache: '路由缓存',
+    defaultConfig: '基础配置',
+    filePath: '文件路径',
+    btnInit: '初始化',
+    changeTitle: '修改标题内容',
+    changeComponent: '修改组件路径',
   },
   // 以下为自定义页面的翻译 --------------------------------------
   //会员列表页面

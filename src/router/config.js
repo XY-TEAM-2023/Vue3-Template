@@ -68,6 +68,7 @@ export const asyncRoutes = [
       icon: 'Histogram',
       // hidden: true,
       needLogin: true,
+      cache: false,
       public: {
         desktop: true,
         mobile: true,
@@ -99,6 +100,7 @@ export const asyncRoutes = [
       icon: 'WalletFilled',
       // hidden: true,
       needLogin: true,
+      cache: false,
       public: {
         desktop: true,
         mobile: true,
@@ -176,6 +178,7 @@ export const asyncRoutes = [
       icon: 'Avatar',
       // hidden: true,
       needLogin: true,
+      cache: false,
       public: {
         desktop: true,
         mobile: true,
@@ -207,6 +210,7 @@ export const asyncRoutes = [
       icon: 'Shop',
       // hidden: true,
       needLogin: true,
+      cache: false,
       public: {
         desktop: true,
         mobile: true,
@@ -238,6 +242,7 @@ export const asyncRoutes = [
       icon: 'Promotion',
       // hidden: true,
       needLogin: true,
+      cache: false,
       public: {
         desktop: true,
         mobile: true,
@@ -269,6 +274,7 @@ export const asyncRoutes = [
       icon: 'Stamp',
       // hidden: true,
       needLogin: true,
+      cache: false,
       public: {
         desktop: true,
         mobile: true,
@@ -324,129 +330,6 @@ export const asyncRoutes = [
     ],
   },
 
-  //
-  {
-    path: 'test',
-    name: 'test',
-    component: `/src/ui/views/${platform}/test.vue`,
-    meta: {
-      title: 'test',
-      icon: 'House',
-      // hidden: true,
-      needLogin: false,
-      public: {
-        desktop: true,
-        mobile: true,
-      },
-    },
-    children: [
-      {
-        path: 'AboutView333',
-        name: 'AboutVie333w',
-        component: `/src/ui/views/${platform}/AboutView.vue`,
-        meta: {
-          title: 'AboutView',
-          icon: 'House',
-          // hidden: true,
-          needLogin: false,
-          public: {
-            desktop: true,
-            mobile: true,
-          },
-        },
-      },
-    ],
-  },
-  {
-    path: 'AboutView',
-    name: 'AboutView',
-    component: `/src/ui/views/${platform}/AboutView.vue`,
-    meta: {
-      title: 'AboutView',
-      icon: 'House',
-      // hidden: true,
-      needLogin: false,
-      public: {
-        desktop: true,
-        mobile: true,
-      },
-    },
-  },
-  {
-    path: 'noPermission',
-    name: 'noPermission',
-    component: () => import('/src/ui/base/NoPermission.vue'),
-    meta: {
-      title: 'Export Zip',
-      icon: 'House',
-      hidden: false,
-      needLogin: false,
-      public: {
-        desktop: true,
-        mobile: true,
-      },
-    },
-  },
-  {
-    path: 'AboutView1',
-    name: 'AboutView1',
-    component: `/src/ui/views/${platform}/AboutView.vue`,
-    meta: {
-      title: 'AboutView',
-      icon: 'House',
-      // hidden: true,
-      needLogin: false,
-      public: {
-        desktop: true,
-        mobile: true,
-      },
-    },
-  },
-  {
-    path: 'noPermission2',
-    name: 'noPermission2',
-    component: `/src/ui/base/NoPermission.vue`,
-    meta: {
-      title: 'Export Zip',
-      icon: 'House',
-      hidden: false,
-      needLogin: false,
-      public: {
-        desktop: true,
-        mobile: true,
-      },
-    },
-  },
-  {
-    path: 'AboutView3',
-    name: 'AboutView3',
-    component: `/src/ui/views/${platform}/AboutView.vue`,
-    meta: {
-      title: 'AboutView',
-      icon: 'House',
-      // hidden: true,
-      needLogin: false,
-      public: {
-        desktop: true,
-        mobile: true,
-      },
-    },
-  },
-  {
-    path: 'noPermission3',
-    name: 'noPermission3',
-    component: `/src/ui/base/NoPermission.vue`,
-    meta: {
-      title: 'Export Zip',
-      icon: 'House',
-      hidden: false,
-      needLogin: false,
-      public: {
-        desktop: true,
-        mobile: true,
-      },
-    },
-  },
   {
     path: 'members',
     name: 'members',

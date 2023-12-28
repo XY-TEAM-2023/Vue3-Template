@@ -119,11 +119,20 @@ export default {
   },
   // 路由配置页面
   routerListView: {
+    name: '이름',
     icon: '아이콘',
     title: '제목',
     korean: '한국어',
     chinese: '중국어',
     english: '영어',
+    display: '표시',
+    path: '페이지 주소',
+    cache: '경로 캐시',
+    defaultConfig: '기본 설정',
+    filePath: '파일 경로',
+    btnInit: '초기화',
+    changeTitle: '제목 내용 수정',
+    changeComponent: '컴포넌트 경로 수정',
   },
   // 以下为自定义页面的翻译 --------------------------------------
   //菜单路由

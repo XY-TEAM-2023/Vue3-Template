@@ -23,6 +23,7 @@
     display: flex !important;
     flex-direction: column !important;
     border-radius: 6px !important;
+    --el-dialog-margin-top: 25vh !important;
 }
 
 .el-dialog__header {
