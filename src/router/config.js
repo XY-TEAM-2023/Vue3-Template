@@ -95,7 +95,11 @@ export const asyncRoutes = [
     path: 'FiManage',
     name: 'FiManage',
     meta: {
+<<<<<<< Updated upstream
       title: 'RouterMenu.FiManage',
+=======
+      title: 'FIListView.router',
+>>>>>>> Stashed changes
       icon: 'WalletFilled',
       // hidden: true,
       needLogin: true,
