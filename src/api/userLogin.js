@@ -3,28 +3,21 @@ import { isMobile } from '@/utils'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import i18n from '@/i18n'
 
-export const request_user_login = (account, password) => {
+export const request_user_login = (account, password, force) => {
   return new Promise((resolve, reject) => {
     http
-      .post('/user/login', { username: account, password: password, device: isMobile() ? 'mobile' : 'pc' })
-      .then((response) => {
-        // 服务器返回数据的结构
-        const { status, msg, data } = response
-        if (status === 0) {
-          // 成功
-          resolve(data)
-        } else {
-          // 其他情况, 如果服务器使用服务器返回的msg, 直接提示; 否则根据status设置对应提示
-          // 消息提示
-          //ElMessage.error({ message: msg, duration: 8000, showClose: true })
-          // 对话框形式
-          ElMessageBox.alert(msg, '', { type: 'error', showClose: false, confirmButtonText: i18n.global.t('com.btnOk') })
-          if (status === 1) reject(status)
-        }
+      .post('/user/login', { username: account, password: password, force: force, device: isMobile() ? 'mobile' : 'pc' })
+      .then(({ data, msg }) => {
+        http.requestSuccessCommonHandler(resolve, data, msg) // 请求成功
+        // resolve(data) // 自定义处理
+        console.log(123)
       })
-      .catch((error) => {
-        // 处理请求错误
-        console.error('POST 请求失败', error)
+      .catch(({ status, msg, data }) => {
+        if (status === 106) {
+          reject({ status, msg })
+        } else {
+          http.requestFailCommonHandler(reject, status, msg, data, 0) // 请求失败
+        }
       })
   })
 }

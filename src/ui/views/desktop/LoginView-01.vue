@@ -51,6 +51,7 @@ function onLogin() {
   isRequesting.value = true
   request_user_login(username.value, password.value)
     .then(() => {
+      console.log(333)
       // 刷新用户全局数据，记录登录状态
       userStore.loginSuccess()
       // 跳转页面

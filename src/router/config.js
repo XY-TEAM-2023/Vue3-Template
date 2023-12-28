@@ -39,7 +39,7 @@ export const constantRoutes = [
   {
     path: '/login',
     name: 'login',
-    component: `/src/ui/views/${platform}/LoginView.vue`,
+    component: `/src/ui/views/${platform}/LoginView-01.vue`,
     meta: { title: 'Login', needLogin: false },
   },
 
@@ -64,7 +64,7 @@ export const asyncRoutes = [
     path: 'statistics',
     name: 'statistics',
     meta: {
-      title: '统计管理',
+      title: 'RouterMenu.statistics',
       icon: 'Histogram',
       // hidden: true,
       needLogin: true,
@@ -79,7 +79,7 @@ export const asyncRoutes = [
         name: 'ggrstatistics',
         component: `/src/ui/views/${platform}/Statistics/GGRStatisticsView.vue`,
         meta: {
-          title: 'ggr统计',
+          title: 'RouterMenu.ggrstatistics',
           icon: 'House',
           // hidden: true,
           needLogin: false,
@@ -95,7 +95,7 @@ export const asyncRoutes = [
     path: 'FiManage',
     name: 'FiManage',
     meta: {
-      title: '财务管理',
+      title: 'RouterMenu.FiManage',
       icon: 'WalletFilled',
       // hidden: true,
       needLogin: true,
@@ -106,26 +106,11 @@ export const asyncRoutes = [
     },
     children: [
       {
-        path: 'withdrawal',
-        name: 'withdrawal',
-        component: `/src/ui/views/${platform}/FiManage/WithdrawalView.vue`,
-        meta: {
-          title: '提款订单',
-          icon: 'Back',
-          // hidden: true,
-          needLogin: false,
-          public: {
-            desktop: true,
-            mobile: true,
-          },
-        },
-      },
-      {
         path: 'recharge',
         name: 'recharge',
         component: `/src/ui/views/${platform}/FiManage/RechargeView.vue`,
         meta: {
-          title: '充值订单',
+          title: 'FIListView.DepositRequest',
           icon: 'Right',
           // hidden: true,
           needLogin: false,
@@ -136,11 +121,27 @@ export const asyncRoutes = [
         },
       },
       {
+        path: 'withdrawal',
+        name: 'withdrawal',
+        component: `/src/ui/views/${platform}/FiManage/WithdrawalView.vue`,
+        meta: {
+          title: 'FIListView.WithdrawalRequest',
+          icon: 'Back',
+          // hidden: true,
+          needLogin: false,
+          public: {
+            desktop: true,
+            mobile: true,
+          },
+        },
+      },
+
+      {
         path: 'FiRecords',
         name: 'FiRecords',
         component: `/src/ui/views/${platform}/FiManage/FiRecordsView.vue`,
         meta: {
-          title: '交易记录',
+          title: 'FIListView.TransactionHistory',
           icon: 'Memo',
           // hidden: true,
           needLogin: false,
@@ -155,7 +156,7 @@ export const asyncRoutes = [
         name: 'autoconfim',
         component: `/src/ui/views/${platform}/FiManage/AutoConfimView.vue`,
         meta: {
-          title: '自动短信列表',
+          title: 'FIListView.ShooterSms',
           icon: 'Finished',
           // hidden: true,
           needLogin: false,
@@ -171,7 +172,7 @@ export const asyncRoutes = [
     path: 'member',
     name: 'member',
     meta: {
-      title: 'memberListView.router',
+      title: 'MemberView.menu',
       icon: 'Avatar',
       // hidden: true,
       needLogin: true,
@@ -186,8 +187,8 @@ export const asyncRoutes = [
         name: 'memberlist',
         component: `/src/ui/views/${platform}/Member/MemberListView.vue`,
         meta: {
-          title: '会员列表',
-          icon: 'House',
+          title: 'MemberView.title',
+          icon: 'List',
           // hidden: true,
           needLogin: false,
           public: {
@@ -202,7 +203,7 @@ export const asyncRoutes = [
     path: 'agent',
     name: 'agent',
     meta: {
-      title: '代理商管理',
+      title: 'RouterMenu.agent',
       icon: 'Shop',
       // hidden: true,
       needLogin: true,
@@ -217,8 +218,8 @@ export const asyncRoutes = [
         name: 'agentlist',
         component: `/src/ui/views/${platform}/Agent/AgentListView.vue`,
         meta: {
-          title: '代理商列表',
-          icon: 'House',
+          title: 'RouterMenu.agentlist',
+          icon: 'List',
           // hidden: true,
           needLogin: false,
           public: {
@@ -233,7 +234,7 @@ export const asyncRoutes = [
     path: 'event',
     name: 'event',
     meta: {
-      title: '活动管理',
+      title: 'RouterMenu.event',
       icon: 'Promotion',
       // hidden: true,
       needLogin: true,
@@ -249,7 +250,7 @@ export const asyncRoutes = [
         component: `/src/ui/views/${platform}/Event/EventView.vue`,
         meta: {
           title: '活动设置',
-          icon: 'House',
+          icon: 'Grid',
           // hidden: true,
           needLogin: false,
           public: {
@@ -264,8 +265,8 @@ export const asyncRoutes = [
     path: 'gamelog',
     name: 'gamelog',
     meta: {
-      title: '游戏记录',
-      icon: 'List',
+      title: 'RouterMenu.gamelog',
+      icon: 'Stamp',
       // hidden: true,
       needLogin: true,
       public: {
@@ -278,8 +279,8 @@ export const asyncRoutes = [
         path: 'livegamelog',
         name: 'livegamelog',
         meta: {
-          title: '真人娱乐场',
-          icon: 'House',
+          title: 'RouterMenu.livegamelog',
+          icon: 'MessageBox',
           // hidden: true,
           needLogin: false,
           public: {
@@ -293,8 +294,8 @@ export const asyncRoutes = [
             name: 'evogamelog',
             component: `/src/ui/views/${platform}/GameLog/EvologView.vue`,
             meta: {
-              title: 'EVO游戏记录',
-              icon: 'House',
+              title: 'RouterMenu.evogamelog',
+              icon: 'MoreFilled',
               // hidden: true,
               needLogin: false,
               public: {
@@ -304,12 +305,12 @@ export const asyncRoutes = [
             },
           },
           {
-            path: 'pp-slotlog',
-            name: 'pp-slotlog',
+            path: 'ppslotlog',
+            name: 'ppslotlog',
             component: `/src/ui/views/${platform}/GameLog/PP-slotView.vue`,
             meta: {
-              title: 'PP-slot记录',
-              icon: 'House',
+              title: 'RouterMenu.ppslotlog',
+              icon: 'MoreFilled',
               // hidden: true,
               needLogin: false,
               public: {
@@ -323,6 +324,7 @@ export const asyncRoutes = [
     ],
   },
 
+  //
   {
     path: 'test',
     name: 'test',
