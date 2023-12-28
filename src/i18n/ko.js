@@ -141,14 +141,11 @@ export default {
   },
   //财务管理菜单-相关内容
   FIListView: {
-<<<<<<< Updated upstream
     DepositRequest: '입금신청',
     WithdrawalRequest: '출금신청',
     TransactionHistory: '거래내역',
     ShooterSms: '슈터문자',
-=======
     router: '재무관리',
->>>>>>> Stashed changes
     Date: '날짜',
     SiteName: '사이트명',
     GameName: '게임명',
