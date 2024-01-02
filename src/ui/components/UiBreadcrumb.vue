@@ -9,16 +9,31 @@
 import { computed } from 'vue'
 import { ArrowRight } from '@element-plus/icons-vue'
 import { useRoute } from 'vue-router'
+import { config } from '@/config'
+import i18n from '@/i18n'
+import { useAppStore } from '@/stores/app'
 
 const route = useRoute()
+
+const appStore = useAppStore()
+
 /** 应用全局数据对象 */
 const breadcrumbs = computed(() => {
   const breadcrumbs = []
   const matchedRoutes = route.matched
 
   matchedRoutes.forEach((route) => {
-    if (route.meta.title && route.path !== '/') {
-      breadcrumbs.push(route.meta.title)
+    let isBuild = true
+    if (import.meta.env.DEV) {
+      isBuild = config.buildMode
+    } else {
+      isBuild = false
+    }
+    console.error(route)
+    if (isBuild) {
+      breadcrumbs.push(route.meta['title_' + appStore.language])
+    } else {
+      breadcrumbs.push(i18n.global.t(route.meta.title))
     }
   })
 

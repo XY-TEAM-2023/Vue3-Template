@@ -10,7 +10,7 @@
             :text-color="config.router.admin.textColor"
             :active-text-color="config.router.admin.activeTextColor"
             :default-active="appStore.routerPath"
-            :router="true"
+            :is-router="true"
             :mode="mode"
             :collapse="appStore.menuIsCollapse"
           />
@@ -40,7 +40,7 @@
           <ui-icon-login :size="35" class="layout-top-icon" />
         </el-header>
 
-        <ui-toolbar></ui-toolbar>
+        <ui-toolbar />
 
         <div class="layout-bottom">
           <el-main class="layout-main">

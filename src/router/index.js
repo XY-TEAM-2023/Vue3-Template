@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory, createWebHashHistory } from 'vue-router'
 import { ElMessageBox } from 'element-plus'
 import i18n from '@/i18n'
 import { useUserStore } from '@/stores/user'
@@ -7,8 +7,8 @@ import NProgress from 'nprogress'
 import { useAppStore } from '@/stores/app'
 import { constantRoutes, asyncRoutes, platform } from './config'
 
-const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+let router = createRouter({
+  history: config.localMode ? createWebHashHistory(import.meta.env.BASE_URL) : createWebHistory(import.meta.env.BASE_URL),
   routes: [],
 })
 
@@ -67,18 +67,18 @@ function checkRouterHasRole(route, curRoles) {
 let consoleIndex = 0
 
 const comps = import.meta.glob('/src/ui/**/*.vue')
-// console.warn('comps', comps)
 
 /**
  * 加载Route的配置
  */
-function loadRouteConfig(routerConfig, curRoles) {
+function loadRouteConfig(routerConfig) {
   if (!routerConfig) return
 
   routerConfig.forEach((route) => {
-    if (tryLoadRouteGroup(route, curRoles, '')) {
+    if (tryLoadRouteGroup(route, '')) {
       router.config.push(route)
       router.addRoute(route)
+      console.log(route)
     }
   })
 
@@ -117,10 +117,9 @@ function checkRouteSameName(route, sames, names) {
 /**
  * 加载路由组
  * @param route 路由
- * @param curRoles 当前拥有的角色列表
  * @param parentPath 上级路由路径
  */
-function tryLoadRouteGroup(route, curRoles, parentPath = '') {
+function tryLoadRouteGroup(route, parentPath = '') {
   if (parentPath) {
     if (parentPath === '/') {
       route.fullPath = parentPath + route.path
@@ -134,9 +133,7 @@ function tryLoadRouteGroup(route, curRoles, parentPath = '') {
   if (!checkRouterIsPublic(route)) {
     return false
   }
-  if (!checkRouterHasRole(route, curRoles)) {
-    return false
-  }
+
   let canLoad = false
   if (route.children === undefined) {
     canLoad = true
@@ -145,7 +142,7 @@ function tryLoadRouteGroup(route, curRoles, parentPath = '') {
     let index = -1
     while (index + 1 < route.children.length) {
       const child = route.children[++index]
-      if (!tryLoadRouteGroup(child, curRoles, route.fullPath)) {
+      if (!tryLoadRouteGroup(child, route.fullPath)) {
         route.children.splice(index--, 1)
         continue
       }
@@ -163,10 +160,151 @@ function tryLoadRouteGroup(route, curRoles, parentPath = '') {
   return canLoad
 }
 
+/** 重新加载路由配置 */
+const reloadRoutes_build = function () {
+  const parse_router_config_cb = (routes, parentPath = '') => {
+    routes.forEach((item) => {
+      if (item.redirect) {
+        return
+      }
+
+      if (parentPath === '') {
+        if (!item.path.startsWith('/')) {
+          item.path = '/' + item.path
+        }
+      }
+
+      // 组织完整路径
+      if (parentPath) {
+        if (parentPath === '/') {
+          item.fullPath = parentPath + item.path
+        } else {
+          item.fullPath = parentPath + '/' + item.path
+        }
+      } else {
+        item.fullPath = item.path
+      }
+
+      if (item.children && item.children.length > 0) {
+        reload_handler_cb(item.children, item.fullPath)
+      }
+    })
+  }
+  const reload_handler_cb = (routes, parentPath = '') => {
+    routes.forEach((item) => {
+      if (item.redirect) {
+        router.config.push(item)
+        return
+      }
+
+      item.path = item.name
+      if (parentPath === '') {
+        if (!item.path.startsWith('/')) {
+          item.path = '/' + item.path
+        }
+      }
+
+      // 组织完整路径
+      if (parentPath) {
+        if (parentPath === '/') {
+          item.fullPath = parentPath + item.path
+        } else {
+          item.fullPath = parentPath + '/' + item.path
+        }
+      } else {
+        item.fullPath = item.path
+      }
+
+      if (item.children && item.children.length > 0) {
+        console.error(item.children)
+        reload_handler_cb(item.children, item.fullPath)
+      }
+
+      // 第一次循环
+      if (parentPath === '') {
+        console.log(parentPath, '|', item)
+        router.addRoute(item)
+        router.config.push(item)
+      }
+    })
+  }
+  const get_route_component_cb = (routerInfo) => {
+    if (!routerInfo.component) {
+      return null
+    }
+
+    if (!routerInfo.enable_mobile && !routerInfo.enable_desktop) {
+      return null
+    }
+    let arg = ''
+    if (platform === 'desktop') {
+      arg = routerInfo.enable_desktop ? 'desktop' : 'mobile'
+    } else if (platform === 'mobile') {
+      arg = routerInfo.enable_desktop ? 'mobile' : 'desktop'
+    } else {
+      return null
+    }
+
+    return comps[routerInfo.component.replace('{platform}', arg)]
+  }
+
+  let localStorageUserStr = localStorage.getItem('user')
+  const localStorageUser = localStorageUserStr ? JSON.parse(localStorageUserStr) : { routes: [] }
+  const async_routes = localStorageUser.routes
+  // 清空路由
+  router.getRoutes().forEach((route) => {
+    const name = route.name
+    if (name) {
+      router.removeRoute(name)
+    }
+  })
+  router.config = []
+
+  // 整理动态路由数据
+  let asyncRoutesData = []
+  async_routes.forEach((item) => {
+    if (item.display && item.component) {
+      asyncRoutesData.push({
+        name: item.name,
+        path: item.name,
+        icon: item.icon,
+        component: get_route_component_cb(item),
+        meta: {
+          title_en: item.title_en,
+          title_zh: item.title_zh,
+          title_ko: item.title_ko,
+          cache: item.cache,
+        },
+      })
+    }
+  })
+
+  const newConfig = []
+  constantRoutes.forEach((item) => {
+    item.component = comps[item.component]
+    if (item.name === '/') {
+      item.children = asyncRoutesData
+    }
+    newConfig.push(item)
+  })
+
+  // 整理数据
+  parse_router_config_cb(newConfig)
+  // 不存在的页面匹配404
+  // newConfig.push({ path: '/:pathMatch(.*)*', redirect: '/404', meta: { hidden: true } })
+
+  // 加载路由配置
+  newConfig.forEach((item) => {
+    console.log(item)
+    router.addRoute(item)
+    router.config.push(item)
+  })
+}
+
 /**
  * 根据手机还是PC, 重新加载路由
  */
-router.reloadRoutes = function (curRoles) {
+const reloadRoutes_dev = function () {
   // 清空路由
   router.getRoutes().forEach((route) => {
     const name = route.name
@@ -180,6 +318,7 @@ router.reloadRoutes = function (curRoles) {
 
   consoleIndex = 0
 
+  // 动态路由
   const layoutIndex = constantRoutes.findIndex((route) => route.name === '/')
   constantRoutes[layoutIndex].children = asyncRoutes
   const refreshRouteIndex = constantRoutes[layoutIndex].children.findIndex((route) => route.name === 'refresh')
@@ -197,10 +336,27 @@ router.reloadRoutes = function (curRoles) {
   }
 
   // 加载路径
-  loadRouteConfig(constantRoutes, curRoles)
-
+  loadRouteConfig(constantRoutes)
   // 添加不存在的页面重定向
-  router.addRoute({ path: '/:pathMatch(.*)*', redirect: '/404', meta: { hidden: true } })
+  // router.addRoute({ path: '/:pathMatch(.*)*', redirect: '/404', meta: { hidden: true } })
+
+  // console.log(router.config)
+  // console.log(router.options.routes)
+}
+
+router.reloadRoutes = function () {
+  let isBuild = true
+  if (import.meta.env.DEV) {
+    isBuild = config.buildMode
+  } else {
+    isBuild = false
+  }
+
+  if (isBuild) {
+    reloadRoutes_build()
+  } else {
+    reloadRoutes_dev()
+  }
 }
 
 router.beforeEach(
@@ -302,11 +458,28 @@ router.afterEach(() => {
   ) {
     if (!appStore.openedTabs.some((item) => item.fullPath === new_full_path)) {
       const r = router.currentRoute.value
-      appStore.openedTabs.push({
-        name: r.name,
-        title: r.meta.title,
-        fullPath: r.fullPath,
-      })
+
+      let isBuild = true
+      if (import.meta.env.DEV) {
+        isBuild = config.buildMode
+      } else {
+        isBuild = false
+      }
+
+      if (isBuild) {
+        appStore.openedTabs.push({
+          name: r.name,
+          title_zh: r.meta.title_zh,
+          title_en: r.meta.title_en,
+          title_ko: r.meta.title_ko,
+          fullPath: r.fullPath,
+        })
+      } else {
+        appStore.openedTabs.push({
+          name: r.meta.title,
+          fullPath: r.fullPath,
+        })
+      }
     }
   }
 

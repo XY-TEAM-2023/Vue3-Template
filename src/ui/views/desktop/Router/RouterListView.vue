@@ -8,47 +8,67 @@
       </el-button>
     </div>
 
+    <!--  目录还是文件  -->
     <el-table-ex v-loading="isRequestingBase" :data="routerConfig" :show-select="true" row-key="name" :show-pagination="false">
-      <el-table-column prop="name" align="left" :label="$t('routerListView.name')" width="150" />
+      <el-table-column :label="$t('routerListView.type')" align="center" width="100">
+        <template #default="scope">
+          <!--          <el-tag v-if="scope.row.is_main" style="width: 70px" type="success" effect="dark">-->
+          <!--            {{ $t('routerListView.homePage') }}-->
+          <!--          </el-tag>-->
+          <el-tag v-if="scope.row.component" :style="tagStyle" type="warning" effect="dark">
+            {{ $t('routerListView.view') }}
+          </el-tag>
+          <el-tag v-else type="info" :style="tagStyle" effect="dark">
+            {{ $t('routerListView.directory') }}
+          </el-tag>
+        </template>
+      </el-table-column>
+
+      <!--   名字  -->
+      <el-table-column prop="name" align="left" :label="$t('routerListView.name')" width="120" />
 
       <!--  组件图标  -->
-      <el-table-column prop="meta.icon" align="center" :label="$t('routerListView.icon')" width="80">
+      <el-table-column prop="meta.icon" align="center" :label="$t('routerListView.icon')" width="70">
         <template #default="scope">
-          <div v-if="scope.row.icon" class="router-icon">
+          <div v-if="scope.row.icon" class="router-icon" @click="onSelectIcon(scope.$index)">
             <component v-if="isElementIcon(scope.row.icon)" :is="scope.row.icon" style="width: 23px; height: 23px" />
-            <ui-svg v-else size="23px" :svg-path="scope.row.icon" svg-color="#606266" />
+            <ui-svg v-else size="23px" svg-size="24" :svg-code="scope.row.icon" svg-color="#606266" svg-hover-color="#007aff" />
           </div>
         </template>
       </el-table-column>
 
-      <!--  英文  -->
-      <el-table-column align="center" :label="$t('routerListView.english')" width="160" :show-overflow-tooltip="true">
-        <template #default="scope">
-          <el-button link @click="onEditText_Title(scope.row, 'en')">
-            {{ scope.row.title_en }}
-          </el-button>
-        </template>
-      </el-table-column>
-      <!--  韩文  -->
-      <el-table-column align="center" :label="$t('routerListView.korean')" width="160" :show-overflow-tooltip="true">
-        <template #default="scope">
-          <el-button link @click="onEditText_Title(scope.row, 'ko')">
-            {{ scope.row.title_ko }}
-          </el-button>
-        </template>
-      </el-table-column>
+      <!--   英文标题   -->
+      <el-table-column-label
+        prop="title_en"
+        align="center"
+        label="routerListView.english"
+        width="160"
+        edit-clearable
+        @edit="onEditText('en')"
+      />
 
-      <!--  中文  -->
-      <el-table-column align="center" :label="$t('routerListView.chinese')" width="160" :show-overflow-tooltip="true">
-        <template #default="scope">
-          <el-button link @click="onEditText_Title(scope.row, 'zh')">
-            {{ scope.row.title_zh }}
-          </el-button>
-        </template>
-      </el-table-column>
+      <!--   韩文标题  -->
+      <el-table-column-label
+        prop="title_ko"
+        align="center"
+        label="routerListView.korean"
+        width="160"
+        edit-clearable
+        @edit="onEditText('ko')"
+      />
+
+      <!--   中文标题  -->
+      <el-table-column-label
+        prop="title_zh"
+        align="center"
+        label="routerListView.chinese"
+        width="160"
+        edit-clearable
+        @edit="onEditText('zh')"
+      />
 
       <!--   是否显示   -->
-      <el-table-column align="center" width="100" :label="$t('routerListView.display')">
+      <el-table-column align="center" width="90" :label="$t('routerListView.display')">
         <template #default="scope">
           <el-switch
             v-model="scope.row.display"
@@ -61,7 +81,7 @@
       </el-table-column>
 
       <!--   是否缓存   -->
-      <el-table-column align="center" width="100" :label="$t('routerListView.cache')">
+      <el-table-column align="center" width="90" :label="$t('routerListView.cache')">
         <template #default="scope">
           <el-switch
             v-model="scope.row.cache"
@@ -73,42 +93,39 @@
         </template>
       </el-table-column>
 
-      <!--  文件路径  -->
-      <el-table-column align="left" :label="$t('routerListView.filePath')" :show-overflow-tooltip="true">
-        <template #default="scope">
-          <el-button link @click="onEditText_Component(scope.row)">
-            {{ scope.row.component }}
-          </el-button>
-        </template>
-      </el-table-column>
+      <!--   文件路径  -->
+      <el-table-column-label
+        prop="component"
+        align="left"
+        label="routerListView.filePath"
+        edit-width="600"
+        edit-clearable
+        @edit="onEditComponent"
+      />
 
       <!--  删除按钮  -->
       <el-table-column :label="$t('com.handler')" align="center" width="100">
         <template #default="scope">
-          <el-button type="danger" size="small" @click="onDelete(scope.row)">
+          <!--  删除  -->
+          <el-button type="danger" size="small" @click="onDeleteRoute(scope.row)">
             {{ $t('com.btnDelete') }}
           </el-button>
         </template>
       </el-table-column>
     </el-table-ex>
 
-    <el-dialog-input
-      :is-show="textDialog.isShow"
-      :title="textDialog.title"
-      :width="textDialog.width"
-      :default-value="textDialog.defaultValue"
-      :placeholder="textDialog.placeholder"
-      :clearable="textDialog.clearable"
-      @close="textDialog.isShow = false"
-      @submit="textDialog.onSubmitCb"
+    <el-dialog-select-icon
+      :is-show="isDisplaySelectIcon"
+      title="routerListView.changeIconTitle"
+      :default-icon="selectIcon"
+      :on-submit="onSelectIconResult"
+      @close="isDisplaySelectIcon = false"
     />
-
-    <el-dialog-select-icon :is-show="true" />
   </div>
 </template>
 
 <script setup>
-import { ref, reactive, onBeforeMount, computed, watch, onMounted, onBeforeUnmount, defineProps, defineEmits } from 'vue'
+import { ref, reactive, onMounted, computed } from 'vue'
 import ElTableEx from '@/ui/components/ElTableEx.vue'
 import { ElMessageBox } from 'element-plus'
 import i18n from '@/i18n'
@@ -117,13 +134,22 @@ import {
   request_router_base,
   request_router_edit_cache,
   request_router_edit_component,
+  request_router_edit_delete,
   request_router_edit_display,
+  request_router_edit_icon,
   request_router_edit_title,
   request_router_init,
+  request_router_set_home,
 } from '@/api/router'
-import ElDialogInput from '@/ui/components/ElDialogInput.vue'
-import { config } from '@/config'
 import ElDialogSelectIcon from '@/ui/components/ElDialogSelectIcon.vue'
+import { getTextListMaxWidth } from '@/utils'
+import ElTableColumnLabel from '@/ui/components/ElTable/ElTableColumnLabel.vue'
+
+const tagStyle = computed(() => {
+  return {
+    width: getTextListMaxWidth([i18n.global.t('routerListView.view'), i18n.global.t('routerListView.directory')]) + 10 + 'px',
+  }
+})
 
 let acorn = null
 let walk = null
@@ -154,40 +180,11 @@ function requestRouterBase(isClick) {
 requestRouterBase(false)
 
 function isElementIcon(icon) {
+  console.log(icon)
+  if (Array.isArray(icon)) {
+    return false
+  }
   return !icon.includes('.')
-}
-
-/**
- * 显示编辑I18n文本窗口
- */
-function onEditI18nLabel(path, local) {
-  ElMessageBox.prompt(i18n.global.t('app.editI18nLabel'), '', {
-    confirmButtonText: i18n.global.t('com.btnOk'),
-    cancelButtonText: i18n.global.t('com.btnCancel'),
-    inputValue: path,
-  })
-    .then(({ value }) => {
-      console.log(local, value)
-    })
-    .catch(() => {})
-}
-
-function onEditFilePath(obj) {
-  console.log(obj)
-  ElMessageBox.prompt('', '', {
-    confirmButtonText: i18n.global.t('com.btnOk'),
-    cancelButtonText: i18n.global.t('com.btnCancel'),
-    inputValue: i18n.global.t(toString(obj.component)),
-  })
-    .then(({ value }) => {
-      obj.component = value
-    })
-    .catch(() => {})
-}
-
-function onDelete(obj) {
-  console.log(obj)
-  console.log('是否确定删除')
 }
 
 const isInitializing = ref(false)
@@ -360,58 +357,29 @@ function requestRouterInit(routerConfig) {
 /*******************************************************************
                                 修改数据相关
  ******************************************************************/
-const textDialog = reactive({
-  isShow: false,
-  title: '',
-  width: '300',
-  defaultValue: '',
-  placeholder: '',
-  clearable: true,
-  onSubmitCb: null,
-})
-
-/**
- * 修改文本类型数据
- */
-function onEditText_Title(row, local) {
-  textDialog.title = 'routerListView.changeTitle'
-  if (local === 'en') {
-    textDialog.defaultValue = row.title_en
-  } else if (local === 'zh') {
-    textDialog.defaultValue = row.title_zh
-  } else if (local === 'ko') {
-    textDialog.defaultValue = row.title_ko
-  }
-  textDialog.width = '350'
-  textDialog.onSubmitCb = (newValue) => {
+function onEditText(local) {
+  return (index, row, newValue, cancelCb, closeCb) => {
     request_router_edit_title(row.id, newValue, local)
       .then(() => {
         requestRouterBase(false)
-        textDialog.isShow = false
+        closeCb()
       })
-      .catch(() => {})
-      .finally(() => {})
+      .catch(() => {
+        cancelCb()
+      })
   }
-  textDialog.isShow = true
 }
 
-/**
- * 修改文件路径
- */
-function onEditText_Component(row) {
-  textDialog.title = 'routerListView.changeComponent'
-  textDialog.defaultValue = row.component
-  textDialog.width = '500'
-  textDialog.onSubmitCb = (newValue) => {
-    request_router_edit_component(row.id, newValue)
-      .then(() => {
-        requestRouterBase(false)
-        textDialog.isShow = false
-      })
-      .catch(() => {})
-      .finally(() => {})
-  }
-  textDialog.isShow = true
+/** 修改文件路径 */
+function onEditComponent(index, row, newValue, cancelCb, closeCb) {
+  request_router_edit_component(row.id, newValue)
+    .then(() => {
+      requestRouterBase(false)
+      closeCb()
+    })
+    .catch(() => {
+      cancelCb()
+    })
 }
 
 /** 修改路由显示状态 */
@@ -447,6 +415,91 @@ function onChangeCache(row) {
     })
     .finally(() => {
       row.requestingChangeCache = false
+    })
+}
+
+// 修改图标
+const isDisplaySelectIcon = ref(false)
+const selectIcon = ref('')
+let selectIconIndex = -1
+let selectIconData = null
+function onSelectIcon(index) {
+  selectIconIndex = index
+  selectIconData = routerConfig.value[index]
+  // console.log(selectIconData)
+  if (isDisplaySelectIcon.value) {
+    return
+  }
+  selectIcon.value = selectIconData.icon
+  // console.log(isDisplaySelectIcon.value, selectIcon.value)
+  isDisplaySelectIcon.value = true
+}
+
+let requestingEditIcon = false
+function onSelectIconResult(type, icon) {
+  if (requestingEditIcon) {
+    return
+  }
+  requestingEditIcon = true
+
+  request_router_edit_icon(routerConfig.value[selectIconIndex].id, icon)
+    .then(() => {
+      requestRouterBase(false)
+    })
+    .finally(() => {
+      isDisplaySelectIcon.value = false
+      requestingEditIcon = false
+    })
+}
+
+function onSetAsHome(obj) {
+  if (obj.isRequestingSetHome) {
+    return
+  }
+  obj.isRequestingSetHome = true
+  ElMessageBox.confirm(i18n.global.t('routerListView.homePageTip', { name: obj.name }), '', {
+    confirmButtonText: i18n.global.t('com.btnOk'),
+    cancelButtonText: i18n.global.t('com.btnCancel'),
+    type: 'warning',
+  })
+    .then(() => {
+      request_router_set_home(obj.id)
+        .then(() => {
+          requestRouterBase(false)
+        })
+        .catch(() => {})
+        .finally(() => {
+          obj.isRequestingSetHome = false
+        })
+    })
+    .catch(() => {
+      obj.isRequestingSetHome = false
+    })
+}
+
+/** 删除路由 */
+function onDeleteRoute(obj) {
+  if (obj.isRequestingDelete) {
+    return
+  }
+  obj.isRequestingDelete = true
+  ElMessageBox.confirm(i18n.global.t('routerListView.deleteTip', { name: obj.name }), '', {
+    confirmButtonText: i18n.global.t('com.btnOk'),
+    cancelButtonText: i18n.global.t('com.btnCancel'),
+    type: 'warning',
+  })
+    .then(() => {
+      request_router_edit_delete(obj.id)
+        .then(() => {
+          requestRouterBase(false)
+        })
+        .catch(() => {})
+        .finally(() => {
+          obj.isRequestingDelete = false
+        })
+    })
+    .catch(() => {
+      obj.isRequestingDelete = false
     })
 }
 </script>

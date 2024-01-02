@@ -40,10 +40,10 @@ export const request_role_list = (initView, onlySelf) => {
  * 创建角色
  * @returns {Promise<unknown>}
  */
-export const request_role_create = (name, note) => {
+export const request_role_create = (parent_id, name, note) => {
   return new Promise((resolve, reject) => {
     http
-      .post('/api/admin/role/create', { name: name, note: note })
+      .post('/api/admin/role/create', { parent: parent_id, name: name, note: note })
       .then(({ data, msg }) => {
         http.requestSuccessCommonHandler(resolve, data, msg, true) // 请求成功
         // resolve(data) // 自定义处理

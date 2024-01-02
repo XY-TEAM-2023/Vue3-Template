@@ -2,7 +2,7 @@
   <el-dialog
     v-model="isShow"
     :title="$t('changeRoleInfoDialog.title')"
-    width="400"
+    width="1000"
     :close-on-click-modal="false"
     :autofocus="false"
     @close="onClose"

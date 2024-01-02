@@ -55,6 +55,23 @@ export const request_router_edit_title = (id, title, local) => {
 }
 
 /**
+ * 修改路由基础配置-图标
+ * @returns {Promise<unknown>}
+ */
+export const request_router_edit_icon = (id, icon) => {
+  return new Promise((resolve, reject) => {
+    http
+      .post('/api/admin/router/base/edit/icon', { id: id, icon: icon })
+      .then(({ data, msg }) => {
+        http.requestSuccessCommonHandler(resolve, data, msg, true) // 请求成功
+        // resolve(data) // 自定义处理
+      })
+      .catch(({ status, msg, data }) => {
+        http.requestFailCommonHandler(reject, status, msg, data, 0) // 请求失败
+      })
+  })
+}
+/**
  * 修改路由基础配置-组件路径
  * @returns {Promise<unknown>}
  */
@@ -98,6 +115,42 @@ export const request_router_edit_cache = (id, cache) => {
   return new Promise((resolve, reject) => {
     http
       .post('/api/admin/router/base/edit/cache', { id: id, cache: cache })
+      .then(({ data, msg }) => {
+        http.requestSuccessCommonHandler(resolve, data, msg, true) // 请求成功
+        // resolve(data) // 自定义处理
+      })
+      .catch(({ status, msg, data }) => {
+        http.requestFailCommonHandler(reject, status, msg, data, 0) // 请求失败
+      })
+  })
+}
+
+/**
+ * 修改路由基础配置-缓存
+ * @returns {Promise<unknown>}
+ */
+export const request_router_edit_delete = (id) => {
+  return new Promise((resolve, reject) => {
+    http
+      .post('/api/admin/router/base/edit/delete', { id: id })
+      .then(({ data, msg }) => {
+        http.requestSuccessCommonHandler(resolve, data, msg, true) // 请求成功
+        // resolve(data) // 自定义处理
+      })
+      .catch(({ status, msg, data }) => {
+        http.requestFailCommonHandler(reject, status, msg, data, 0) // 请求失败
+      })
+  })
+}
+
+/**
+ * 修改路由基础配置-设置为首页
+ * @returns {Promise<unknown>}
+ */
+export const request_router_set_home = (id) => {
+  return new Promise((resolve, reject) => {
+    http
+      .post('/api/admin/router/base/edit/main', { id: id })
       .then(({ data, msg }) => {
         http.requestSuccessCommonHandler(resolve, data, msg, true) // 请求成功
         // resolve(data) // 自定义处理

@@ -1,45 +1,4 @@
-# 前端项目
-
-This template should help get you started developing with Vue 3 in Vite.
-
-## 创建项目
-
-```shell
-> npm create vue@latest
-
-Vue.js - The Progressive JavaScript Framework
-
-√ 请输入项目名称： ... website
-√ 是否使用 TypeScript 语法？ ... 否 / 是
-√ 是否启用 JSX 支持？ ... 否 / 是
-√ 是否引入 Vue Router 进行单页面应用开发？ ... 否 / 是
-√ 是否引入 Pinia 用于状态管理？ ... 否 / 是
-√ 是否引入 Vitest 用于单元测试？ ... 否 / 是
-√ 是否要引入一款端到端（End to End）测试工具？ » 不需要
-√ 是否引入 ESLint 用于代码质量检测？ ... 否 / 是
-√ 是否引入 Prettier 用于代码格式化？ ... 否 / 是
-
-正在构建项目 D:\XY\__Vue3框架\website...
-
-项目构建完成，可执行以下命令：
-
-  cd website
-  npm install
-  npm run format
-  npm run dev
-```
-
-## VSCode插件
-
-- [Vue Language Features (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (需要禁用Vetur)
-- [Path Intellisense](https://marketplace.visualstudio.com/items?itemName=christian-kohler.path-intellisense)
-- [Prettier - Code formatter](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
-- [vscode-icons](https://marketplace.visualstudio.com/items?itemName=vscode-icons-team.vscode-icons)
-
-## Vite配置
-
-See [Vite Configuration Reference](https://vitejs.dev/config/).
-
+# 项目运行
 ## 初始化依赖
 
 ```sh
@@ -58,16 +17,56 @@ npm run dev
 npm run build
 ```
 
-
-
-
-
-
-
-
-
-
-
-### Lint with [ESLint](https://eslint.org/)
-
-npm run lint
+# 右键菜单
+1. 在可以右键的组件上添加指令 `v-menu`, 值为菜单定义
+    ```vue
+    <template>
+        <el-button v-menu="menuItems">
+            可以右键的按钮
+        </el-button>
+    </template>
+    
+    <script setup>
+    const menuItems =  reactive([
+      {
+        // 菜单标题 
+        text: '选项1',
+        // 使用Element图标
+        icon: 'Finished',
+        // 获得焦点颜色, 可空
+        hoverColor: '#FF0000',
+        // 点击事件
+        action: () => console.log('选项1被点击')  
+      },
+      {
+        // 菜单国际化
+        text: 'demoView.menuTitle', 
+        // 图标使用自定义svg
+        icon: `<svg t="1703992207510" class="icon" viewBox="0 0 1026 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2478" width="32" height="32"><path d="M347.64 546.3l103.28 357.77 498.07-720zM334.72 523.93l614.27-339.86-872.55 71.61z" fill="#040000" p-id="2479"></path></svg>`,
+        // 点击事件
+        action: () => console.log('选项2被点击'), // 点击事件
+      },
+    ])
+    </script>
+    ```
+2. v-for中在菜单点击事件中得到当前右键对象的数据
+    ```vue
+    <template>
+        <div v-for='item in tableData' :key='item' v-menu="menuItems(item)">
+            {{ item }}
+        </div>
+    </template>
+    
+    <script setup>
+    const tableData = reactive(['a', 'b', 'c'])
+      
+    const menuItems = (item) => (reactive([
+      {
+        text: '选项1',
+        icon: 'Finished',
+        action: () => console.log('选项1被点击, item: ' + item)  
+      },
+      ...
+    ]))
+    </script>
+    ```

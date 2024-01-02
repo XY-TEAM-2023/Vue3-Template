@@ -2,14 +2,17 @@ import { createI18n } from 'vue-i18n'
 import EN from './en'
 import ZH from './zh'
 import KO from './ko'
+import BASE_EN from './base/en'
+import BASE_ZH from './base/zh'
+import BASE_KO from './base/ko'
 import { useAppStore } from '@/stores/app'
 import { config } from '@/config'
 
 // 语言配置
 const messages = {
-  en: { ...EN },
-  zh: { ...ZH },
-  ko: { ...KO },
+  en: { ...BASE_EN, ...EN },
+  zh: { ...BASE_ZH, ...ZH },
+  ko: { ...BASE_KO, ...KO },
 }
 
 // 从本地数据中读取当前语言

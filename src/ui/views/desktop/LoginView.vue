@@ -9,7 +9,7 @@
         <div style="height: 20px" />
         <div class="login-box-btnArea">
           <ui-i18n class="login-i18n" color="#ffffff" />
-          <el-button v-permission="1" type="primary" :loading="isRequesting" @click="onLogin">
+          <el-button v-permission="1" v-menu="menuItems" type="primary" :loading="isRequesting" @click="onLogin">
             {{ $t('loginView.loginBtn') }}
           </el-button>
         </div>
@@ -32,11 +32,20 @@ import i18n from '@/i18n'
 const userStore = useUserStore()
 
 // const account = ref('coco')
-const account = ref('123456')
+const account = ref('admin')
 const password = ref('123456')
 // const account = ref(userStore.account)
 // const password = ref('')
 
+const menuItems = [
+  { text: '选项1', icon: 'Finished', hoverColor: '#FF0000', action: () => console.log('选项1被点击') },
+  {
+    text: '选项2',
+    icon: `<svg t="1703992207510" class="icon" viewBox="0 0 1026 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2478" width="32" height="32"><path d="M347.64 546.3l103.28 357.77 498.07-720zM334.72 523.93l614.27-339.86-872.55 71.61z" fill="#040000" p-id="2479"></path></svg>`,
+    action: () => console.log('选项2被点击'),
+  },
+  // 其他菜单项
+]
 /** 是否正在登录中 */
 const isRequesting = ref(false)
 
@@ -53,7 +62,7 @@ function onLogin(isForce = false) {
   request_user_login(account.value, password.value, isForce)
     .then((data) => {
       // 刷新用户全局数据，记录登录状态
-      userStore.loginSuccess(account.value, data.roleName)
+      userStore.loginSuccess(account.value, data.roleName, data.route)
       // 跳转页面
       router.push(config.router.homePage)
     })

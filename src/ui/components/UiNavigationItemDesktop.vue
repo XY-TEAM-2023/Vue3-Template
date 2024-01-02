@@ -5,7 +5,7 @@
       <!--  图标  -->
       <el-icon v-if="checkIsShowIcon(route)" :size="config.router.admin.iconSize">
         <component v-if="isElementIcon(route.meta.icon)" :is="route.meta.icon" />
-        <ui-svg v-else :svg-path="route.meta.icon" />
+        <ui-svg v-else :svg-code="route.meta.icon" />
       </el-icon>
 
       <span>
@@ -27,7 +27,7 @@
       <component v-if="isElementIcon(route.meta.icon)" :is="route.meta.icon" />
       <ui-svg
         v-else
-        :svg-path="route.meta.icon"
+        :svg-code="route.meta.icon"
         :size="config.router.admin.iconSize + 'px'"
         :svg-color="config.router.admin.textColor"
         :svg-hover-color="config.router.admin.activeTextColor"
@@ -71,12 +71,18 @@ function isElementIcon(icon) {
 }
 
 function getTitle(obj) {
-  if (obj.meta) {
-    if (obj.meta.title) {
-      return i18n.global.t(obj.meta.title)
-    }
+  let isBuild = true
+  if (import.meta.env.DEV) {
+    isBuild = config.buildMode
+  } else {
+    isBuild = false
   }
-  return obj.name
+
+  if (isBuild) {
+    return obj.meta['title_' + appStore.language]
+  } else {
+    return i18n.global.t(obj.meta.title)
+  }
 }
 
 function getIconColor(fullPath) {}

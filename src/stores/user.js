@@ -38,6 +38,8 @@ export const useUserStore = defineStore('user', {
      * "_"代表这是个不希望外界调用的属性
      */
     _jwt: '',
+    /** 路由基础配置 */
+    routes: [],
   }),
 
   /*****************************************
@@ -121,12 +123,13 @@ export const useUserStore = defineStore('user', {
     /**
      * 登录成功，设置登录后信息
      */
-    loginSuccess(account, role_name) {
+    loginSuccess(account, role_name, routes) {
       const jwt_data = this.jwtData
       this.userId = jwt_data.userId
       this.account = account
       this.role_name = role_name
       this.role_id = jwt_data.roleId
+      this.routes = routes
 
       tryRunKeepAliveTimer()
     },
@@ -138,6 +141,7 @@ export const useUserStore = defineStore('user', {
       this.role_name = ''
       this.role_id = -1
       this._jwt = ''
+      this.routes = []
       useAppStore().openedTabs.splice(0)
 
       // 停止保持在线的定时器

@@ -10,14 +10,17 @@ import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 import * as ElIconModules from '@element-plus/icons-vue'
 import { config } from '@/config'
+import menu from '@/ui/components/Menu/v-menu'
 
 router.reloadRoutes()
+// router.reloadRoutes(null)
 const app = createApp(App)
 const pinia = createPinia()
 pinia.use(piniaPluginPersist)
 app.use(pinia)
 app.use(i18n)
 app.use(router)
+app.directive('menu', menu)
 
 // 如果是管理后台, 全局引用
 if (config.websiteModel === 'admin') {

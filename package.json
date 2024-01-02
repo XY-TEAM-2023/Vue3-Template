@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "vite --host 0.0.0.0",
-    "build": "vite build",
+    "build": "vite build && node .\\toFiles.mjs",
     "preview": "vite preview",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
     "format": "prettier --write src/"
@@ -22,11 +22,13 @@
     "pinia": "^2.1.7",
     "pinia-plugin-persist": "^1.0.0",
     "vue": "^3.3.4",
+    "vue-draggable-plus": "^0.3.3",
     "vue-i18n": "^9.4.1",
     "vue-router": "^4.2.5"
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.3.3",
+    "@vitejs/plugin-legacy": "^5.2.0",
     "@vitejs/plugin-vue": "^4.4.0",
     "@vue/eslint-config-prettier": "^8.0.0",
     "eslint": "^8.49.0",
@@ -36,7 +38,7 @@
     "sass-loader": "^13.3.2",
     "unplugin-auto-import": "^0.17.1",
     "unplugin-vue-components": "^0.25.2",
-    "vite": "^4.4.11",
+    "vite": "^5.0.10",
     "vite-plugin-vue-globals": "^1.2.1"
   }
 }

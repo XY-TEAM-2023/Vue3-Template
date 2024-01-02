@@ -8,14 +8,6 @@
   >
     <svg :width="svgSize" :height="svgSize" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
       <path
-        v-if="svgPath"
-        :d="svgPath"
-        :fill="(!disableMouseHover && isHovered) || forceHover ? svgHoverColor : svgColor"
-        :style="props.style"
-      />
-
-      <path
-        v-else-if="svgPaths"
         v-for="(pathData, index) in svgPaths"
         :key="index"
         :d="pathData"
@@ -27,23 +19,19 @@
 </template>
 
 <script setup>
-import { ref, defineProps, computed } from 'vue'
+import { ref, defineProps, computed, reactive, watch } from 'vue'
 
 /** 作为组件时，外部传参 */
 const props = defineProps({
   /* 设置SVG的Path */
-  svgPath: {
+  svgCode: {
     type: String,
     default: '',
   },
-  svgPaths: {
-    type: Array(Object), // {  }
-    default: () => [],
-  },
-  /** 30px */
+  /** 30 */
   size: {
     type: String,
-    default: '24px',
+    default: '24',
   },
   /** svg大小, 整数 */
   svgSize: {
@@ -79,8 +67,8 @@ const props = defineProps({
   },
   // 动态style
   style: {
-    type: String,
-    default: '',
+    type: Object,
+    default: () => {},
   },
 })
 
@@ -113,6 +101,35 @@ const emit = defineEmits(['click'])
 /** 触发点击事件 */
 const onClick = () => {
   emit('click', {})
+}
+
+const svgPaths = ref(reactive(parseSvgIcon(props.svgCode)))
+watch(
+  () => [props.svgCode],
+  ([newSvgPath], [oldSvgPath]) => {
+    if (newSvgPath !== oldSvgPath) {
+      svgPaths.value = parseSvgIcon(newSvgPath)
+    }
+  },
+  { deep: true }
+)
+
+function parseSvgIcon(svgCode) {
+  if (svgCode === '') {
+    return []
+  }
+
+  const pathRegex = /<path[^>]*\bd="([^"]*)"/g
+  const dValues = []
+  let match
+
+  while ((match = pathRegex.exec(svgCode)) !== null) {
+    if (match[1]) {
+      dValues.push(match[1])
+    }
+  }
+
+  return dValues
 }
 </script>
 

@@ -44,6 +44,7 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  parent: Number,
 })
 
 const isShow = ref(props.isShow)
@@ -84,7 +85,7 @@ function onCreate() {
       return
     }
     isRequesting.value = true
-    request_role_create(form.value.name, form.value.note)
+    request_role_create(props.parent, form.value.name, form.value.note)
       .then(() => {
         form.value = reactive(defaultFormData)
         onClose()

@@ -12,8 +12,11 @@ export const config = {
   language: 'zh',
   /** 网站模式: website、admin、mobile(该模式下只有手机版本) */
   websiteModel: 'admin',
+  /** 是否强制为编译版本，admin模式下: true-使用服务器配置, false-使用本地配置 */
+  buildMode: false,
   /** 无手机模式：没有开发手机版时开启 */
   noMobileModel: false,
+  localMode: false,
   /** 服务器 */
   server: 'http://192.168.1.2',
   // server: 'http://api.jadesoft.live',
@@ -27,7 +30,7 @@ export const config = {
     /** 登录页面路径, 如果设置了该值, 当页面需要登录才能访问时, 用户点击了确定按钮会自动跳转页面 */
     loginPage: '/login',
     /** 登录成功后访问的页面, 首页 */
-    homePage: '/AboutView',
+    homePage: '/statistics',
     /** 点击已经激活的页面导航时，重新加载页面 */
     clickSamePageReload: false,
     mobile: {

@@ -1,5 +1,6 @@
 <template>
-  <el-config-provider :locale="locale" :class="appStore.themeDarkMode ? 'theme-dark' : 'theme-light'">
+  <!--  <el-config-provider :locale="locale" :class="appStore.themeDarkMode ? 'theme-dark' : 'theme-light'">-->
+  <el-config-provider :locale="locale">
     <RouterView />
   </el-config-provider>
 </template>
@@ -9,7 +10,7 @@
 import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
 import en from 'element-plus/dist/locale/en.mjs'
 import ko from 'element-plus/dist/locale/ko.mjs'
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useAppStore } from '@/stores/app'
 import { RouterView } from 'vue-router'
 import '@/styles/theme/index.scss'
@@ -26,6 +27,12 @@ const locale = computed(() => {
     default:
       return en
   }
+})
+
+onMounted(() => {
+  window.addEventListener('contextmenu', (event) => {
+    event.preventDefault() // 阻止默认右键菜单
+  })
 })
 </script>
 

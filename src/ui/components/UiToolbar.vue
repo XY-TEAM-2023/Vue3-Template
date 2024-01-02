@@ -12,7 +12,7 @@
         <ui-opened-tag
           v-for="(item, index) in appStore.openedTabs"
           :key="index"
-          :text="item.title"
+          :text="getTitle(item)"
           :is-select="item.fullPath === appStore.routerPath"
           :closable="true"
           @click="onChangeTab(item.fullPath)"
@@ -30,12 +30,34 @@ import { ArrowLeft, HomeFilled, RefreshRight } from '@element-plus/icons-vue'
 import router from '@/router'
 import { config } from '@/config'
 import UiOpenedTag from '@/ui/components/UiOpenedTag.vue'
+import i18n from '@/i18n'
+import { useUserStore } from '@/stores/user'
 
 /** 应用全局数据对象 */
 const appStore = useAppStore()
-
+const userStore = useUserStore()
 function onBtnLastPage() {
   router.back()
+}
+
+function getTitle(obj) {
+  let isBuild = true
+  if (import.meta.env.DEV) {
+    isBuild = config.buildMode
+  } else {
+    isBuild = false
+  }
+
+  if (isBuild) {
+    return obj['title_' + appStore.language]
+  } else {
+    try {
+      return i18n.global.t(obj.name)
+    } catch {
+      userStore.logout()
+      return ''
+    }
+  }
 }
 
 function onCloseTab(fullPath) {

@@ -132,7 +132,7 @@
 <script setup>
 import { ref, reactive, onBeforeMount, computed, watch, onMounted, onBeforeUnmount, defineProps, defineEmits } from 'vue'
 import { request_user_clear_otp, request_user_delete_account, request_user_list, request_user_lock } from '@/api/user'
-import ElTableColumnTs from '@/ui/components/ElTableColumnTs.vue'
+import ElTableColumnTs from '@/ui/components/ElTable/ElTableColumnTs.vue'
 import ElInputSearch from '@/ui/components/ElInputSearch.vue'
 import CreatUserDialog from './CreatUserDialog.vue'
 import ChangeUserInfoDialog from './ChangeUserInfoDialog.vue'

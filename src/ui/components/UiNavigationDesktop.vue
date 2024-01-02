@@ -43,7 +43,7 @@ const props = defineProps({
     type: String,
     default: '',
   },
-  router: {
+  isRouter: {
     type: Boolean,
     default: true,
   },

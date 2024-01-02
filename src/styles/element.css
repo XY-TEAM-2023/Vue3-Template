@@ -23,7 +23,7 @@
     display: flex !important;
     flex-direction: column !important;
     border-radius: 6px !important;
-    --el-dialog-margin-top: 25vh !important;
+    --el-dialog-margin-top: 20vh !important;
 }
 
 .el-dialog__header {
@@ -103,10 +103,23 @@
 
 
 /********************************************************
-                       message-box
+                       card
  ********************************************************/
-.el-message-box__input {
-    height: 30px !important;
-    padding-top: 10px !important;
-    margin-bottom: 10px !important;
+.el-card__header {
+    padding: 6px 10px !important;
+    background-color: #f5f7fa !important;
+    font-weight: bold !important;
+    color: #4b4b4b !important;
+}
+
+.el-card__body {
+    padding: 10px 10px !important;
+}
+
+.el-card__footer {
+    display: flex;
+    flex-direction: column;
+    word-wrap: break-word;
+    font-size: 12px;
+    padding: 4px 10px 4px 10px !important;
 }

@@ -29,6 +29,7 @@ import { Search } from '@element-plus/icons-vue'
 const props = defineProps({
   modelValue: String,
   placeholder: String,
+  // 直接输入数字
   width: String,
   maxLength: {
     type: String,
@@ -48,8 +49,10 @@ const modelValue = ref(props.modelValue)
 const inputStyle = computed(() => {
   return {
     width: props.width === '' ? '100%' : `${props.width}px`,
+    // maxWidth: props.width === '' ? '100% !important' : `${props.width}px !important`,
   }
 })
+
 // 声明context.emit
 const emit = defineEmits(['update:modelValue', 'input', 'search'])
 
