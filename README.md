@@ -35,6 +35,10 @@ npm run build
         icon: 'Finished',
         // 获得焦点颜色, 可空
         hoverColor: '#FF0000',
+        // 是否显示
+        display: 'true',
+        // 是否禁用
+        disabled: 'false',
         // 点击事件
         action: () => console.log('选项1被点击')  
       },

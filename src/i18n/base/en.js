@@ -18,6 +18,8 @@ export default {
     btnEdit: 'Edit',
     btnCreate: 'Create',
     btnDelete: 'Delete',
+    btnReset: 'Reset',
+    btnApply: 'Apply',
     handler: 'Operation',
     creatTime: 'Creation Time',
     updateTime: 'Update Time',

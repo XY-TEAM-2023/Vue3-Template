@@ -2,22 +2,30 @@
   <div v-if="visible && position" class="menu-wrapper">
     <div :style="{ top: `${position.y}px`, left: `${position.x}px` }" class="menu">
       <ul class="menu-list">
-        <li class="menu-item" v-for="item in items" :key="item.text" @click="() => onItemClick(item)">
-          <div class="menu-button" @mouseenter="item.isHovered = true" @mouseleave="item.isHovered = false" :style="hoverStyle(item)">
-            <component v-if="isElementIcon(item.icon)" :is="item.icon" class="icon" />
-            <ui-svg
-              v-else-if="item.icon"
-              size="20"
-              :svg-code="item.icon"
-              svg-color="#898c94"
-              :svg-hover-color="hoverColor(item)"
-              :force-hover="item.isHovered"
-            />
-            <span style="margin-left: 7px">
-              {{ getText(item) }}
-            </span>
-          </div>
-        </li>
+        <template v-for="item in items" :key="item.text">
+          <li class="menu-item" v-if="item.display === undefined || item.display" @click="() => onItemClick(item)">
+            <div
+              class="menu-button"
+              :class="{ 'menu-button-lock': item.disabled }"
+              @mouseenter="item.isHovered = true"
+              @mouseleave="item.isHovered = false"
+              :style="hoverStyle(item)"
+            >
+              <component v-if="isElementIcon(item.icon)" :is="item.icon" class="icon" />
+              <ui-svg
+                v-else-if="item.icon"
+                size="20"
+                :svg-code="item.icon"
+                svg-color="#898c94"
+                :svg-hover-color="hoverColor(item)"
+                :force-hover="item.isHovered"
+              />
+              <span style="margin-left: 7px">
+                {{ getText(item) }}
+              </span>
+            </div>
+          </li>
+        </template>
       </ul>
     </div>
   </div>
@@ -59,6 +67,9 @@ function hoverStyle(item) {
 }
 
 const onItemClick = (item) => {
+  if (item.disabled) {
+    return
+  }
   visible.value = false // 关闭菜单
   if (item.action && typeof item.action === 'function') {
     item.action() // 调用菜单项定义的 action
@@ -120,6 +131,11 @@ ul {
   &:hover {
     background-color: #f1f3f7;
   }
+}
+
+.menu-button-lock {
+  cursor: not-allowed; /* 显示不允许的光标 */
+  opacity: 0.5; /* 半透明效果 */
 }
 
 .icon {

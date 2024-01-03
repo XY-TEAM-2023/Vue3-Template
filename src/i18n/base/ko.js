@@ -18,6 +18,8 @@ export default {
     btnEdit: '수정',
     btnCreate: '생성',
     btnDelete: '삭제',
+    btnReset: '초기화',
+    btnApply: '적용',
     handler: '조작',
     creatTime: '생성 시간',
     updateTime: '업데이트 시간',

@@ -5,7 +5,7 @@
       <!--  标题  -->
       <template #header>
         <div style="display: flex" class="flex-left-center">
-          <ui-svg :svg-code="svgPermission" svg-size="24" svg-color="#3259ce" />
+          <ui-svg :svg-code="svgCode" svg-size="24" svg-color="#3259ce" />
           <span style="margin: 2px 0 0 4px">
             {{ $t('roleListView.title') }}
           </span>
@@ -25,7 +25,7 @@
         @current-change="onChangeRoleSelect"
         style="min-height: 200px"
       >
-        <template #default="{ node, data }">
+        <template #default="{ data }">
           <div v-menu="onRolesMenu(data)" class="role-item">
             <span v-if="data.status === 1" style="margin: 3px 1px 0 -3px">
               <ui-svg :svg-code="svgLock" size="16" svg-color="#606266" />
@@ -57,12 +57,10 @@
 </template>
 
 <script setup>
+// eslint-disable-next-line no-unused-vars
 import { ref, reactive, onBeforeMount, computed, watch, onMounted, onBeforeUnmount, defineProps, defineEmits } from 'vue'
 import { request_role_delete, request_role_lock, request_role_tree, request_role_unlock } from '@/api/role'
-import ElTableColumnTs from '@/ui/components/ElTable/ElTableColumnTs.vue'
-import ElTableEx from '@/ui/components/ElTableEx.vue'
 import { useAppStore } from '@/stores/app'
-import { useUserStore } from '@/stores/user'
 import CreatRoleDialog from './CreatRoleDialog.vue'
 import ChangeRoleInfoDialog from '@/ui/views/desktop/Role/ChangeRoleInfoDialog.vue'
 import i18n from '@/i18n'
@@ -74,11 +72,8 @@ if (appStore.pageNum_userList <= 0) {
   appStore.pageNum_userList = appStore.pageSizes[0]
 }
 
-const userStore = useUserStore()
-
 /** 搜索第几页 */
-const searchPage = ref(1)
-const svgPermission =
+const svgCode =
   '<svg t="1704024937965" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="21796" width="32" height="32"><path d="M832 128H192a64.19 64.19 0 0 0-64 64v640a64.19 64.19 0 0 0 64 64h640a64.19 64.19 0 0 0 64-64V192a64.19 64.19 0 0 0-64-64zM628.36 320c48.29 0 87 39.82 87 89.14s-38.69 89.14-87 89.14-87.27-39.82-87.27-89.14S580.07 320 628.36 320z m-232.73 0c48.29 0 87 39.82 87 89.14s-38.69 89.14-87 89.14-87.27-39.82-87.27-89.14S347.35 320 395.64 320z m203.64 416H192v-74.29c0-69.23 135.85-104 203.64-104s203.64 34.77 203.64 104zM832 736H657.45v-74.29c0-44-23.56-77.55-57.31-102.51 10.18-0.89 19.78-1.49 28.22-1.49 67.78 0 203.64 34.77 203.64 104z" fill="#040000" p-id="21797"></path></svg>'
 
 const roleTree = ref(null)
@@ -118,8 +113,11 @@ onMounted(() => {
   requestRoleTree()
 })
 
-function onChangeRoleSelect(data, node) {
+const emit = defineEmits(['select'])
+
+function onChangeRoleSelect(data) {
   selectRole.value = data
+  emit('select', data)
 }
 
 const svgLock =
@@ -129,6 +127,8 @@ function onRolesMenu(data) {
   return reactive([
     // 创建
     {
+      // 是否显示
+      display: false,
       text: 'com.btnCreate',
       icon: '<svg t="1704012905527" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="8133" width="32" height="32"><path d="M512 48.761905a65.015873 65.015873 0 0 1 65.015873 65.015873v333.206349H910.222222a65.015873 65.015873 0 1 1 0 130.031746H576.999619L577.015873 910.222222a65.015873 65.015873 0 1 1-130.031746 0l-0.016254-333.206349H113.777778a65.015873 65.015873 0 1 1 0-130.031746h333.206349V113.777778a65.015873 65.015873 0 0 1 65.015873-65.015873z" fill="#000000" p-id="8134"></path></svg>',
       action: () => {
@@ -137,6 +137,8 @@ function onRolesMenu(data) {
     },
     // 编辑
     {
+      // 是否禁用
+      disabled: true,
       text: 'com.btnEdit',
       icon: '<svg t="1704012826419" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7135" width="32" height="32"><path d="M943.104 216.064q-8.192 9.216-15.36 16.384l-12.288 12.288q-6.144 6.144-11.264 10.24l-138.24-139.264q8.192-8.192 20.48-19.456t20.48-17.408q20.48-16.384 44.032-14.336t37.888 9.216q15.36 8.192 34.304 28.672t29.184 43.008q5.12 14.336 6.656 33.792t-15.872 36.864zM551.936 329.728l158.72-158.72 138.24 138.24q-87.04 87.04-158.72 157.696-30.72 29.696-59.904 58.88t-53.248 52.224-39.424 38.4l-18.432 18.432q-7.168 7.168-16.384 14.336t-20.48 12.288-31.232 12.288-41.472 13.824-40.96 12.288-29.696 6.656q-19.456 2.048-20.992-3.584t1.536-25.088q1.024-10.24 5.12-30.208t8.192-40.448 8.704-38.4 7.68-25.088q5.12-11.264 10.752-19.456t15.872-18.432zM899.072 478.208q21.504 0 40.96 10.24t19.456 41.984l0 232.448q0 28.672-10.752 52.736t-29.184 41.984-41.984 27.648-48.128 9.728l-571.392 0q-24.576 0-48.128-10.752t-41.472-29.184-29.184-43.52-11.264-53.76l0-570.368q0-20.48 11.264-42.496t29.184-39.936 40.448-29.696 45.056-11.776l238.592 0q28.672 0 40.448 20.992t11.776 42.496-11.776 41.472-40.448 19.968l-187.392 0q-21.504 0-34.816 14.848t-13.312 36.352l0 481.28q0 20.48 13.312 34.304t34.816 13.824l474.112 0q21.504 0 36.864-13.824t15.36-34.304l0-190.464q0-14.336 6.656-24.576t16.384-16.384 21.504-8.704 23.04-2.56z" p-id="7136"></path></svg>',
       action: () => {
@@ -310,47 +312,9 @@ function onDelete(role) {
 </script>
 
 <style scoped lang="scss">
-// 修改标题样式
-.custom-table-header {
-  background-color: #f5f7fa;
-  color: #333333;
-  font-size: 14px;
-  font-weight: bold;
-}
-
 // 解决标题不能加粗的问题
 :deep(*, *::before, *::after) {
   font-weight: inherit; // 继承父类
-}
-
-.color-red {
-  color: #ef0000;
-}
-
-.color-gray {
-  color: #545454;
-}
-
-.color-yellow {
-  color: #c78600;
-}
-
-.color-green {
-  color: #009800;
-}
-
-// 可点击单元格
-.cell-can-click {
-}
-
-.cell-can-click:hover {
-  text-decoration: underline; /* 显示下划线 */
-  font-weight: 600;
-  cursor: pointer; /* 将鼠标光标变为手指 */
-}
-
-:deep(.el-card) {
-  height: 100% !important;
 }
 
 .role-item {

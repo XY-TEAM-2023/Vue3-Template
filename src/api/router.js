@@ -4,12 +4,12 @@ import http from './axios'
  * 初始化路由基础配置
  * @returns {Promise<unknown>}
  */
-export const request_router_init = (router_list, isClick) => {
+export const request_router_init = (router_list, default_config) => {
   return new Promise((resolve, reject) => {
     http
-      .post('/api/admin/router/base/init', { list: router_list })
+      .post('/api/admin/router/base/init', { list: router_list, default_config: default_config })
       .then(({ data, msg }) => {
-        http.requestSuccessCommonHandler(resolve, data, msg, isClick) // 请求成功
+        http.requestSuccessCommonHandler(resolve, data, msg, true) // 请求成功
         // resolve(data) // 自定义处理
       })
       .catch(({ status, msg, data }) => {

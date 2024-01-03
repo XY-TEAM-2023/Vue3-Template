@@ -19,6 +19,8 @@ export default {
     btnEdit: '编辑',
     btnCreate: '创建',
     btnDelete: '删除',
+    btnReset: '重置',
+    btnApply: '应用',
     handler: '操作',
     creatTime: '创建时间',
     updateTime: '更新时间',
@@ -148,6 +150,8 @@ export default {
   },
   roleMenuConfigView: {
     title: '菜单分配',
+    noMenus: '暂未分配菜单',
+    noMenusFull: '暂无可分配菜单',
   },
   roleComponentConfigView: {
     title: '页面权限',

@@ -236,7 +236,7 @@ async function getAllFiles(handle, parentFullPath = '', result = {}) {
 // 解析路由配置
 async function parseRouterConfig() {
   /** 解析动态路由 */
-  const parseAsyncRoutes = (routes) => {
+  const parseAsyncRouteList = (routes) => {
     return routes.reduce((acc, route) => {
       const hasMeta = route.meta
       const hasPublic = hasMeta && route.meta.public
@@ -257,12 +257,34 @@ async function parseRouterConfig() {
 
       // 如果存在子路由，递归处理
       if (route.children && route.children.length > 0) {
-        const childRoutes = parseAsyncRoutes(route.children)
+        const childRoutes = parseAsyncRouteList(route.children)
         acc.push(...childRoutes)
       }
 
       return acc
     }, [])
+  }
+
+  /** 不改变原始结构的情况下，只保留 name 字段 */
+  const retainNameField = (obj) => {
+    if (Array.isArray(obj)) {
+      // 如果是数组，递归处理每个元素
+      return obj.map(retainNameField)
+    } else if (typeof obj === 'object' && obj !== null) {
+      // 如果是对象，创建一个新对象，只保留 name 字段
+      let newObj = {}
+      if (obj.name) {
+        newObj['name'] = obj['name']
+      }
+
+      // 对象的每个属性（如果是对象或数组）也递归处理
+      if (obj.children && typeof obj.children === 'object') {
+        newObj['children'] = retainNameField(obj.children)
+      }
+      return newObj
+    }
+    // 非对象或数组的值直接返回
+    return obj
   }
 
   const fileHandle = fileDict['src/router/config.js']
@@ -313,10 +335,11 @@ async function parseRouterConfig() {
       let asyncRoutes = eval(code)
       // console.log(asyncRoutes) // 这里的 asyncRoutes 将是实际的数组
 
-      const final = parseAsyncRoutes(asyncRoutes)
-      // console.log(final)
+      const router_list = parseAsyncRouteList(asyncRoutes)
+      const router_config = retainNameField(asyncRoutes) // parseAsyncRoute_Config(asyncRoutes)
+      console.log(router_config)
 
-      requestRouterInit(final)
+      requestRouterInit(router_list, router_config)
     } catch (error) {
       console.error('执行代码失败', error)
     }
@@ -324,10 +347,10 @@ async function parseRouterConfig() {
   fileReader.readAsText(file)
 }
 
-function requestRouterInit(routerConfig) {
-  let requestData = []
-  routerConfig.forEach((item) => {
-    requestData.push({
+function requestRouterInit(router_list, router_config) {
+  let router_list_data = []
+  router_list.forEach((item) => {
+    router_list_data.push({
       name: item.name,
       icon: item.icon,
       title: item.title,
@@ -343,10 +366,9 @@ function requestRouterInit(routerConfig) {
   })
 
   // console.log(routerConfig)
-  request_router_init(requestData)
-    .then((data) => {
-      console.log(data)
-      requestRouterBase()
+  request_router_init(router_list_data, router_config)
+    .then(() => {
+      requestRouterBase(false)
     })
     .catch(() => {})
     .finally(() => {
