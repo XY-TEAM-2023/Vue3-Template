@@ -1,5 +1,8 @@
 import { config } from '@/config'
 import { DateTime } from 'luxon'
+import { useUserStore } from '@/stores/user'
+import { useAppStore } from '@/stores/app'
+import i18n from '@/i18n'
 
 /**
  * 判断是否是移动设备
@@ -28,6 +31,28 @@ export function tsToTime(timestamp) {
     return targetTime.toFormat('yyyy/MM/dd HH:mm:ss')
   } catch (error) {
     return ''
+  }
+}
+
+/**
+ * 获取国际化文本
+ * @param key 键
+ * @param params 文本内的动态参数, 比如 { name: '123' }
+ * @param local 指定语言, 默认为全局配置 比如 'zh'
+ */
+export function getI18nText(key, params, local) {
+  if (params) {
+    if (local) {
+      return i18n.global.t(key, params, local)
+    } else {
+      return i18n.global.t(key, params)
+    }
+  } else {
+    if (local) {
+      return i18n.global.t(key, local)
+    } else {
+      return i18n.global.t(key)
+    }
   }
 }
 
@@ -73,4 +98,39 @@ export function getTextListMaxWidth(texts, font = null) {
     }
   })
   return max
+}
+
+let userStore = null
+let appStore = null
+function getUserStore() {
+  if (!userStore) {
+    userStore = useUserStore()
+  }
+  return userStore
+}
+function getAppStore() {
+  if (!appStore) {
+    appStore = useAppStore()
+  }
+
+  return appStore
+}
+
+/**
+ * 检查是否有权限，针对当前页面
+ * @param level
+ */
+export function hasPermission(level) {
+  const routerName = getAppStore().routerName
+  const permission = getUserStore().permission[routerName]
+  if (!permission) {
+    return false
+  }
+
+  const i = parseInt(level)
+  if (isNaN(i)) {
+    return false
+  }
+
+  return (permission & (1 << i)) !== 0
 }

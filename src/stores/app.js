@@ -14,6 +14,8 @@ export const useAppStore = defineStore('app', {
     _languageSwitchHandler: null,
     /**路由菜单-当前访问的路径 */
     routerPath: '',
+    /**路由-当前页面名 */
+    routerName: '',
     /**路由菜单-显示小红点的路由*/
     _routerRedDot: {},
     /** 导航栏菜单是否折叠 */
@@ -24,6 +26,7 @@ export const useAppStore = defineStore('app', {
     openedTabs: [],
     /** 每页显示的数据*/
     pageSizes: [3, 20, 50, 100],
+    keepAliveMenus: [],
     /** 搜索数据列表时，每页返回的数据 */
     pageNum_userList: -1,
   }),
@@ -121,6 +124,8 @@ export const useAppStore = defineStore('app', {
   persist: {
     key: 'app', // 区分不同store
     enabled: true,
-    strategies: [{ storage: localStorage, paths: ['language', 'routerPath', 'themeDarkMode', 'openedTabs', 'pageNum_userList'] }],
+    strategies: [
+      { storage: localStorage, paths: ['language', 'routerName', 'routerPath', 'themeDarkMode', 'openedTabs', 'pageNum_userList'] },
+    ],
   },
 })

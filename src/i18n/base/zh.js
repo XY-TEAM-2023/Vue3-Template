@@ -147,13 +147,29 @@ export default {
     btnSetMain: '设置为首页',
     homePage: '首页',
     homePageTip: '是否将其({name})设置为主页?',
+    displayPermission: '查看权限',
+    btnLoadProject: '加载项目',
+    btnUpdateMenus: '更新菜单',
+    btnUpdatePermission: '更新组件权限',
   },
   roleMenuConfigView: {
     title: '菜单分配',
     noMenus: '暂未分配菜单',
     noMenusFull: '暂无可分配菜单',
+    setHome: '置为首页',
   },
-  roleComponentConfigView: {
+  rolePermissionView: {
     title: '页面权限',
+  },
+  uiMenuPermission: {
+    view: '页面',
+    includeView: '引用页面',
+    permission: '权限值',
+    components: '组件',
+    parentTitle: '父级标题',
+    displayTitle: '标题',
+    status: '状态',
+    tableGroup: '表格',
+    componentGroup: '组件',
   },
 }

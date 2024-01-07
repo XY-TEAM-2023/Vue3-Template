@@ -5,7 +5,7 @@
       <!--  图标  -->
       <el-icon v-if="checkIsShowIcon(route)" :size="config.router.admin.iconSize">
         <component v-if="isElementIcon(route.meta.icon)" :is="route.meta.icon" />
-        <ui-svg v-else :svg-code="route.meta.icon" />
+        <ui-svg v-else :svg-code="route.meta.icon" svg-color="#FFFFF" />
       </el-icon>
 
       <span>
@@ -54,11 +54,13 @@ import { defineProps, computed } from 'vue'
 import { useAppStore } from '@/stores/app'
 import { config } from '@/config'
 import UiSvg from '@/ui/components/UiSvg.vue'
-import i18n from '@/i18n'
 
 const router = useRouter()
 const props = defineProps({
-  route: Object,
+  route: {
+    type: Object,
+    default: () => ({}),
+  },
 })
 
 const appStore = useAppStore()
@@ -71,18 +73,7 @@ function isElementIcon(icon) {
 }
 
 function getTitle(obj) {
-  let isBuild = true
-  if (import.meta.env.DEV) {
-    isBuild = config.buildMode
-  } else {
-    isBuild = false
-  }
-
-  if (isBuild) {
-    return obj.meta['title_' + appStore.language]
-  } else {
-    return i18n.global.t(obj.meta.title)
-  }
+  return obj.meta.title[appStore.language]
 }
 
 function getIconColor(fullPath) {}

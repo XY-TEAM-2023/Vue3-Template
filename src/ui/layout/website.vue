@@ -19,7 +19,9 @@
       </el-header>
       <el-main style="width: 100%; height: 100%">
         <el-scrollbar style="width: 100%; height: 100%">
-          <RouterView />
+          <div style="padding: 10px 10px 10px 10px; width: 100%">
+            <RouterView />
+          </div>
         </el-scrollbar>
       </el-main>
     </el-container>

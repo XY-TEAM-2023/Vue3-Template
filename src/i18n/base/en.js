@@ -123,6 +123,7 @@ export default {
   },
   // 路由配置页面
   routerListView: {
+    router: 'Menu List',
     name: 'name',
     icon: 'Icon',
     title: 'Title',
@@ -145,5 +146,29 @@ export default {
     btnSetMain: 'Set as Home',
     homePage: 'home',
     homePageTip: 'Would you like to set it ({name}) as the home page?',
+    displayPermission: 'View permissions',
+    btnLoadProject: 'Load Project',
+    btnUpdateMenus: 'Update Menus',
+    btnUpdatePermission: 'Update Component Permissions',
+  },
+  roleMenuConfigView: {
+    title: 'Menu Assignment',
+    noMenus: 'No menus assigned yet',
+    noMenusFull: 'No assignable menus available',
+    setHome: 'Set As Home',
+  },
+  rolePermissionView: {
+    title: 'Page Permissions',
+  },
+  uiMenuPermission: {
+    view: 'Page',
+    includeView: 'Include Page',
+    permission: 'Permission',
+    components: 'Components',
+    parentTitle: 'Parent Title',
+    displayTitle: 'Title',
+    status: 'Status',
+    tableGroup: 'Table',
+    componentGroup: 'Component',
   },
 }

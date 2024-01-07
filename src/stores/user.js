@@ -1,6 +1,8 @@
 // 于管理用户的相关数据
 import { defineStore } from 'pinia'
 import { useAppStore } from '@/stores/app'
+import { config } from '@/config'
+import router from '@/router'
 
 let keepAliveTimerId = null
 
@@ -40,6 +42,10 @@ export const useUserStore = defineStore('user', {
     _jwt: '',
     /** 路由基础配置 */
     routes: [],
+    /** 页面权限 */
+    permission: {},
+    /** 首页 */
+    homePage: '',
   }),
 
   /*****************************************
@@ -123,13 +129,78 @@ export const useUserStore = defineStore('user', {
     /**
      * 登录成功，设置登录后信息
      */
-    loginSuccess(account, role_name, routes) {
-      const jwt_data = this.jwtData
-      this.userId = jwt_data.userId
+    loginSuccess(account, response) {
       this.account = account
-      this.role_name = role_name
+      const jwt_data = this.jwtData
       this.role_id = jwt_data.roleId
-      this.routes = routes
+      this.userId = jwt_data.userId
+      this.role_name = response.roleName
+      this.permission = response.permission
+
+      // 整理数据, 让其和router/config.js的结构一致
+      let tempHomePage = null
+      const organizeDataCb = (data) => {
+        if (Array.isArray(data)) {
+          // 子菜单构造
+          const result = []
+          data.forEach((item) => {
+            result.push(organizeDataCb(item))
+          })
+          return result
+        } else if (data !== null && typeof data === 'object') {
+          const menu = {
+            path: data.name,
+            name: data.name,
+            component: data.component.replace('{platform}', '${platform}'),
+            meta: {
+              icon: data.icon,
+              needLogin: true,
+              title: {
+                en: data.title_en,
+                zh: data.title_zh,
+                ko: data.title_ko,
+              },
+              cache: data.cache === 1,
+              permission: data.permission,
+              public: {
+                desktop: data.enable_desktop,
+                mobile: data.enable_mobile,
+              },
+            },
+          }
+
+          // 有子菜单
+          const tempChildren = organizeDataCb(data.children)
+          if (tempChildren) {
+            menu.children = tempChildren
+            // 删除目录原始的component
+            delete menu.component
+
+            // 当访问目录的时候, 默认的跳转地址
+            if (tempChildren.length > 0) {
+              menu.redirect = { name: tempChildren[0].name }
+            }
+          } else {
+            if (!tempHomePage) {
+              tempHomePage = data.name
+            }
+          }
+
+          return menu
+        }
+        return null
+      }
+
+      this.routes = organizeDataCb(response.routes)
+      if (import.meta.env.DEV ? config.buildMode : false) {
+        this.homePage = response.homePage ? response.homePage : tempHomePage
+      } else {
+        this.homePage = config.router.homePage
+      }
+      // console.error(this.routes)
+
+      // 重新加载路由配置
+      router.reloadRoutes(true)
 
       tryRunKeepAliveTimer()
     },

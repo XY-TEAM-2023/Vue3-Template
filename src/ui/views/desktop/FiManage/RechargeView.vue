@@ -2,7 +2,7 @@
   <el-card>
     <div>
       <el-row>
-        <el-col :span="24">
+        <el-col :span="24" v-permission="1">
           <div class="label-holder">
             <el-form class="inline-form">
               <el-row :gutter="20">

@@ -37,7 +37,6 @@ export default {
   },
   // data: 组件的响应式数据
   data() {
-    console.log(this.defaultColor)
     return {
       appStore: useAppStore(),
     }

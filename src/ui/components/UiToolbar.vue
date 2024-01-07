@@ -35,29 +35,12 @@ import { useUserStore } from '@/stores/user'
 
 /** 应用全局数据对象 */
 const appStore = useAppStore()
-const userStore = useUserStore()
 function onBtnLastPage() {
   router.back()
 }
 
 function getTitle(obj) {
-  let isBuild = true
-  if (import.meta.env.DEV) {
-    isBuild = config.buildMode
-  } else {
-    isBuild = false
-  }
-
-  if (isBuild) {
-    return obj['title_' + appStore.language]
-  } else {
-    try {
-      return i18n.global.t(obj.name)
-    } catch {
-      userStore.logout()
-      return ''
-    }
-  }
+  return obj.title[appStore.language]
 }
 
 function onCloseTab(fullPath) {
@@ -117,16 +100,20 @@ onMounted(async () => {
   await nextTick() // 等待DOM更新
   const container = scrollContainer.value
   if (container) {
-    container.addEventListener('wheel', (e) => {
-      e.preventDefault()
-      scrollX.value += e.deltaY
-      if (scrollX.value > 0) {
-        scrollX.value = 0
-      } else if (scrollX.value < -container.scrollWidth) {
-        scrollX.value = -container.scrollWidth
-      }
-      console.log(container.scrollWidth, container.clientWidth)
-    })
+    container.addEventListener(
+      'wheel',
+      (e) => {
+        e.preventDefault()
+        scrollX.value += e.deltaY
+        if (scrollX.value > 0) {
+          scrollX.value = 0
+        } else if (scrollX.value < -container.scrollWidth) {
+          scrollX.value = -container.scrollWidth
+        }
+        console.log(container.scrollWidth, container.clientWidth)
+      },
+      { passive: true }
+    )
     container.style.willChange = 'transform' // 告诉浏览器元素可能会被滚动
   }
 })

@@ -187,10 +187,12 @@ function requestUserList() {
       .then((data) => {
         isInitView = false
 
-        // console.log(data)
+        console.log(data)
         userList.splice(0)
         const curTs = new Date().getTime() // 获取当前的13位时间戳
         for (const obj of data.result) {
+          console.log(obj)
+
           // 整理角色名
           if (obj.role_id === 0) {
             if (userStore.role_id === 0) {
@@ -199,13 +201,19 @@ function requestUserList() {
               continue
             }
           } else {
-            obj.role_name = roleDict[obj.role_id].name
+            if (roleDict[obj.role_id]) {
+              obj.role_name = roleDict[obj.role_id].name
+            } else {
+              console.error(`account(${obj.id}) role(${obj.role_id}) is error`)
+              continue
+            }
           }
           // 整理在线状态
           obj.isOnline = obj.keep_online_ts > curTs
           delete obj.keep_online_ts
           userList.push(obj)
         }
+        console.log('?????????????', userList)
         total.value = data.total
       })
       .catch(() => {})

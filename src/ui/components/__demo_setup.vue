@@ -15,7 +15,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, watch, onMounted, onBeforeUnmount, defineProps, defineEmits, useAttrs } from 'vue'
+import { ref, reactive, computed, watch, onMounted, onBeforeUnmount, defineProps, defineEmits, useAttrs, defineExpose } from 'vue'
 import { useUserStore } from '@/stores/user'
 import { useAppStore } from '@/stores/app'
 
@@ -77,6 +77,12 @@ onMounted(() => {
 onBeforeUnmount(() => {
   console.log('组件销毁之前')
 })
+
+function test() {
+  console.log('11111')
+}
+// 使用 defineExpose 暴露方法
+defineExpose({ test })
 </script>
 
 <style scoped lang="scss">

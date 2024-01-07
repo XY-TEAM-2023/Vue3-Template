@@ -104,7 +104,6 @@ function onOpen() {
   request_role_list(true, true)
     .then((data) => {
       roles.value = data.result
-      console.log(roles.value)
       needInit.value = false
     })
     .catch(() => {})

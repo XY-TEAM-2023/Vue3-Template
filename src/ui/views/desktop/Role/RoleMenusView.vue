@@ -1,6 +1,6 @@
 <template>
   <div style="display: flex; flex-direction: column; height: 100%">
-    <el-card style="width: 260px" class="unselect">
+    <el-card style="width: 260px" class="unselect" shadow="never">
       <!--  标题  -->
       <template #header>
         <div style="display: flex" class="flex-left-center">
@@ -15,13 +15,13 @@
       <el-tree
         ref="uiTree"
         class="role"
+        v-loading="isRequestingMenu"
         :data="treeData"
         :empty-text="isEdit ? $t('roleMenuConfigView.noMenusFull') : $t('roleMenuConfigView.noMenus')"
-        :current-node-key="selectMenu.value ? selectMenu.value.id : ''"
         node-key="id"
+        :current-node-key="currentNode"
         :show-checkbox="isEdit"
         :default-checked-keys="menuChecked"
-        :draggable="isEdit"
         highlight-current
         default-expand-all
         check-strictly
@@ -31,9 +31,9 @@
         style="min-height: 200px"
       >
         <template #default="{ node, data }">
-          <div>
-            <span v-if="data.status === 1" style="margin: 3px 1px 0 -3px">
-              <ui-svg :svg-code="svgLock" size="16" svg-color="#606266" />
+          <div style="display: flex">
+            <span v-if="data.name === homePageName" style="margin: 3px 1px 0 -3px">
+              <ui-svg :svg-code="svgCode_Home" size="16" svg-color="#e6a23c" />
             </span>
             <span>
               {{ getTitle(data) }}
@@ -44,10 +44,24 @@
 
       <!--  底部  -->
       <template #footer>
-        <div style="width: 100%; padding: 4px 4px 4px 4px; display: flex">
-          <el-button v-if="!isEdit" size="small" type="primary" @click="onEdit">
-            {{ $t('com.btnEdit') }}
-          </el-button>
+        <div v-loading="isReqSaving" style="width: 100%; padding: 4px 4px 4px 4px; display: flex">
+          <template v-if="!isEdit">
+            <el-button size="small" type="primary" @click="onEdit">
+              {{ $t('com.btnEdit') }}
+            </el-button>
+
+            <el-button
+              :disabled="(selectMenu.id && selectMenu.id === 0) || selectMenu.name === homePageName"
+              v-loading="isChangeHoming"
+              size="small"
+              type="warning"
+              @click="onSetAsHome"
+              style="margin-left: auto"
+            >
+              {{ $t('roleMenuConfigView.setHome') }}
+            </el-button>
+          </template>
+
           <template v-else>
             <el-button size="small" @click="onCancelEdit" type="danger">
               {{ $t('com.btnCancel') }}
@@ -66,19 +80,17 @@
 </template>
 
 <script setup>
-import { ref, reactive, onBeforeMount, computed, watch, onMounted, onBeforeUnmount, defineProps, defineEmits } from 'vue'
+import { computed, defineProps, reactive, ref, watch, nextTick, defineEmits } from 'vue'
 import { useAppStore } from '@/stores/app'
-import { useUserStore } from '@/stores/user'
 import UiSvg from '@/ui/components/UiSvg.vue'
 import { request_role_menu_edit, request_role_menu_list } from '@/api/role_menu'
 import { cloneDeep } from 'lodash-es'
+import { request_role_menu_set_home } from '@/api/menu'
 
 const appStore = useAppStore()
 if (appStore.pageNum_userList <= 0) {
   appStore.pageNum_userList = appStore.pageSizes[0]
 }
-
-const userStore = useUserStore()
 
 /*************************************************************
  *                    页面基础数据
@@ -86,8 +98,9 @@ const userStore = useUserStore()
 const uiTree = ref(null)
 const svgCode_title =
   '<svg t="1704190174941" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="40161" width="32" height="32"><path d="M896 256H128V128h768v128z m0 192H128v128h768V448z m0 320H128v128h768V768z" p-id="40162"></path></svg>'
-const svgCode_apply =
-  '<svg t="1704197554527" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="47220" width="32" height="32"><path d="M896 64 128 64C92.672 64 64 92.672 64 128l0 768c0 35.392 28.672 64 64 64l768 0c35.392 0 64-28.608 64-64L960 128C960 92.672 931.392 64 896 64zM733.632 356.16l-223.36 358.784c-7.744 12.416-21.248 20.224-35.904 20.928C473.792 736 473.024 736 472.384 736c-14.016 0-27.136-6.592-35.648-17.664L292.608 537.472C277.696 517.888 281.6 489.856 301.248 474.944 320.96 460.096 348.864 464 363.712 483.584l105.088 129.152 189.248-303.744c12.992-20.928 40.512-27.264 61.376-14.272C740.352 307.712 746.624 335.232 733.632 356.16z" fill="#020202" p-id="47221"></path></svg>'
+
+const svgCode_Home =
+  '<svg t="1704550594313" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5186" width="32" height="32"><path d="M946.5 505L534.6 93.4c-12.5-12.5-32.7-12.5-45.2 0L77.5 505c-12 12-18.8 28.3-18.8 45.3 0 35.3 28.7 64 64 64h43.4V908c0 17.7 14.3 32 32 32H448V716h112v224h265.9c17.7 0 32-14.3 32-32V614.3h43.4c17 0 33.3-6.7 45.3-18.8 24.9-25 24.9-65.5-0.1-90.5z" p-id="5187"></path></svg>'
 
 const props = defineProps({
   roleId: Number,
@@ -113,51 +126,65 @@ function getTitle(menu) {
 /*************************************************************
  *                      请求页面数据
  *************************************************************/
+const selectMenu = ref(reactive({ id: 0, name: '' }))
+const currentNode = computed(() => (selectMenu.value ? selectMenu.value.id : ''))
 
 const isRequestingMenu = ref(false)
 /** 修改后的菜单选择状态 */
 const menuChecked = ref(reactive([]))
 /** 展示的数据 */
 const treeData = ref(reactive([]))
+const homePageName = ref('')
 /** 原始数据-全部菜单 */
 let treeDataFull = []
 /** 原始数据-有权限的菜单id列表 */
 let treeDataCheckIds = []
 /** 原始数据-有权限的菜单数据列表 */
 let treeDataHas = []
+
 function requestMenus() {
   if (roleId.value < 0 || isRequestingMenu.value) {
     return
   }
   isRequestingMenu.value = true
+  isEdit.value = false
+  isChanged.value = false
   request_role_menu_list(roleId.value)
     .then((data) => {
-      treeDataFull = data.result
-      const hasItems = collectDataWithHasTrue(data.result)
-      treeDataHas = hasItems.tree
-      treeDataCheckIds = hasItems.ids
+      // console.log(data)
+      homePageName.value = data.homePageName
+      treeDataFull = data.parent
+      treeDataHas = data.self
+      treeDataCheckIds = toMenuIds(treeDataHas)
       treeData.value = cloneDeep(treeDataHas)
       menuChecked.value = cloneDeep(treeDataCheckIds)
+
+      if (selectMenu.value && selectMenu.value.id) {
+        const curId = selectMenu.value.id
+        selectMenu.value = { id: 0, name: '' }
+        nextTick(() => {
+          uiTree.value.setCurrentKey(curId)
+          // console.error(currentNode.value)
+          emit('selectMenu', selectMenu.value)
+        })
+      }
     })
     .catch(() => {})
     .finally(() => {
       isRequestingMenu.value = false
     })
 }
+defineExpose({ requestMenus })
 
 /**
  * 返回所有 has 属性为 true 的项的 id 列表
  */
-function collectDataWithHasTrue(items) {
+function toMenuIds(items) {
   let ids = []
-  let tree = []
 
   function traverse(items) {
     for (let item of items) {
-      if (item.has) {
-        ids.push(item.id)
-        tree.push(item)
-      }
+      ids.push(item.id)
       if (item.children && item.children.length > 0) {
         traverse(item.children)
       }
@@ -165,18 +192,36 @@ function collectDataWithHasTrue(items) {
   }
 
   traverse(items)
-  return { ids, tree }
+  return ids
 }
+
+const emit = defineEmits(['start-edit', 'cancel-edit', 'selectMenu'])
 
 function onEdit() {
   isEdit.value = true
   treeData.value = cloneDeep(treeDataFull)
+  emit('start-edit')
+}
+
+const isChangeHoming = ref(false)
+function onSetAsHome() {
+  if (isChangeHoming.value) {
+    return
+  }
+  isChangeHoming.value = true
+  request_role_menu_set_home(props.roleId, selectMenu.value.name)
+    .then(() => {})
+    .catch(() => {})
+    .finally(() => {
+      isChangeHoming.value = false
+    })
 }
 
 function onCancelEdit() {
   isEdit.value = false
   onResetCheck()
   treeData.value = cloneDeep(treeDataHas)
+  emit('cancel-edit')
 }
 
 /*************************************************************
@@ -205,9 +250,6 @@ function arraysEqual(arr1, arr2) {
 
 const isReqSaving = ref(false)
 function onSubmit() {
-  // console.log(menuChecked.value)
-  // console.log(treeData.value)
-  // console.log(filterData(menuChecked.value, treeData.value))
   if (isReqSaving.value) {
     return
   }
@@ -215,21 +257,26 @@ function onSubmit() {
 
   const config = filterData(menuChecked.value, treeData.value)
   request_role_menu_edit(roleId.value, config)
-    .then(() => {})
+    .then(() => {
+      requestMenus()
+      emit('cancel-edit')
+    })
     .catch(() => {})
     .finally(() => {
       isReqSaving.value = false
     })
 }
+
 function filterData(selectIds, dataList) {
-  let result = []
-
   function processItem(item) {
-    // 深度复制项和其子项
-    let newItem = { ...item, children: item.children ? [...item.children] : [] }
-
-    // 过滤子项
-    newItem.children = newItem.children.flatMap((child) => processItem(child)).filter((child) => child !== null)
+    // 创建一个新对象，只包含 'name' 和 'children'（如果存在）
+    let newItem = { name: item.name }
+    if (item.children) {
+      newItem.children = item.children.flatMap((child) => processItem(child)).filter((child) => child !== null)
+      if (newItem.children.length === 0) {
+        delete newItem.children // 如果没有子项，删除 'children' 字段
+      }
+    }
 
     // 检查当前项是否应保留
     if (selectIds.includes(item.id)) {
@@ -237,19 +284,10 @@ function filterData(selectIds, dataList) {
     }
 
     // 如果当前项不保留，但有子项应保留，则提升这些子项
-    return newItem.children.length > 0 ? newItem.children : null
+    return newItem.children ? newItem.children : null
   }
 
-  dataList.forEach((item) => {
-    let processedItems = processItem(item)
-    if (Array.isArray(processedItems)) {
-      result.push(...processedItems)
-    } else if (processedItems !== null) {
-      result.push(processedItems)
-    }
-  })
-
-  return result
+  return dataList.flatMap((item) => processItem(item)).filter((item) => item !== null)
 }
 
 function onResetCheck() {
@@ -262,10 +300,11 @@ function onResetCheck() {
 /*************************************************************
  *                      选择菜单事件
  *************************************************************/
-const selectMenu = ref(reactive({}))
+
 function onChangeSelect(data, node) {
-  console.log(data)
-  selectMenu.value = data.result
+  console.error('!!!!!!!!!!!!', data)
+  selectMenu.value = data
+  emit('selectMenu', data)
 }
 </script>
 

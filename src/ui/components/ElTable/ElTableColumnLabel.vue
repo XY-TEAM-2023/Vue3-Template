@@ -57,6 +57,7 @@ function onClick(index, row) {
 
 const emit = defineEmits(['edit'])
 function onSubmitHandler(index, row, newValue, cancelCb, closeCb) {
+  console.log('>>>>>>>>>>>>>>>>>>>>>>>>edit')
   emit('edit', index, row, newValue, cancelCb, closeCb)
 }
 </script>

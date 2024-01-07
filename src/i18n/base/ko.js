@@ -123,6 +123,7 @@ export default {
   },
   // 路由配置页面
   routerListView: {
+    router: '메뉴 목록',
     name: '이름',
     icon: '아이콘',
     title: '제목',
@@ -143,5 +144,29 @@ export default {
     btnSetMain: '홈 설정',
     homePage: '홈페이지',
     homePageTip: '그것({name})을 홈페이지로 설정하시겠습니까?',
+    displayPermission: '권한 보기',
+    btnLoadProject: '프로젝트 불러오기',
+    btnUpdateMenus: '메뉴 업데이트',
+    btnUpdatePermission: '컴포넌트 권한 업데이트',
+  },
+  roleMenuConfigView: {
+    title: '메뉴 할당',
+    noMenus: '아직 메뉴 할당 없음',
+    noMenusFull: '할당 가능한 메뉴 없음',
+    setHome: '홈페이지로 설정',
+  },
+  rolePermissionView: {
+    title: '페이지 권한',
+  },
+  uiMenuPermission: {
+    view: '페이지',
+    includeView: '포함된 페이지',
+    permission: '권한 값',
+    components: '구성 요소',
+    parentTitle: '상위 제목',
+    displayTitle: '제목',
+    status: '상태',
+    tableGroup: '테이블',
+    componentGroup: '구성 요소',
   },
 }

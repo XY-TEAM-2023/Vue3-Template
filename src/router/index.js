@@ -1,11 +1,12 @@
-import { createRouter, createWebHistory, createWebHashHistory } from 'vue-router'
+import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router'
 import { ElMessageBox } from 'element-plus'
 import i18n from '@/i18n'
 import { useUserStore } from '@/stores/user'
 import { config } from '@/config'
 import NProgress from 'nprogress'
 import { useAppStore } from '@/stores/app'
-import { constantRoutes, asyncRoutes, platform } from './config'
+import { asyncRoutes, constantRoutes, platform } from './config'
+import { cloneDeep } from 'lodash-es'
 
 let router = createRouter({
   history: config.localMode ? createWebHashHistory(import.meta.env.BASE_URL) : createWebHistory(import.meta.env.BASE_URL),
@@ -42,30 +43,7 @@ function checkRouterIsPublic(r) {
   return false
 }
 
-/**
- * 检查路由是否权限
- * @param route 路由
- * @param curRoles 当前拥有的角色列表
- */
-function checkRouterHasRole(route, curRoles) {
-  if (route.meta === undefined) {
-    return true
-  }
-  if (route.meta.roles === undefined) {
-    return true
-  }
-  if (route.meta.roles.length === 0) {
-    return true
-  }
-  if (curRoles === undefined || curRoles.length === 0) {
-    return false
-  }
-
-  return route.some((role) => curRoles.includes(role))
-}
-
 let consoleIndex = 0
-
 const comps = import.meta.glob('/src/ui/**/*.vue')
 
 /**
@@ -76,9 +54,9 @@ function loadRouteConfig(routerConfig) {
 
   routerConfig.forEach((route) => {
     if (tryLoadRouteGroup(route, '')) {
+      console.log(route)
       router.config.push(route)
       router.addRoute(route)
-      console.log(route)
     }
   })
 
@@ -151,8 +129,10 @@ function tryLoadRouteGroup(route, parentPath = '') {
   }
   if (canLoad) {
     if (typeof route.component === 'string') {
-      // console.warn(route.component, ' || ', comps[route.component])
-      route.component = comps[route.component]
+      const tempComponent = route.component.replace('${platform}', platform)
+      console.warn(tempComponent, ' || ', comps[tempComponent])
+      route.component = comps[tempComponent]
+      route.meta.component = getComponentNameFromPath(tempComponent)
     }
     // console.log(`${++consoleIndex}. ${route.fullPath}`)
   }
@@ -160,151 +140,11 @@ function tryLoadRouteGroup(route, parentPath = '') {
   return canLoad
 }
 
-/** 重新加载路由配置 */
-const reloadRoutes_build = function () {
-  const parse_router_config_cb = (routes, parentPath = '') => {
-    routes.forEach((item) => {
-      if (item.redirect) {
-        return
-      }
-
-      if (parentPath === '') {
-        if (!item.path.startsWith('/')) {
-          item.path = '/' + item.path
-        }
-      }
-
-      // 组织完整路径
-      if (parentPath) {
-        if (parentPath === '/') {
-          item.fullPath = parentPath + item.path
-        } else {
-          item.fullPath = parentPath + '/' + item.path
-        }
-      } else {
-        item.fullPath = item.path
-      }
-
-      if (item.children && item.children.length > 0) {
-        reload_handler_cb(item.children, item.fullPath)
-      }
-    })
-  }
-  const reload_handler_cb = (routes, parentPath = '') => {
-    routes.forEach((item) => {
-      if (item.redirect) {
-        router.config.push(item)
-        return
-      }
-
-      item.path = item.name
-      if (parentPath === '') {
-        if (!item.path.startsWith('/')) {
-          item.path = '/' + item.path
-        }
-      }
-
-      // 组织完整路径
-      if (parentPath) {
-        if (parentPath === '/') {
-          item.fullPath = parentPath + item.path
-        } else {
-          item.fullPath = parentPath + '/' + item.path
-        }
-      } else {
-        item.fullPath = item.path
-      }
-
-      if (item.children && item.children.length > 0) {
-        console.error(item.children)
-        reload_handler_cb(item.children, item.fullPath)
-      }
-
-      // 第一次循环
-      if (parentPath === '') {
-        console.log(parentPath, '|', item)
-        router.addRoute(item)
-        router.config.push(item)
-      }
-    })
-  }
-  const get_route_component_cb = (routerInfo) => {
-    if (!routerInfo.component) {
-      return null
-    }
-
-    if (!routerInfo.enable_mobile && !routerInfo.enable_desktop) {
-      return null
-    }
-    let arg = ''
-    if (platform === 'desktop') {
-      arg = routerInfo.enable_desktop ? 'desktop' : 'mobile'
-    } else if (platform === 'mobile') {
-      arg = routerInfo.enable_desktop ? 'mobile' : 'desktop'
-    } else {
-      return null
-    }
-
-    return comps[routerInfo.component.replace('{platform}', arg)]
-  }
-
-  let localStorageUserStr = localStorage.getItem('user')
-  const localStorageUser = localStorageUserStr ? JSON.parse(localStorageUserStr) : { routes: [] }
-  const async_routes = localStorageUser.routes
-  // 清空路由
-  router.getRoutes().forEach((route) => {
-    const name = route.name
-    if (name) {
-      router.removeRoute(name)
-    }
-  })
-  router.config = []
-
-  // 整理动态路由数据
-  let asyncRoutesData = []
-  async_routes.forEach((item) => {
-    if (item.display && item.component) {
-      asyncRoutesData.push({
-        name: item.name,
-        path: item.name,
-        icon: item.icon,
-        component: get_route_component_cb(item),
-        meta: {
-          title_en: item.title_en,
-          title_zh: item.title_zh,
-          title_ko: item.title_ko,
-          cache: item.cache,
-        },
-      })
-    }
-  })
-
-  const newConfig = []
-  constantRoutes.forEach((item) => {
-    item.component = comps[item.component]
-    if (item.name === '/') {
-      item.children = asyncRoutesData
-    }
-    newConfig.push(item)
-  })
-
-  // 整理数据
-  parse_router_config_cb(newConfig)
-  // 不存在的页面匹配404
-  // newConfig.push({ path: '/:pathMatch(.*)*', redirect: '/404', meta: { hidden: true } })
-
-  // 加载路由配置
-  newConfig.forEach((item) => {
-    console.log(item)
-    router.addRoute(item)
-    router.config.push(item)
-  })
-}
-
 /**
  * 根据手机还是PC, 重新加载路由
  */
-const reloadRoutes_dev = function () {
+const reloadRoutesHandler = function (asyncRoutesConfig) {
+  // console.error('asyncRoutesConfig', asyncRoutesConfig)
   // 清空路由
   router.getRoutes().forEach((route) => {
     const name = route.name
@@ -314,13 +154,13 @@ const reloadRoutes_dev = function () {
   })
   router.config = []
 
-  console.log('重新加载Router配置')
+  // console.log('重新加载Router配置')
 
   consoleIndex = 0
 
   // 动态路由
   const layoutIndex = constantRoutes.findIndex((route) => route.name === '/')
-  constantRoutes[layoutIndex].children = asyncRoutes
+  constantRoutes[layoutIndex].children = asyncRoutesConfig
   const refreshRouteIndex = constantRoutes[layoutIndex].children.findIndex((route) => route.name === 'refresh')
   if (refreshRouteIndex === -1) {
     constantRoutes[layoutIndex].children.push({
@@ -338,24 +178,24 @@ const reloadRoutes_dev = function () {
   // 加载路径
   loadRouteConfig(constantRoutes)
   // 添加不存在的页面重定向
-  // router.addRoute({ path: '/:pathMatch(.*)*', redirect: '/404', meta: { hidden: true } })
-
-  // console.log(router.config)
-  // console.log(router.options.routes)
+  router.addRoute({ path: '/:pathMatch(.*)*', redirect: '/404', meta: { hidden: true } })
 }
 
-router.reloadRoutes = function () {
-  let isBuild = true
-  if (import.meta.env.DEV) {
-    isBuild = config.buildMode
-  } else {
-    isBuild = false
-  }
+const isBuildMode = import.meta.env.DEV ? config.buildMode : false
 
-  if (isBuild) {
-    reloadRoutes_build()
+router.reloadRoutes = function (isUseStore = false) {
+  if (isBuildMode) {
+    // reloadRoutes_build(isUseStore)
+    if (isUseStore) {
+      reloadRoutesHandler(cloneDeep(useUserStore().routes))
+    } else {
+      let localStorageUserStr = localStorage.getItem('user')
+      const localStorageUser = localStorageUserStr ? JSON.parse(localStorageUserStr) : { routes: [] }
+      const tempAsyncRouters = localStorageUser.routes ? localStorageUser.routes : []
+      reloadRoutesHandler(tempAsyncRouters)
+    }
   } else {
-    reloadRoutes_dev()
+    reloadRoutesHandler(asyncRoutes)
   }
 }
 
@@ -374,20 +214,30 @@ router.beforeEach(
     // 登录状态 -1未登录；0已登录；1登录失效；
     const loginStatus = userStore.loginStatus
 
-    console.error('to.path', to.path)
+    // console.error('to.path', to.path)
     if (to.path === '/') {
       // 如果访问的是根目录
       if (loginStatus === -1) {
         // 跳转到登录页面
         if (config.router.loginPage && config.router.loginPage !== to.path) {
-          next(config.router.loginPage)
+          if (config.router.loginPage.startsWith('/')) {
+            next({ path: config.router.loginPage })
+          } else {
+            next({ name: config.router.loginPage })
+          }
         } else {
           next()
         }
       } else {
+        const homePage = isBuildMode ? userStore.homePage : config.router.homePage
+        // console.error('?????????????', homePage)
         // 跳转到登录成功后的第一个页面
-        if (config.router.homePage && config.router.homePage !== to.path) {
-          next(config.router.homePage)
+        if (homePage && homePage !== to.path) {
+          if (homePage.startsWith('/')) {
+            next({ path: homePage })
+          } else {
+            next({ name: homePage })
+          }
         } else {
           next()
         }
@@ -437,16 +287,42 @@ router.beforeEach(
   }
 )
 
+const getComponentNameFromPath = (filePath) => {
+  const pathParts = filePath.split('/') // 分割路径
+  const fileNameWithExtension = pathParts[pathParts.length - 1] // 获取文件名
+  const fileName = fileNameWithExtension.split('.')[0] // 移除扩展名
+
+  // 检查是否为 'index'
+  if (fileName === 'index') {
+    // 如果是 'index'，返回上一级目录的名字
+    return pathParts[pathParts.length - 2]
+  }
+
+  return fileName
+}
+
 router.afterEach(() => {
   const appStore = useAppStore()
   const new_full_path = router.currentRoute.value.fullPath
+  const curRouteName = router.currentRoute.value.name
   // 设置当前的页面
   appStore.routerPath = new_full_path
+  appStore.routerName = curRouteName
 
   // 如果跳转的是登录页面, 清空用户信息
   if (new_full_path === config.router.loginPage) {
     useUserStore().logout()
   }
+
+  // 尝试添加页面缓存
+  console.log(router.currentRoute.value)
+  if (router.currentRoute.value.meta.cache) {
+    const fileName = router.currentRoute.value.meta.component
+    if (!appStore.keepAliveMenus.includes(fileName)) {
+      appStore.keepAliveMenus.push(fileName)
+    }
+  }
+  console.log(appStore.keepAliveMenus)
 
   // 添加已打开的页面Tab
   if (
@@ -469,9 +345,7 @@ router.afterEach(() => {
       if (isBuild) {
         appStore.openedTabs.push({
           name: r.name,
-          title_zh: r.meta.title_zh,
-          title_en: r.meta.title_en,
-          title_ko: r.meta.title_ko,
+          title: r.meta.title,
           fullPath: r.fullPath,
         })
       } else {

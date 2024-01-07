@@ -1,7 +1,9 @@
 <!-- 面包屑组件爱你 -->
 <template>
   <el-breadcrumb :separator-icon="ArrowRight" class="unselect">
-    <el-breadcrumb-item v-for="(key, index) in breadcrumbs" :key="index">{{ key }}</el-breadcrumb-item>
+    <el-breadcrumb-item v-for="(key, index) in breadcrumbs" :key="index">
+      {{ key }}
+    </el-breadcrumb-item>
   </el-breadcrumb>
 </template>
 
@@ -23,19 +25,12 @@ const breadcrumbs = computed(() => {
   const matchedRoutes = route.matched
 
   matchedRoutes.forEach((route) => {
-    let isBuild = true
-    if (import.meta.env.DEV) {
-      isBuild = config.buildMode
-    } else {
-      isBuild = false
-    }
-    console.error(route)
-    if (isBuild) {
-      breadcrumbs.push(route.meta['title_' + appStore.language])
-    } else {
-      breadcrumbs.push(i18n.global.t(route.meta.title))
+    const title = route.meta.title[appStore.language]
+    if (title) {
+      breadcrumbs.push(title)
     }
   })
+  // console.error('>>>>>>>>>', matchedRoutes)
 
   return breadcrumbs
 })
@@ -45,6 +40,7 @@ const breadcrumbs = computed(() => {
 :deep(.el-breadcrumb__inner) {
   font-weight: normal;
   color: #606266;
+  cursor: default !important;
 }
 
 // 调整箭头两边空白空间

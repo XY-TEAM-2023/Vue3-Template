@@ -9,7 +9,7 @@
         <div style="height: 20px" />
         <div class="login-box-btnArea">
           <ui-i18n class="login-i18n" color="#ffffff" />
-          <el-button v-permission="1" v-menu="menuItems" type="primary" :loading="isRequesting" @click="onLogin">
+          <el-button v-menu="menuItems" type="primary" :loading="isRequesting" @click="onLogin">
             {{ $t('loginView.loginBtn') }}
           </el-button>
         </div>
@@ -52,8 +52,8 @@ const isRequesting = ref(false)
 const route = useRoute()
 onMounted(() => {
   // 提取需要跳转回去的路由
-  const redirectTo = route.query.redirect || config.router.homePage
-  console.log(redirectTo)
+  // const redirectTo = route.query.redirect || config.router.homePage
+  // console.log(redirectTo)
 })
 
 /** 登录按钮事件 */
@@ -62,9 +62,9 @@ function onLogin(isForce = false) {
   request_user_login(account.value, password.value, isForce)
     .then((data) => {
       // 刷新用户全局数据，记录登录状态
-      userStore.loginSuccess(account.value, data.roleName, data.route)
+      userStore.loginSuccess(account.value, data)
       // 跳转页面
-      router.push(config.router.homePage)
+      router.push({ name: userStore.homePage })
     })
     .catch(({ status, msg }) => {
       // 已经有人登录过了
@@ -81,7 +81,7 @@ function onLogin(isForce = false) {
       }
     })
     .finally(() => {
-      console.log('请求结束')
+      // console.log('请求结束')
       isRequesting.value = false
     })
 }

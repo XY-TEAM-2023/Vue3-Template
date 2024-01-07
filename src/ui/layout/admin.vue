@@ -46,7 +46,9 @@
           <el-main class="layout-main">
             <div class="layout-main-content">
               <el-scrollbar>
-                <RouterView />
+                <keep-alive :include="appStore.keepAliveMenus">
+                  <RouterView />
+                </keep-alive>
               </el-scrollbar>
             </div>
           </el-main>
@@ -59,7 +61,7 @@
 <script setup>
 // eslint-disable-next-line no-unused-vars
 import { ref, computed } from 'vue'
-import { RouterView } from 'vue-router'
+import { RouterView, useRoute } from 'vue-router'
 import UiLogo from '@/ui/components/UiLogo.vue'
 import UiIconLogin from '@/ui/components/UiIconLogin.vue'
 import UiI18n from '@/ui/components/UiI18n.vue'
@@ -71,6 +73,7 @@ import { Expand, Fold } from '@element-plus/icons-vue'
 import router from '@/router'
 import { useAppStore } from '@/stores/app'
 import { config } from '@/config'
+const route = useRoute()
 
 const appStore = useAppStore()
 const mode = computed(() => (config.websiteModel === 'website' ? 'horizontal' : 'vertical'))

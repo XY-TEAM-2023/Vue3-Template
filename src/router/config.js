@@ -2,7 +2,7 @@ import { config } from '@/config'
 import { isMobile } from '@/utils'
 
 const useMobileRouter = config.websiteModel === 'mobile' || (!config.noMobileModel && isMobile())
-export const platform = useMobileRouter ? 'mobile' : 'desktop'
+export const platform = useMobileRouter ? 'desktop' : 'desktop'
 let layoutFile = (() => {
   if (useMobileRouter) {
     return 'mobile.vue'
@@ -33,16 +33,17 @@ export const constantRoutes = [
       icon: null,
       hidden: true,
       needLogin: false,
-      roles: [], // 需要有权限之一才可以访问
     },
   },
   {
     path: '/login',
     name: 'login',
     component: `/src/ui/views/${platform}/LoginView.vue`,
-    meta: { title: 'Login', needLogin: false },
+    meta: {
+      title: 'Login',
+      needLogin: false,
+    },
   },
-
   {
     path: '/',
     name: '/',
@@ -61,14 +62,11 @@ export const constantRoutes = [
  */
 export const asyncRoutes = [
   {
-    path: 'statistics',
-    name: 'statistics',
+    name: 'team',
     meta: {
-      title: 'RouterMenu.statistics',
-      icon: 'Histogram',
-      // hidden: true,
+      title: { zh: '团队管理', en: 'Team Management', ko: '팀 관리' },
+      icon: '<svg t="1704615311299" class="icon" viewBox="0 0 1066 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2263" width="32" height="32"><path d="M754.785652 1024v-43.663875a109.149023 109.149023 0 0 1 109.127692-109.170354h87.30642a109.149023 109.149023 0 0 1 109.127693 109.170354v43.663875H754.785652z m152.791568-185.576803a98.249052 98.249052 0 1 1 0-196.498104 98.249052 98.249052 0 0 1 0 196.498104z m-202.342708-43.663875a37.755281 37.755281 0 0 1-19.069616-5.140691l-152.919552-88.308961-152.940882 88.308961a38.181894 38.181894 0 0 1-38.181894-66.167729l152.919552-88.308961v-176.639254a38.181894 38.181894 0 1 1 76.385118 0v176.639254l152.940883 88.308961a38.245886 38.245886 0 0 1-19.133609 71.30842zM372.817398 338.432363a109.149023 109.149023 0 0 1 109.127692-109.191685h87.30642a109.149023 109.149023 0 0 1 109.127693 109.191685v43.642544H372.817398v-43.642544z m152.791568-141.934259a98.249052 98.249052 0 1 1 0-196.498104 98.249052 98.249052 0 0 1 0 196.498104zM6.121901 980.336125a109.170354 109.170354 0 0 1 109.127693-109.170354h87.30642a109.149023 109.149023 0 0 1 109.127692 109.170354v43.663875H6.121901v-43.663875z m152.791568-141.912928a98.227722 98.227722 0 0 1-98.227721-98.249052 98.249052 98.249052 0 1 1 98.227721 98.249052z" fill="#E65256" p-id="2264"></path></svg>',
       needLogin: true,
-      cache: false,
       public: {
         desktop: true,
         mobile: true,
@@ -76,13 +74,43 @@ export const asyncRoutes = [
     },
     children: [
       {
-        path: 'ggrstatistics',
-        name: 'ggrstatistics',
-        component: `/src/ui/views/${platform}/Statistics/GGRStatisticsView.vue`,
+        name: 'accounts',
+        component: `/src/ui/views/${platform}/User/UserListView.vue`,
         meta: {
-          title: 'RouterMenu.ggrstatistics',
-          icon: 'House',
-          // hidden: true,
+          title: { zh: '账号', en: 'Account', ko: '사용자 목록' },
+          icon: '<svg t="1704615858284" class="icon" viewBox="0 0 1047 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="14297" width="32" height="32"><path d="M280.409302 704.726326H40.078884A28.600558 28.600558 0 0 0 11.430698 733.350698v240.330418c0 15.812465 12.811907 28.624372 28.624372 28.624372h240.330418c15.812465 0 28.624372-12.811907 28.624372-28.624372V733.350698c0-15.812465-12.811907-28.624372-28.624372-28.624372z" fill="#000000" p-id="14298"></path><path d="M646.644093 704.726326h-97.28v-171.650977h320.440558v171.650977h45.770419v-177.39014c0-22.123163-17.931907-40.05507-40.05507-40.05507H549.387907v-171.650976h97.28c15.788651 0 28.600558-12.811907 28.600558-28.624373V46.675349c0-15.812465-12.811907-28.624372-28.600558-28.624372H406.313674c-15.812465 0-28.624372 12.811907-28.624372 28.624372v240.330418c0 15.812465 12.811907 28.624372 28.624372 28.624373h97.28v171.650976H177.413953c-22.123163 0-40.05507 17.931907-40.055069 40.05507v177.413954H183.129302v-171.698605h320.440558v171.698605h-97.256186c-15.812465 0-28.624372 12.788093-28.624372 28.576744v240.354232c0 15.812465 12.811907 28.624372 28.624372 28.624372h240.330419c15.788651 0 28.600558-12.811907 28.600558-28.624372V733.350698c0-15.812465-12.811907-28.624372-28.600558-28.624372z" fill="#000000" p-id="14299"></path><path d="M772.524651 704.726326h240.354233c19.051163 0 28.600558 9.525581 28.600558 28.624372v240.330418c0 19.074977-9.525581 28.624372-28.600558 28.624372H772.524651c-19.051163 0-28.600558-9.525581-28.600558-28.624372V733.350698c0-19.074977 9.525581-28.624372 28.600558-28.624372z" fill="#000000" p-id="14300"></path></svg>',
+          hidden: false,
+          cache: true,
+          needLogin: false,
+          public: {
+            desktop: true,
+            mobile: true,
+          },
+        },
+      },
+      {
+        name: 'roles',
+        component: `/src/ui/views/${platform}/Role/index.vue`,
+        meta: {
+          title: { zh: '角色管理', en: 'Roles', ko: '역할' },
+          icon: '<svg t="1704615858284" class="icon" viewBox="0 0 1047 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="14297" width="32" height="32"><path d="M280.409302 704.726326H40.078884A28.600558 28.600558 0 0 0 11.430698 733.350698v240.330418c0 15.812465 12.811907 28.624372 28.624372 28.624372h240.330418c15.812465 0 28.624372-12.811907 28.624372-28.624372V733.350698c0-15.812465-12.811907-28.624372-28.624372-28.624372z" fill="#000000" p-id="14298"></path><path d="M646.644093 704.726326h-97.28v-171.650977h320.440558v171.650977h45.770419v-177.39014c0-22.123163-17.931907-40.05507-40.05507-40.05507H549.387907v-171.650976h97.28c15.788651 0 28.600558-12.811907 28.600558-28.624373V46.675349c0-15.812465-12.811907-28.624372-28.600558-28.624372H406.313674c-15.812465 0-28.624372 12.811907-28.624372 28.624372v240.330418c0 15.812465 12.811907 28.624372 28.624372 28.624373h97.28v171.650976H177.413953c-22.123163 0-40.05507 17.931907-40.055069 40.05507v177.413954H183.129302v-171.698605h320.440558v171.698605h-97.256186c-15.812465 0-28.624372 12.788093-28.624372 28.576744v240.354232c0 15.812465 12.811907 28.624372 28.624372 28.624372h240.330419c15.788651 0 28.600558-12.811907 28.600558-28.624372V733.350698c0-15.812465-12.811907-28.624372-28.600558-28.624372z" fill="#000000" p-id="14299"></path><path d="M772.524651 704.726326h240.354233c19.051163 0 28.600558 9.525581 28.600558 28.624372v240.330418c0 19.074977-9.525581 28.624372-28.600558 28.624372H772.524651c-19.051163 0-28.600558-9.525581-28.600558-28.624372V733.350698c0-19.074977 9.525581-28.624372 28.600558-28.624372z" fill="#000000" p-id="14300"></path></svg>',
+          hidden: false,
+          cache: true,
+          needLogin: false,
+          public: {
+            desktop: true,
+            mobile: true,
+          },
+        },
+      },
+      {
+        name: 'menus',
+        component: `/src/ui/views/${platform}/Router/RouterListView.vue`,
+        meta: {
+          title: { zh: '菜单管理', en: 'Menus', ko: '메뉴 목록' },
+          icon: '<svg t="1704615931987" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="18615" width="32" height="32"><path d="M947.2 422.4H416c-38.4 0-51.2 12.8-51.2 51.2v147.2c0 38.4 12.8 51.2 51.2 51.2h531.2c38.4 0 51.2-12.8 51.2-51.2V473.6c0-38.4-12.8-51.2-51.2-51.2z m0-339.2H416c-38.4 0-51.2 12.8-51.2 51.2v147.2c0 38.4 12.8 51.2 51.2 51.2h531.2c38.4 0 51.2-12.8 51.2-51.2V134.4c0-38.4-12.8-51.2-51.2-51.2zM217.6 422.4H76.8c-38.4 0-51.2 12.8-51.2 51.2v147.2c0 38.4 12.8 51.2 51.2 51.2h147.2c38.4 0 51.2-12.8 51.2-51.2V473.6c-6.4-38.4-19.2-51.2-57.6-51.2z m0-339.2H76.8c-38.4 0-51.2 12.8-51.2 51.2v147.2c0 38.4 12.8 51.2 51.2 51.2h147.2c38.4 0 51.2-12.8 51.2-51.2V134.4c-6.4-38.4-19.2-51.2-57.6-51.2zM947.2 768H416c-38.4 0-51.2 12.8-51.2 51.2V960c0 38.4 12.8 51.2 51.2 51.2h531.2c38.4 0 51.2-12.8 51.2-51.2v-147.2c0-32-12.8-44.8-51.2-44.8zM217.6 768H76.8c-38.4 0-51.2 12.8-51.2 51.2V960c0 38.4 12.8 51.2 51.2 51.2h147.2c38.4 0 51.2-12.8 51.2-51.2v-147.2c-6.4-32-19.2-44.8-57.6-44.8z" fill="#040000" p-id="18616"></path></svg>',
+          hidden: false,
+          cache: false,
           needLogin: false,
           public: {
             desktop: true,
@@ -91,287 +119,5 @@ export const asyncRoutes = [
         },
       },
     ],
-  },
-  {
-    path: 'FiManage',
-    name: 'FiManage',
-    meta: {
-      title: 'RouterMenu.FiManage',
-      icon: 'WalletFilled',
-      // hidden: true,
-      needLogin: true,
-      cache: false,
-      public: {
-        desktop: true,
-        mobile: true,
-      },
-    },
-    children: [
-      {
-        path: 'recharge',
-        name: 'recharge',
-        component: `/src/ui/views/${platform}/FiManage/RechargeView.vue`,
-        meta: {
-          title: 'FIListView.DepositRequest',
-          icon: 'Right',
-          // hidden: true,
-          needLogin: false,
-          public: {
-            desktop: true,
-            mobile: true,
-          },
-        },
-      },
-      {
-        path: 'withdrawal',
-        name: 'withdrawal',
-        component: `/src/ui/views/${platform}/FiManage/WithdrawalView.vue`,
-        meta: {
-          title: 'FIListView.WithdrawalRequest',
-          icon: 'Back',
-          // hidden: true,
-          needLogin: false,
-          public: {
-            desktop: true,
-            mobile: true,
-          },
-        },
-      },
-
-      {
-        path: 'FiRecords',
-        name: 'FiRecords',
-        component: `/src/ui/views/${platform}/FiManage/FiRecordsView.vue`,
-        meta: {
-          title: 'FIListView.TransactionHistory',
-          icon: 'Memo',
-          // hidden: true,
-          needLogin: false,
-          public: {
-            desktop: true,
-            mobile: true,
-          },
-        },
-      },
-      {
-        path: 'autoconfim',
-        name: 'autoconfim',
-        component: `/src/ui/views/${platform}/FiManage/AutoConfimView.vue`,
-        meta: {
-          title: 'FIListView.ShooterSms',
-          icon: 'Finished',
-          // hidden: true,
-          needLogin: false,
-          public: {
-            desktop: true,
-            mobile: true,
-          },
-        },
-      },
-    ],
-  },
-  {
-    path: 'member',
-    name: 'member',
-    meta: {
-      title: 'MemberView.menu',
-      icon: 'Avatar',
-      // hidden: true,
-      needLogin: true,
-      cache: false,
-      public: {
-        desktop: true,
-        mobile: true,
-      },
-    },
-    children: [
-      {
-        path: 'memberlist',
-        name: 'memberlist',
-        component: `/src/ui/views/${platform}/Member/MemberListView.vue`,
-        meta: {
-          title: 'MemberView.title',
-          icon: 'List',
-          // hidden: true,
-          needLogin: false,
-          public: {
-            desktop: true,
-            mobile: true,
-          },
-        },
-      },
-    ],
-  },
-  {
-    path: 'agent',
-    name: 'agent',
-    meta: {
-      title: 'RouterMenu.agent',
-      icon: 'Shop',
-      // hidden: true,
-      needLogin: true,
-      cache: false,
-      public: {
-        desktop: true,
-        mobile: true,
-      },
-    },
-    children: [
-      {
-        path: 'agentlist',
-        name: 'agentlist',
-        component: `/src/ui/views/${platform}/Agent/AgentListView.vue`,
-        meta: {
-          title: 'RouterMenu.agentlist',
-          icon: 'List',
-          // hidden: true,
-          needLogin: false,
-          public: {
-            desktop: true,
-            mobile: true,
-          },
-        },
-      },
-    ],
-  },
-  {
-    path: 'event',
-    name: 'event',
-    meta: {
-      title: 'RouterMenu.event',
-      icon: 'Promotion',
-      // hidden: true,
-      needLogin: true,
-      cache: false,
-      public: {
-        desktop: true,
-        mobile: true,
-      },
-    },
-    children: [
-      {
-        path: 'eventmanage',
-        name: 'eventmanage',
-        component: `/src/ui/views/${platform}/Event/EventView.vue`,
-        meta: {
-          title: '活动设置',
-          icon: 'Grid',
-          // hidden: true,
-          needLogin: false,
-          public: {
-            desktop: true,
-            mobile: true,
-          },
-        },
-      },
-    ],
-  },
-  {
-    path: 'gamelog',
-    name: 'gamelog',
-    meta: {
-      title: 'RouterMenu.gamelog',
-      icon: 'Stamp',
-      // hidden: true,
-      needLogin: true,
-      cache: false,
-      public: {
-        desktop: true,
-        mobile: true,
-      },
-    },
-    children: [
-      {
-        path: 'livegamelog',
-        name: 'livegamelog',
-        meta: {
-          title: 'RouterMenu.livegamelog',
-          icon: 'MessageBox',
-          // hidden: true,
-          needLogin: false,
-          public: {
-            desktop: true,
-            mobile: true,
-          },
-        },
-        children: [
-          {
-            path: 'evogamelog',
-            name: 'evogamelog',
-            component: `/src/ui/views/${platform}/GameLog/EvologView.vue`,
-            meta: {
-              title: 'RouterMenu.evogamelog',
-              icon: 'MoreFilled',
-              // hidden: true,
-              needLogin: false,
-              public: {
-                desktop: true,
-                mobile: true,
-              },
-            },
-          },
-          {
-            path: 'ppslotlog',
-            name: 'ppslotlog',
-            component: `/src/ui/views/${platform}/GameLog/PP-slotView.vue`,
-            meta: {
-              title: 'RouterMenu.ppslotlog',
-              icon: 'MoreFilled',
-              // hidden: true,
-              needLogin: false,
-              public: {
-                desktop: true,
-                mobile: true,
-              },
-            },
-          },
-        ],
-      },
-    ],
-  },
-  {
-    path: 'members',
-    name: 'members',
-    component: `/src/ui/views/${platform}/User/UserListView.vue`,
-    meta: {
-      title: 'userListView.router',
-      icon: 'House',
-      hidden: false,
-      needLogin: false,
-      public: {
-        desktop: true,
-        mobile: true,
-      },
-    },
-  },
-  {
-    path: 'roles',
-    name: 'roles',
-    component: `/src/ui/views/${platform}/Role/RoleListView.vue`,
-    meta: {
-      title: 'roleListView.router',
-      icon: 'Home',
-      hidden: false,
-      needLogin: false,
-      public: {
-        desktop: true,
-        mobile: true,
-      },
-    },
-  },
-  {
-    path: 'routers',
-    name: 'routers',
-    component: `/src/ui/views/${platform}/Router/RouterListView.vue`,
-    meta: {
-      title: 'routerListView.router',
-      icon: 'House',
-      hidden: false,
-      needLogin: false,
-      public: {
-        desktop: true,
-        mobile: true,
-      },
-    },
   },
 ]
