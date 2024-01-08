@@ -101,12 +101,7 @@
 
 <script setup>
 import { ref, reactive, onBeforeMount, computed, watch, onMounted, onBeforeUnmount, defineProps, defineEmits } from 'vue'
-import { request_user_clear_otp, request_user_list, request_user_lock } from '@/api/user'
-import ElInputSearch from '@/ui/components/ElInputSearch.vue'
 import { useAppStore } from '@/stores/app'
-import { Delete, Edit, Share } from '@element-plus/icons-vue'
-import UiSvg from '@/ui/components/UiSvg.vue'
-import { useUserStore } from '@/stores/user'
 import ElTableEx from '../../../components/ElTableEx.vue'
 
 const appStore = useAppStore()

@@ -67,9 +67,9 @@
 
 <script setup>
 import { ref, reactive, computed, watch, onMounted, onBeforeUnmount, defineProps, defineEmits, useAttrs } from 'vue'
-import { request_menu_permission_get, request_role_menu_permission_update } from '@/api/menu'
 import { useAppStore } from '@/stores/app'
 import i18n from '@/i18n'
+import { http_post } from '@/utils/axios'
 
 const props = defineProps({
   // 显示模式: 是否显示修改权限按钮
@@ -119,7 +119,8 @@ function requestMenuPermissions() {
     return
   }
   isRequesting.value = true
-  request_menu_permission_get(props.menuName)
+  //拉取组件权限配置
+  http_post('/api/admin/menu/permission/get', { name: props.menuName }, false)
     .then((data) => {
       data = data ? data : {}
       // console.log('请求菜单所有权限', data)
@@ -260,7 +261,9 @@ function onChangePermission(data) {
   } else {
     newPermission = props.hasPermission & (0 << data.permission)
   }
-  request_role_menu_permission_update(props.roleId, props.menuName, newPermission)
+
+  // 修改角色某个页面的权限
+  http_post('/api/admin/role/menu/updatePermission', { role_id: props.roleId, menu_name: props.menuName, permission: newPermission }, true)
     .then(() => {
       emit('updatePermission')
     })

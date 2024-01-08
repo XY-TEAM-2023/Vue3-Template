@@ -46,9 +46,9 @@
           <el-main class="layout-main">
             <div class="layout-main-content">
               <el-scrollbar>
-                <keep-alive :include="appStore.keepAliveMenus">
-                  <RouterView />
-                </keep-alive>
+                <!--                <keep-alive :include="appStore.keepAliveMenus">-->
+                <RouterView />
+                <!--                </keep-alive>-->
               </el-scrollbar>
             </div>
           </el-main>

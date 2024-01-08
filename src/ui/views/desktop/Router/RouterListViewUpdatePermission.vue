@@ -7,7 +7,7 @@
 <script setup>
 import { ref, reactive, onMounted, computed, defineEmits } from 'vue'
 import i18n from '@/i18n'
-import { request_menu_permission_update } from '@/api/menu'
+import { http_post } from '@/utils/axios'
 
 const props = defineProps({
   routerList: Array,
@@ -58,7 +58,8 @@ async function onUpdate() {
   })
   console.log('组织请求数据', desktop)
 
-  request_menu_permission_update(reqData)
+  // 修改路由基础配置-设置为首页
+  http_post('/api/admin/menu/permission/update', { views: reqData }, true)
     .then(() => {
       emit('refresh')
     })

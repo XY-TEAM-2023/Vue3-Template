@@ -6,14 +6,14 @@
   <router-link v-else-if="isShowItem" :to="route.fullPath" @click="navigateTo(route.fullPath)">
     <!--  显示小红点  -->
     <el-badge :is-dot="!redDotValue" :value="redDotValue" :hidden="!showRedDot" class="nav-item">
-      <!-- 有图标 -->
-      <component
-        v-if="checkIsShowIcon(route)"
-        :is="route.meta.icon"
-        :width="config.router.mobile.iconSize"
-        :height="config.router.mobile.iconSize"
-      ></component>
-      <span class="text">{{ route.name }}</span>
+      <el-icon v-if="checkIsShowIcon(route)" :size="config.router.mobile.iconSize">
+        <component v-if="isElementIcon(route.meta.icon)" :is="route.meta.icon" />
+        <ui-svg v-else :svg-code="route.meta.icon" svg-color="#FFFFF" />
+      </el-icon>
+
+      <span class="text">
+        {{ getTitle(route) }}
+      </span>
     </el-badge>
   </router-link>
 </template>
@@ -23,6 +23,7 @@ import { useRouter } from 'vue-router'
 import { defineProps, computed } from 'vue'
 import { useAppStore } from '@/stores/app'
 import { config } from '@/config'
+import UiSvg from '@/ui/components/UiSvg.vue'
 
 const router = useRouter()
 const props = defineProps({
@@ -41,6 +42,15 @@ const navigateTo = (path) => {
   }
   appStore.tryHideRouteRedDot(path)
 }
+
+function isElementIcon(icon) {
+  return !icon.includes('.')
+}
+
+function getTitle(obj) {
+  return obj.meta.title[appStore.language]
+}
+
 /**
  * 检查是否为菜单组
  */
@@ -101,6 +111,10 @@ function checkIsShowGroup(obj) {
  */
 function checkIsShowItem(obj) {
   if (checkIsGroup(obj)) {
+    return false
+  }
+
+  if (!obj.component) {
     return false
   }
 

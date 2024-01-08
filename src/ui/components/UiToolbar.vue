@@ -40,6 +40,13 @@ function onBtnLastPage() {
 }
 
 function getTitle(obj) {
+  if (!obj.title) {
+    console.error('没有找到title', obj)
+    return 'unknown'
+  } else if (typeof obj.title === 'string') {
+    return obj.title
+  }
+
   return obj.title[appStore.language]
 }
 
@@ -69,7 +76,7 @@ function onCloseTab(fullPath) {
   // 当前没有已打开的Tab, 显示首页
   // console.log('appStore.openedTabs.length', appStore.openedTabs.length)
   if (appStore.openedTabs.length === 0) {
-    router.push(config.router.homePage)
+    router.push('/')
     return
   }
 
@@ -90,7 +97,7 @@ function onBtnRefresh() {
 }
 
 function onBtnHome() {
-  router.push(config.router.homePage)
+  router.push('/')
 }
 
 // 鼠标滚轮让tabs滑动

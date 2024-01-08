@@ -36,9 +36,8 @@
 <script lang="ts" setup>
 import { defineEmits, reactive, ref, watch } from 'vue'
 import ElFormEx from '@/ui/components/ElFormEx.vue'
-import { request_role_create } from '@/api/role'
 import i18n from '@/i18n'
-
+import { http_post } from '@/utils/axios'
 const props = defineProps({
   isShow: {
     type: Boolean,
@@ -85,7 +84,9 @@ function onCreate() {
       return
     }
     isRequesting.value = true
-    request_role_create(props.parent, form.value.name, form.value.note)
+
+    // 创建角色
+    http_post('/api/admin/role/create', { parent: props.parent, name: form.value.name, note: form.value.note }, true)
       .then(() => {
         form.value = reactive(defaultFormData)
         onClose()

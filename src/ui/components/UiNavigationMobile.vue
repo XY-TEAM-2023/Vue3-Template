@@ -2,7 +2,7 @@
   <nav class="bottom-nav">
     <div class="arrow left-arrow" v-if="showLeftArrow" @click="scrollLeft">&lsaquo;</div>
     <div class="scroll-container" ref="scrollContainer" @scroll="checkScroll">
-      <template v-for="(route, index) in router.config" :key="index">
+      <template v-for="(route, index) in layoutRoutes" :key="index">
         <ui-navigation-item-mobile :route="route" />
       </template>
     </div>
@@ -12,7 +12,7 @@
 
 <script setup>
 import router from '@/router'
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import UiNavigationItemMobile from './UiNavigationItemMobile.vue'
 
 const showLeftArrow = ref(false)
@@ -44,6 +44,11 @@ function scrollRight() {
   const container = scrollContainer.value
   container.scrollBy({ left: container.clientWidth, behavior: 'smooth' })
 }
+
+const layoutRoutes = computed(() => {
+  const routes = router.config.find((obj) => obj.fullPath === '/')
+  return routes.children
+})
 </script>
 <style scoped>
 .bottom-nav {

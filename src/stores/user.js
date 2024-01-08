@@ -3,6 +3,7 @@ import { defineStore } from 'pinia'
 import { useAppStore } from '@/stores/app'
 import { config } from '@/config'
 import router from '@/router'
+import { http_post } from '@/utils/axios'
 
 let keepAliveTimerId = null
 
@@ -11,11 +12,10 @@ async function tryRunKeepAliveTimer() {
     return
   }
 
-  // 动态导入 request_user_keepLogin 函数
-  const { request_user_keepLogin } = await import('@/api/user')
   // 启动保持在线的定时器
   keepAliveTimerId = setInterval(async () => {
-    await request_user_keepLogin()
+    // 保持用户在线
+    await http_post('/api/admin/user/keepOnline', {}, false)
       .then(() => {})
       .catch(() => {})
   }, 20000) // 每20秒发送一次请求
@@ -120,6 +120,16 @@ export const useUserStore = defineStore('user', {
       // 已登录
       return 0
     },
+    /**
+     * 是否为开发账号
+     */
+    isDev() {
+      const jwt_data = this.jwtData
+      if (!jwt_data) {
+        return false
+      }
+      return jwt_data.roleId === 0
+    },
   },
 
   /*****************************************
@@ -137,67 +147,70 @@ export const useUserStore = defineStore('user', {
       this.role_name = response.roleName
       this.permission = response.permission
 
-      // 整理数据, 让其和router/config.js的结构一致
-      let tempHomePage = null
-      const organizeDataCb = (data) => {
-        if (Array.isArray(data)) {
-          // 子菜单构造
-          const result = []
-          data.forEach((item) => {
-            result.push(organizeDataCb(item))
-          })
-          return result
-        } else if (data !== null && typeof data === 'object') {
-          const menu = {
-            path: data.name,
-            name: data.name,
-            component: data.component.replace('{platform}', '${platform}'),
-            meta: {
-              icon: data.icon,
-              needLogin: true,
-              title: {
-                en: data.title_en,
-                zh: data.title_zh,
-                ko: data.title_ko,
+      const isBuildMode = import.meta.env.DEV ? config.buildMode : true
+      if (isBuildMode) {
+        // 整理数据, 让其和router/config.js的结构一致
+        let tempHomePage = null
+        const organizeDataCb = (data) => {
+          if (Array.isArray(data)) {
+            // 子菜单构造
+            const result = []
+            data.forEach((item) => {
+              result.push(organizeDataCb(item))
+            })
+            return result
+          } else if (data !== null && typeof data === 'object') {
+            const menu = {
+              path: data.name,
+              name: data.name,
+              component: data.component.replace('{platform}', '${platform}'),
+              meta: {
+                icon: data.icon,
+                needLogin: true,
+                title: {
+                  en: data.title_en,
+                  zh: data.title_zh,
+                  ko: data.title_ko,
+                },
+                cache: data.cache === 1,
+                permission: data.permission,
+                public: {
+                  desktop: data.enable_desktop,
+                  mobile: data.enable_mobile,
+                },
               },
-              cache: data.cache === 1,
-              permission: data.permission,
-              public: {
-                desktop: data.enable_desktop,
-                mobile: data.enable_mobile,
-              },
-            },
-          }
-
-          // 有子菜单
-          const tempChildren = organizeDataCb(data.children)
-          if (tempChildren) {
-            menu.children = tempChildren
-            // 删除目录原始的component
-            delete menu.component
-
-            // 当访问目录的时候, 默认的跳转地址
-            if (tempChildren.length > 0) {
-              menu.redirect = { name: tempChildren[0].name }
             }
-          } else {
-            if (!tempHomePage) {
-              tempHomePage = data.name
-            }
-          }
 
-          return menu
+            // 有子菜单
+            const tempChildren = organizeDataCb(data.children)
+            if (tempChildren) {
+              menu.children = tempChildren
+              // 删除目录原始的component
+              delete menu.component
+
+              // 当访问目录的时候, 默认的跳转地址
+              if (tempChildren.length > 0) {
+                menu.redirect = { name: tempChildren[0].name }
+              }
+            } else {
+              if (!tempHomePage) {
+                tempHomePage = data.name
+              }
+            }
+
+            return menu
+          }
+          return null
         }
-        return null
-      }
 
-      this.routes = organizeDataCb(response.routes)
-      if (import.meta.env.DEV ? config.buildMode : false) {
+        this.routes = organizeDataCb(response.routes)
         this.homePage = response.homePage ? response.homePage : tempHomePage
+        console.log(tempHomePage)
       } else {
         this.homePage = config.router.homePage
       }
-      // console.error(this.routes)
+
+      // console.error(this.homePage)
 
       // 重新加载路由配置
       router.reloadRoutes(true)
@@ -208,18 +221,26 @@ export const useUserStore = defineStore('user', {
      * 注销登录
      */
     logout() {
-      this.userId = 0
-      this.role_name = ''
-      this.role_id = -1
-      this._jwt = ''
-      this.routes = []
-      useAppStore().openedTabs.splice(0)
+      http_post('/api/admin/user/logout', {}, false)
+        .then(() => {})
+        .catch(() => {
+          this._jwt = ''
+        })
+        .finally(() => {
+          this.userId = 0
+          this.role_name = ''
+          this.role_id = -1
+          this.routes = []
+          useAppStore().openedTabs.splice(0)
 
-      // 停止保持在线的定时器
-      if (keepAliveTimerId) {
-        clearInterval(keepAliveTimerId)
-        keepAliveTimerId = null
-      }
+          // 停止保持在线的定时器
+          if (keepAliveTimerId) {
+            clearInterval(keepAliveTimerId)
+            keepAliveTimerId = null
+          }
+
+          router.push('/')
+        })
     },
 
     /**

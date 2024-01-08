@@ -5,15 +5,19 @@ export const config = {
   logo: {
     /** 是否显示 */
     display: true,
-    /** 默认Logo文本 */
-    label: 'Ruby-Admin',
+    /** 默认Logo文本, 可以使用国际化 */
+    label: 'FS Admin',
+    /** 可以是svg，可以是Element的图标名字 */
+    icon: '',
+    /** 图标大小 */
+    iconSize: 20,
   },
   /** 默认语言: zh、en、ko */
   language: 'zh',
-  /** 网站模式: website、admin、mobile(该模式下只有手机版本) */
-  websiteModel: 'mobile',
+  /** 网站模式: admin、website、mobile(该模式下只有手机版本) */
+  websiteModel: 'admin',
   /** 是否强制为编译版本，admin模式下: true-使用服务器配置, false-使用本地配置 */
-  buildMode: false,
+  buildMode: true,
   /** 无手机模式：没有开发手机版时开启 */
   noMobileModel: false,
   localMode: false,
@@ -28,9 +32,9 @@ export const config = {
   /** 导航栏相关 */
   router: {
     /** 登录页面路径, 如果设置了该值, 当页面需要登录才能访问时, 用户点击了确定按钮会自动跳转页面 */
-    loginPage: '/login',
-    /** 登录成功后访问的页面, 首页 */
-    homePage: '/statistics',
+    loginPage: 'login',
+    /** 登录成功后访问的页面, 首页, 填写路由里的name */
+    homePage: 'team',
     /** 点击已经激活的页面导航时，重新加载页面 */
     clickSamePageReload: false,
     mobile: {

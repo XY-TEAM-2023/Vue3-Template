@@ -37,8 +37,8 @@
 <script lang="ts" setup>
 import { defineEmits, reactive, ref, watch } from 'vue'
 import ElFormEx from '@/ui/components/ElFormEx.vue'
-import { request_role_edit } from '@/api/role'
 import { cloneDeep } from 'lodash-es'
+import { http_post } from '@/utils/axios'
 
 const props = defineProps({
   isShow: {
@@ -78,7 +78,8 @@ function onSubmit() {
   }
 
   isRequesting.value = true
-  request_role_edit(roleData.value.id, roleData.value.note)
+  // 编辑角色信息
+  http_post('/api/admin/role/edit', { role_id: roleData.value.id, note: roleData.value.note }, true)
     .then(() => {
       onClose()
       emit('refresh')

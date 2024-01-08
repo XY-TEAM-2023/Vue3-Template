@@ -19,10 +19,10 @@
     <el-table-ex v-loading="isRequestingBase" :data="routerConfig" :show-select="true" row-key="name" :show-pagination="false">
       <el-table-column :label="$t('routerListView.type')" align="center" width="100">
         <template #default="scope">
-          <el-tag v-permission="2" v-if="scope.row.component" :style="tagStyle" type="warning" effect="dark">
+          <el-tag v-if="scope.row.component" :style="tagStyle" type="warning" effect="dark">
             {{ $t('routerListView.view') }}
           </el-tag>
-          <el-tag v-permission="2" v-else type="info" :style="tagStyle" effect="dark">
+          <el-tag v-else type="info" :style="tagStyle" effect="dark">
             {{ $t('routerListView.directory') }}
           </el-tag>
         </template>
@@ -34,7 +34,7 @@
       <!--  组件图标  -->
       <el-table-column prop="meta.icon" align="center" :label="$t('routerListView.icon')" width="70">
         <template #default="scope">
-          <div v-permission-event="3" v-if="scope.row.icon" class="router-icon" @click="onSelectIcon(scope.$index)">
+          <div v-if="scope.row.icon" class="router-icon" @click="onSelectIcon(scope.$index)">
             <component v-if="isElementIcon(scope.row.icon)" :is="scope.row.icon" style="width: 23px; height: 23px" />
             <ui-svg v-else size="23px" svg-size="24" :svg-code="scope.row.icon" svg-color="#606266" svg-hover-color="#007aff" />
           </div>
@@ -48,7 +48,6 @@
         label="routerListView.english"
         width="160"
         edit-clearable
-        v-permission-enable="4"
         :can-edit="hasPermission(1)"
         @edit="onEditText_en"
       />
@@ -120,7 +119,7 @@
           </el-button>
 
           <!--  删除  -->
-          <el-button type="danger" v-permission="333" size="small" @click="onDeleteRoute(scope.row)">
+          <el-button type="danger" size="small" @click="onDeleteRoute(scope.row)">
             {{ $t('com.btnDelete') }}
           </el-button>
         </template>
@@ -148,16 +147,6 @@ import ElTableEx from '@/ui/components/ElTableEx.vue'
 import { ElMessageBox } from 'element-plus'
 import i18n from '@/i18n'
 import UiSvg from '@/ui/components/UiSvg.vue'
-import {
-  request_menu_list,
-  request_menu_edit_cache,
-  request_menu_edit_component,
-  request_menu_edit_delete,
-  request_menu_edit_display,
-  request_menu_edit_icon,
-  request_menu_edit_title,
-  request_menu_set_home,
-} from '@/api/menu'
 import ElDialogSelectIcon from '@/ui/components/ElDialogSelectIcon.vue'
 import { getTextListMaxWidth, hasPermission } from '@/utils'
 import ElTableColumnLabel from '@/ui/components/ElTable/ElTableColumnLabel.vue'
@@ -166,6 +155,7 @@ import RouterListViewUpdatePermission from './RouterListViewUpdatePermission.vue
 import RouterListViewUpdateRouterConfig from './RouterListViewUpdateRouterConfig.vue'
 import UiMenuPermission from '@/ui/components/UiMenuPermission.vue'
 import { useAppStore } from '@/stores/app'
+import { http_post } from '@/utils/axios'
 
 const tagStyle = computed(() => {
   return {
@@ -180,7 +170,8 @@ function requestRouterBase() {
     return
   }
   isRequestingBase.value = true
-  request_menu_list()
+  // 拉取路由基础配置
+  http_post('/api/admin/menu/list', {}, false)
     .then((data) => {
       routerConfig.value = data.result
     })
@@ -222,7 +213,8 @@ function onEditText_ko(index, row, newValue, cancelCb, closeCb) {
 }
 function onEditText(local) {
   return (index, row, newValue, cancelCb, closeCb) => {
-    request_menu_edit_title(row.id, newValue, local)
+    // 修改路由基础配置-标题
+    http_post('/api/admin/menu/edit/title', { id: row.id, title: newValue, local: local }, true)
       .then(() => {
         requestRouterBase(false)
         closeCb()
@@ -235,7 +227,7 @@ function onEditText(local) {
 
 /** 修改文件路径 */
 function onEditComponent(index, row, newValue, cancelCb, closeCb) {
-  request_menu_edit_component(row.id, newValue)
+  http_post('/api/admin/menu/edit/component', { id: row.id, component: newValue }, true)
     .then(() => {
       requestRouterBase(false)
       closeCb()
@@ -251,7 +243,7 @@ function onChangeDisplay(row) {
     return
   }
   row.requestingChangeDisplay = true
-  request_menu_edit_display(row.id, row.display)
+  http_post('/api/admin/menu/edit/display', { id: row.id, display: row.display }, true)
     .then(() => {
       requestRouterBase(false)
     })
@@ -269,7 +261,8 @@ function onChangeCache(row) {
     return
   }
   row.requestingChangeCache = true
-  request_menu_edit_cache(row.id, row.cache)
+  // 修改路由基础配置-缓存
+  http_post('/api/admin/menu/edit/cache', { id: row.id, cache: row.cache }, true)
     .then(() => {
       requestRouterBase(false)
     })
@@ -305,7 +298,8 @@ function onSelectIconResult(type, icon) {
   }
   requestingEditIcon = true
 
-  request_menu_edit_icon(routerConfig.value[selectIconIndex].id, icon)
+  // 修改路由基础配置-图标
+  http_post('/api/admin/menu/edit/icon', { id: routerConfig.value[selectIconIndex].id, icon: icon }, true)
     .then(() => {
       requestRouterBase(false)
     })
@@ -326,7 +320,8 @@ function onSetAsHome(obj) {
     type: 'warning',
   })
     .then(() => {
-      request_menu_set_home(obj.id)
+      // 修改路由基础配置-设置为首页
+      http_post('/api/admin/menu/edit/main', { id: obj.id }, true)
         .then(() => {
           requestRouterBase(false)
         })
@@ -352,7 +347,8 @@ function onDeleteRoute(obj) {
     type: 'warning',
   })
     .then(() => {
-      request_menu_edit_delete(obj.id)
+      // 修改路由基础配置-缓存
+      http_post('/api/admin/menu/edit/delete', { id: obj.id }, true)
         .then(() => {
           requestRouterBase(false)
         })

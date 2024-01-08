@@ -22,12 +22,13 @@
 import { ref, onMounted } from 'vue'
 import { config } from '@/config'
 import UiI18n from '@/ui/components/UiI18n.vue'
-import { request_user_login } from '@/api/user'
 import { useUserStore } from '@/stores/user'
 import router from '@/router'
 import { useRoute } from 'vue-router'
 import { ElMessageBox } from 'element-plus'
 import i18n from '@/i18n'
+import { http_post } from '@/utils/axios'
+import { isMobile } from '@/utils'
 
 const userStore = useUserStore()
 
@@ -59,8 +60,14 @@ onMounted(() => {
 /** 登录按钮事件 */
 function onLogin(isForce = false) {
   isRequesting.value = true
-  request_user_login(account.value, password.value, isForce)
+  // 用户登录
+  http_post(
+    '/api/admin/user/login',
+    { account: account.value, password: password.value, force: isForce, device: isMobile() ? 'mobile' : 'pc' },
+    false
+  )
     .then((data) => {
+      console.log(data)
       // 刷新用户全局数据，记录登录状态
       userStore.loginSuccess(account.value, data)
       // 跳转页面
@@ -78,6 +85,12 @@ function onLogin(isForce = false) {
             onLogin(true)
           })
           .catch(() => {})
+      } else {
+        ElMessageBox.alert(msg, '', {
+          type: 'error',
+          showClose: false,
+          confirmButtonText: i18n.global.t('com.btnOk'),
+        })
       }
     })
     .finally(() => {

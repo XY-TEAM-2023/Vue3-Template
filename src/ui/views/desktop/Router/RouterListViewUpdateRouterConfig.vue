@@ -5,9 +5,8 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits, computed, ref, onMounted } from 'vue'
-import { request_menu_update } from '@/api/menu'
-import { getI18nText } from '@/utils'
+import { defineProps, defineEmits, computed, ref } from 'vue'
+import { http_post } from '@/utils/axios'
 
 const emit = defineEmits(['refresh'])
 
@@ -52,7 +51,8 @@ async function onUpdate() {
     })
   })
 
-  request_menu_update(router_list_data, router_config)
+  // 初始化路由基础配置
+  http_post('/api/admin/menu/update', { list: router_list_data, default_config: router_config }, true)
     .then(() => {
       emit('refresh')
     })

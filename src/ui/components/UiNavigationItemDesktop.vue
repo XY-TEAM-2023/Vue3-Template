@@ -143,10 +143,14 @@ function checkIsShowItem(obj) {
   if (checkIsGroup(obj)) {
     return false
   }
-  if (config.websiteModel === 'admin') {
-    if (obj.fullPath === config.router.homePage) {
-      return false
-    }
+  // if (config.websiteModel === 'admin') {
+  //   if (obj.fullPath === config.router.homePage) {
+  //     return false
+  //   }
+  // }
+
+  if (!obj.component) {
+    return false
   }
 
   return checkIsShow(obj)

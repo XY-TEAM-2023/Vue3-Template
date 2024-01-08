@@ -20,10 +20,13 @@
 import { ref, onMounted } from 'vue'
 import { config } from '@/config'
 import UiI18n from '@/ui/components/UiI18n.vue'
-import { request_user_login } from '@/api/user'
 import { useUserStore } from '@/stores/user'
 import router from '@/router'
 import { useRoute } from 'vue-router'
+import { http_post } from '@/utils/axios'
+import { isMobile } from '@/utils'
+import { ElMessageBox } from 'element-plus'
+import i18n from '@/i18n'
 
 const userStore = useUserStore()
 
@@ -45,16 +48,40 @@ onMounted(() => {
 /** 登录按钮事件 */
 function onLogin() {
   isRequesting.value = true
-  request_user_login(account.value, password.value)
-    .then(() => {
+  // 用户登录
+  http_post(
+    '/api/admin/user/login',
+    { account: account.value, password: password.value, force: isForce, device: isMobile() ? 'mobile' : 'pc' },
+    false
+  )
+    .then((data) => {
       // 刷新用户全局数据，记录登录状态
-      userStore.loginSuccess()
+      userStore.loginSuccess(account.value, data)
       // 跳转页面
-      router.push(config.router.homePage)
+      router.push({ name: userStore.homePage })
     })
-    .catch(() => {})
+    .catch(({ status, msg }) => {
+      // 已经有人登录过了
+      if (status === 106) {
+        ElMessageBox.confirm(msg, '', {
+          confirmButtonText: i18n.global.t('com.btnOk'),
+          cancelButtonText: i18n.global.t('com.btnCancel'),
+          type: 'warning',
+        })
+          .then(() => {
+            onLogin(true)
+          })
+          .catch(() => {})
+      } else {
+        ElMessageBox.alert(msg, '', {
+          type: 'error',
+          showClose: false,
+          confirmButtonText: i18n.global.t('com.btnOk'),
+        })
+      }
+    })
     .finally(() => {
-      console.log('请求结束')
+      // console.log('请求结束')
       isRequesting.value = false
     })
 }

@@ -53,9 +53,8 @@
 <script lang="ts" setup>
 import { defineEmits, reactive, ref, watch } from 'vue'
 import ElFormEx from '@/ui/components/ElFormEx.vue'
-import { request_user_register } from '@/api/user'
-import { request_role_list } from '@/api/role'
 import i18n from '@/i18n'
+import { http_post } from '@/utils/axios'
 
 const props = defineProps({
   isShow: {
@@ -120,7 +119,11 @@ function onRegister() {
     }
 
     isRequesting.value = true
-    request_user_register(form.value.account, form.value.password, form.value.role_id, form.value.note)
+    http_post(
+      '/api/admin/user/register',
+      { account: form.value.account, password: form.value.password, role_id: form.value.role_id, note: form.value.note },
+      true
+    )
       .then(() => {
         form.value = reactive(defaultFormData)
         onClose()
@@ -141,10 +144,10 @@ function onOpen() {
     return
   }
 
-  request_role_list(true, true)
+  //拉取子角色列表
+  http_post('/api/admin/role/list', { type: 2 }, false)
     .then((data) => {
       roles.value = data.result
-      console.log(roles.value)
       needInit.value = false
     })
     .catch(() => {})

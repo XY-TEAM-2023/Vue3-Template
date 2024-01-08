@@ -56,16 +56,20 @@
               size="small"
               type="warning"
               @click="onSetAsHome"
-              style="margin-left: auto"
             >
               {{ $t('roleMenuConfigView.setHome') }}
             </el-button>
+
+            <el-button type="info" size="small" :disabled="selectMenu.id === 0" :icon="CaretTop" @click="onChangeSort(true)" />
+
+            <el-button type="info" size="small" :disabled="selectMenu.id === 0" :icon="CaretBottom" @click="onChangeSort(false)" />
           </template>
 
           <template v-else>
             <el-button size="small" @click="onCancelEdit" type="danger">
               {{ $t('com.btnCancel') }}
             </el-button>
+
             <el-button :disabled="!isChanged" size="small" style="margin-left: auto" @click="onResetCheck" type="info">
               {{ $t('com.btnReset') }}
             </el-button>
@@ -83,9 +87,9 @@
 import { computed, defineProps, reactive, ref, watch, nextTick, defineEmits } from 'vue'
 import { useAppStore } from '@/stores/app'
 import UiSvg from '@/ui/components/UiSvg.vue'
-import { request_role_menu_edit, request_role_menu_list } from '@/api/role_menu'
 import { cloneDeep } from 'lodash-es'
-import { request_role_menu_set_home } from '@/api/menu'
+import { CaretBottom, CaretTop } from '@element-plus/icons-vue'
+import { http_post } from '@/utils/axios'
 
 const appStore = useAppStore()
 if (appStore.pageNum_userList <= 0) {
@@ -149,7 +153,8 @@ function requestMenus() {
   isRequestingMenu.value = true
   isEdit.value = false
   isChanged.value = false
-  request_role_menu_list(roleId.value)
+  // 拉取角色菜单配置
+  http_post('/api/admin/role/menu/list', { role_id: roleId.value }, false)
     .then((data) => {
       // console.log(data)
       homePageName.value = data.homePageName
@@ -209,7 +214,8 @@ function onSetAsHome() {
     return
   }
   isChangeHoming.value = true
-  request_role_menu_set_home(props.roleId, selectMenu.value.name)
+  // 设置主页
+  http_post('/api/admin/role/menu/setHome', { role_id: props.roleId, menu_name: selectMenu.value.name }, true)
     .then(() => {})
     .catch(() => {})
     .finally(() => {
@@ -256,7 +262,8 @@ function onSubmit() {
   isReqSaving.value = true
 
   const config = filterData(menuChecked.value, treeData.value)
-  request_role_menu_edit(roleId.value, config)
+  // 修改角色菜单配置
+  http_post('/api/admin/role/menu/edit', { role_id: roleId.value, config: config }, false)
     .then(() => {
       requestMenus()
       emit('cancel-edit')
@@ -295,6 +302,64 @@ function onResetCheck() {
   menuChecked.value = treeDataCheckIds
   treeData.value = cloneDeep(treeDataFull)
   isChanged.value = false
+}
+
+function onChangeSort(isUp) {
+  const findSelectMenu = (menus) => {
+    for (let i = 0; i < menus.length; i++) {
+      const item = menus[i]
+      if (item.name === selectMenu.value.name) {
+        if (isUp) {
+          if (i === 0) {
+            // 最上面的不能动
+            return true
+          } else {
+            const elementToMove = menus.splice(i, 1)[0] // 删除元素并保存到变量中
+            menus.splice(i - 1, 0, elementToMove) // 在入元素
+          }
+        } else {
+          if (i + 1 === menus.length) {
+            return true
+          } else {
+            const elementToMove = menus.splice(i, 1)[0] // 删除元素并保存到变量中
+            menus.splice(i + 1, 0, elementToMove) // 在入元素
+          }
+        }
+        return true
+      }
+
+      if (item.children && item.children.length > 0) {
+        const temp = findSelectMenu(item.children)
+        if (temp) {
+          return true
+        }
+      }
+    }
+    return false
+  }
+
+  findSelectMenu(treeData.value)
+  requestChangeSort()
+}
+
+const isReqSorting = ref(false)
+function requestChangeSort() {
+  if (isReqSaving.value || isReqSorting.value) {
+    return
+  }
+  isReqSaving.value = true
+  isReqSorting.value = true
+
+  // 修改角色菜单配置
+  http_post('/api/admin/role/menu/edit', { role_id: roleId.value, config: treeData.value }, false)
+    .then(() => {
+      requestMenus()
+    })
+    .catch(() => {})
+    .finally(() => {
+      isReqSaving.value = false
+      isReqSorting.value = false
+    })
 }
 
 /*************************************************************

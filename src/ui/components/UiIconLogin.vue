@@ -2,7 +2,7 @@
   <el-dropdown :trigger="trigger" @visible-change="onDropdownVisibleChange">
     <div
       class="il-box"
-      v-bind:class="{ 'il-box-hover': isHovered || isShowDropdown }"
+      v-bind:class="{ 'il-box-hover': isHovered || isShowDropdown || forceOpen }"
       @mouseenter="setHovered(true)"
       @mouseleave="setHovered(false)"
       @click="showDropdown"
@@ -45,6 +45,7 @@ const props = defineProps({
     type: Number,
     default: 50,
   },
+  forceOpen: Boolean,
 })
 
 const trigger = 'click' // isMobile() ? 'click' : 'hover'
@@ -77,7 +78,6 @@ function onDropdownVisibleChange(visible) {
 /** 注销 */
 function onSingOut() {
   userStore.logout()
-  router.push(config.router.loginPage)
 }
 </script>
 

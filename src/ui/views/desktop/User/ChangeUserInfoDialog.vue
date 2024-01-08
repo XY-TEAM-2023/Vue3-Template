@@ -60,9 +60,7 @@
 <script lang="ts" setup>
 import { defineEmits, reactive, ref, watch } from 'vue'
 import ElFormEx from '@/ui/components/ElFormEx.vue'
-import { request_user_change_info } from '@/api/user'
-import { request_role_list } from '@/api/role'
-import i18n from '@/i18n'
+import { http_post } from '@/utils/axios'
 import { cloneDeep } from 'lodash-es'
 
 const props = defineProps({
@@ -101,7 +99,8 @@ function onOpen() {
     return
   }
 
-  request_role_list(true, true)
+  //拉取子角色列表
+  http_post('/api/admin/role/list', { type: 2 }, false)
     .then((data) => {
       roles.value = data.result
       needInit.value = false
@@ -117,7 +116,17 @@ function onRegister() {
     }
 
     isRequesting.value = true
-    request_user_change_info(userData.value.id, userData.value.password, userData.value.role_id, userData.value.status, userData.value.note)
+    http_post(
+      '/api/admin/user/updateInfo',
+      {
+        user_id: userData.value.id,
+        password: userData.value.password,
+        role_id: userData.value.role_id,
+        status: userData.value.status,
+        note: userData.value.note,
+      },
+      true
+    )
       .then(() => {
         onClose()
         emit('refresh')

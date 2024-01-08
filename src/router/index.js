@@ -57,6 +57,7 @@ function loadRouteConfig(routerConfig) {
       console.log(route)
       router.config.push(route)
       router.addRoute(route)
+      console.log('```````````````')
     }
   })
 
@@ -98,6 +99,10 @@ function checkRouteSameName(route, sames, names) {
  * @param parentPath 上级路由路径
  */
 function tryLoadRouteGroup(route, parentPath = '') {
+  if (!route.path) {
+    route.path = route.name
+  }
+
   if (parentPath) {
     if (parentPath === '/') {
       route.fullPath = parentPath + route.path
@@ -132,7 +137,8 @@ function tryLoadRouteGroup(route, parentPath = '') {
       const tempComponent = route.component.replace('${platform}', platform)
       console.warn(tempComponent, ' || ', comps[tempComponent])
       route.component = comps[tempComponent]
-      route.meta.component = getComponentNameFromPath(tempComponent)
+
+      // route.meta.componentName = getComponentNameFromPath(tempComponent)
     }
     // console.log(`${++consoleIndex}. ${route.fullPath}`)
   }
@@ -178,12 +184,12 @@ const reloadRoutesHandler = function (asyncRoutesConfig) {
   // 加载路径
   loadRouteConfig(constantRoutes)
   // 添加不存在的页面重定向
-  router.addRoute({ path: '/:pathMatch(.*)*', redirect: '/404', meta: { hidden: true } })
+  // router.addRoute({ path: '/:pathMatch(.*)*', redirect: '/404', meta: { hidden: true } })
 }
 
-const isBuildMode = import.meta.env.DEV ? config.buildMode : false
-
+const isBuildMode = import.meta.env.DEV ? config.buildMode : true
 router.reloadRoutes = function (isUseStore = false) {
+  console.log('isBuildMode', isBuildMode)
   if (isBuildMode) {
     // reloadRoutes_build(isUseStore)
     if (isUseStore) {
@@ -218,8 +224,8 @@ router.beforeEach(
     if (to.path === '/') {
       // 如果访问的是根目录
       if (loginStatus === -1) {
-        // 跳转到登录页面
         if (config.router.loginPage && config.router.loginPage !== to.path) {
+          // 跳转到登录页面
           if (config.router.loginPage.startsWith('/')) {
             next({ path: config.router.loginPage })
           } else {
@@ -230,7 +236,6 @@ router.beforeEach(
         }
       } else {
         const homePage = isBuildMode ? userStore.homePage : config.router.homePage
-        // console.error('?????????????', homePage)
         // 跳转到登录成功后的第一个页面
         if (homePage && homePage !== to.path) {
           if (homePage.startsWith('/')) {
@@ -315,19 +320,20 @@ router.afterEach(() => {
   }
 
   // 尝试添加页面缓存
-  console.log(router.currentRoute.value)
-  if (router.currentRoute.value.meta.cache) {
-    const fileName = router.currentRoute.value.meta.component
-    if (!appStore.keepAliveMenus.includes(fileName)) {
-      appStore.keepAliveMenus.push(fileName)
-    }
-  }
-  console.log(appStore.keepAliveMenus)
+  // console.log(router.currentRoute.value)
+  // if (router.currentRoute.value.meta.cache) {
+  //   const fileName = router.currentRoute.value.meta.componentName
+  //   if (!appStore.keepAliveMenus.includes(fileName)) {
+  //     appStore.keepAliveMenus.push(fileName)
+  //   }
+  // }
+  // console.log(appStore.keepAliveMenus)
 
   // 添加已打开的页面Tab
   if (
     new_full_path !== config.router.homePage &&
     !new_full_path.startsWith('/refresh') &&
+    !router.currentRoute.value.children &&
     !constantRoutes.some((item) => {
       return item.fullPath === new_full_path
     })
@@ -335,25 +341,11 @@ router.afterEach(() => {
     if (!appStore.openedTabs.some((item) => item.fullPath === new_full_path)) {
       const r = router.currentRoute.value
 
-      let isBuild = true
-      if (import.meta.env.DEV) {
-        isBuild = config.buildMode
-      } else {
-        isBuild = false
-      }
-
-      if (isBuild) {
-        appStore.openedTabs.push({
-          name: r.name,
-          title: r.meta.title,
-          fullPath: r.fullPath,
-        })
-      } else {
-        appStore.openedTabs.push({
-          name: r.meta.title,
-          fullPath: r.fullPath,
-        })
-      }
+      appStore.openedTabs.push({
+        name: r.name,
+        title: r.meta.title,
+        fullPath: r.fullPath,
+      })
     }
   }
 

@@ -4,12 +4,14 @@
       <el-header class="layout-header">
         <ui-logo />
         <div class="layout-top-icon">
-          <ui-icon-login :size="38" />
+          <ui-icon-login :size="38" force-open />
         </div>
       </el-header>
       <el-main style="height: 0; flex-grow: 1">
         <el-scrollbar style="width: 100%">
-          <RouterView />
+          <div style="padding: 10px 10px 10px 10px">
+            <RouterView />
+          </div>
         </el-scrollbar>
       </el-main>
 

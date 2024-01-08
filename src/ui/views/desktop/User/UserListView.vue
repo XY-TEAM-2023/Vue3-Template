@@ -131,7 +131,6 @@
 
 <script setup>
 import { ref, reactive, onBeforeMount, computed, watch, onMounted, onBeforeUnmount, defineProps, defineEmits } from 'vue'
-import { request_user_clear_otp, request_user_delete_account, request_user_list, request_user_lock } from '@/api/user'
 import ElTableColumnTs from '@/ui/components/ElTable/ElTableColumnTs.vue'
 import ElInputSearch from '@/ui/components/ElInputSearch.vue'
 import CreatUserDialog from './CreatUserDialog.vue'
@@ -139,9 +138,9 @@ import ChangeUserInfoDialog from './ChangeUserInfoDialog.vue'
 import ElTableEx from '@/ui/components/ElTableEx.vue'
 import { useAppStore } from '@/stores/app'
 import { useUserStore } from '@/stores/user'
+import { http_post } from '@/utils/axios'
 import { ElMessageBox } from 'element-plus'
 import i18n from '@/i18n'
-import { request_role_list } from '@/api/role'
 
 const appStore = useAppStore()
 if (appStore.pageNum_userList <= 0) {
@@ -174,7 +173,6 @@ function checkPermission(target) {
 
 let roleList = []
 let roleDict = {}
-let isInitView = true
 
 /** 拉取用户列表*/
 function requestUserList() {
@@ -183,10 +181,8 @@ function requestUserList() {
   }
 
   const cb_requestUserList = () => {
-    request_user_list(isInitView, searchAccount.value, searchPage.value, appStore.pageNum_userList)
+    http_post('/api/admin/user/list', { search: searchAccount.value, page: searchPage.value, page_num: appStore.pageNum_userList }, false)
       .then((data) => {
-        isInitView = false
-
         console.log(data)
         userList.splice(0)
         const curTs = new Date().getTime() // 获取当前的13位时间戳
@@ -224,7 +220,8 @@ function requestUserList() {
 
   isRequestUserList.value = true
   if (roleList.length === 0) {
-    request_role_list(isInitView, false)
+    //拉取子角色列表
+    http_post('/api/admin/role/list', { type: 1 }, false)
       .then((data) => {
         subRoles.value = data.children
 
@@ -249,7 +246,6 @@ onMounted(() => {
 })
 
 function requestUserListByRefresh() {
-  isInitView = true
   requestUserList()
 }
 
@@ -285,7 +281,8 @@ function onClearOtp(index) {
   }
 
   userList[index].isRequestingClear = true
-  request_user_clear_otp(userData.id)
+  //清空用户OTP密钥
+  http_post('/api/admin/user/resetOtp', { user_id: userData.id }, true)
     .then(() => {
       userList[index].otp_status = 1
     })
@@ -319,7 +316,8 @@ function onDeleteAccountHandler(index) {
     return
   }
   userList[index].isRequestingDel = true
-  request_user_delete_account(userData.id)
+  // 删除账号
+  http_post('/api/admin/user/delete', { user_id: userData.id }, true)
     .then(() => {
       userList.splice(index, 1)
     })

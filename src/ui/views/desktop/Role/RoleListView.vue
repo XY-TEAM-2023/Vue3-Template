@@ -59,13 +59,13 @@
 <script setup>
 // eslint-disable-next-line no-unused-vars
 import { ref, reactive, onBeforeMount, computed, watch, onMounted, onBeforeUnmount, defineProps, defineEmits } from 'vue'
-import { request_role_delete, request_role_lock, request_role_tree, request_role_unlock } from '@/api/role'
 import { useAppStore } from '@/stores/app'
 import CreatRoleDialog from './CreatRoleDialog.vue'
 import ChangeRoleInfoDialog from '@/ui/views/desktop/Role/ChangeRoleInfoDialog.vue'
 import i18n from '@/i18n'
 import { ElMessageBox } from 'element-plus'
 import UiSvg from '@/ui/components/UiSvg.vue'
+import { http_post } from '@/utils/axios'
 
 const appStore = useAppStore()
 if (appStore.pageNum_userList <= 0) {
@@ -93,7 +93,8 @@ function requestRoleTree() {
   }
 
   isRequestUserList.value = true
-  request_role_tree(true)
+  // 拉取角色树形结构
+  http_post('/api/admin/role/tree', {}, false)
     .then((data) => {
       subRoles.value = data.children
       // console.log(data)
@@ -194,7 +195,9 @@ function onLock(role) {
 
   const cb_request = (include_children) => {
     role.isRequestingLock = true
-    request_role_lock(role.id, include_children)
+
+    // 封禁角色
+    http_post('/api/admin/role/lock', { role_id: role.id }, true)
       .then(() => {
         requestRoleTree()
       })
@@ -236,7 +239,9 @@ function onUnlock(role) {
 
   const cb_request = (include_children) => {
     role.isRequestingLock = true
-    request_role_unlock(role.id, include_children)
+
+    // 解禁角色
+    http_post('/api/admin/role/unlock', { role_id: role.id, include_children: include_children }, true)
       .then(() => {
         requestRoleTree()
       })
@@ -289,7 +294,8 @@ function onDelete(role) {
 
   const cb_request = () => {
     role.isRequestingDelte = true
-    request_role_delete(role.id)
+    // 删除角色
+    http_post('/api/admin/role/delete', { role_id: role.id }, true)
       .then(() => {
         requestRoleTree()
       })

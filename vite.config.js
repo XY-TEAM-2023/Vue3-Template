@@ -11,6 +11,9 @@ import { env } from 'eslint-plugin-vue/lib/configs/base'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  build: {
+    sourcemap: true,
+  },
   plugins: [
     legacy({
       targets: ['defaults', 'not IE 11'],

@@ -25,10 +25,10 @@ export const useAppStore = defineStore('app', {
     /** 当前打开过的Tabs */
     openedTabs: [],
     /** 每页显示的数据*/
-    pageSizes: [3, 20, 50, 100],
+    pageSizes: [20, 50, 100],
     keepAliveMenus: [],
     /** 搜索数据列表时，每页返回的数据 */
-    pageNum_userList: -1,
+    pageNum_userList: 0,
   }),
 
   getters: {},
