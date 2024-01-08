@@ -5,7 +5,8 @@ import { useUserStore } from '@/stores/user'
 import { config } from '@/config'
 import NProgress from 'nprogress'
 import { useAppStore } from '@/stores/app'
-import { asyncRoutes, constantRoutes, platform } from './config'
+import { asyncRoutes, platform } from './asyncRoutes'
+import { constantRoutes } from './constantRoutes'
 import { cloneDeep } from 'lodash-es'
 
 let router = createRouter({
@@ -54,10 +55,10 @@ function loadRouteConfig(routerConfig) {
 
   routerConfig.forEach((route) => {
     if (tryLoadRouteGroup(route, '')) {
-      console.log(route)
+      // console.log(route)
       router.config.push(route)
       router.addRoute(route)
-      console.log('```````````````')
+      // console.log('```````````````')
     }
   })
 

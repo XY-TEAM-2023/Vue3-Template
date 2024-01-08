@@ -2,60 +2,7 @@ import { config } from '@/config'
 import { isMobile } from '@/utils'
 
 const useMobileRouter = config.websiteModel === 'mobile' || (!config.noMobileModel && isMobile())
-export const platform = useMobileRouter ? 'desktop' : 'desktop'
-let layoutFile = (() => {
-  if (useMobileRouter) {
-    return 'mobile.vue'
-  }
-  if (config.websiteModel === 'website') {
-    return 'website.vue'
-  }
-  if (config.websiteModel === 'admin') {
-    return 'admin.vue'
-  }
-  return 'website.vue'
-})()
-
-// console.error('useMobileRouter', useMobileRouter)
-// console.error('platform', layoutFile)
-// console.error('layout file path', `/src/ui/${platform}/layout/${layoutFile}`)
-
-/**
- * 固定路由，没有登录可以看到的页面
- */
-export const constantRoutes = [
-  {
-    path: '/404',
-    name: '404',
-    component: `/src/ui/base/404.vue`,
-    meta: {
-      title: '404',
-      icon: null,
-      hidden: true,
-      needLogin: false,
-    },
-  },
-  {
-    path: '/login',
-    name: 'login',
-    component: `/src/ui/views/${platform}/LoginView.vue`,
-    meta: {
-      title: 'Login',
-      needLogin: false,
-    },
-  },
-  {
-    path: '/',
-    name: '/',
-    component: `/src/ui/layout/${layoutFile}`,
-    meta: { title: 'home', needLogin: true },
-    children: [],
-  },
-  {
-    path: '/index.html',
-    redirect: '/',
-  },
-]
+export const platform = useMobileRouter ? 'mobile' : 'desktop'
 
 /**
  * 异步路由，登录后根据角色权限动态添加路由
