@@ -36,7 +36,7 @@ http.interceptors.response.use(
   (response) => {
     const useStore = useUserStore()
     const isKeepOnline = response.config.url === '/api/admin/user/keepOnline'
-    if (import.meta.env.DEV && useStore.isDev && !isKeepOnline) {
+    if ((import.meta.env.DEV || useStore.isDev) && !isKeepOnline) {
       console.log(
         `[${response.config.method.toUpperCase()}][${response.status}]${response.config.url}`,
         response.config.data,

@@ -1,5 +1,5 @@
 <template>
-  <el-card>
+  <el-card-ex shadow="never">
     <div>
       <el-row>
         <el-col :span="24">
@@ -68,20 +68,10 @@
         </el-col>
       </el-row>
     </div>
-  </el-card>
-  <el-card style="margin-top: 5px">
-    <el-table-ex
-      :data="userList"
-      v-loading="isRequestUserList"
-      v-model:current-page="searchPage"
-      v-model:page-size="appStore.pageNum_userList"
-      :page-sizes="appStore.pageSizes"
-      :total="total"
-      :show-select="true"
-      @current-change="requestUserList"
-      @size-change="requestUserList"
-      @selection-change="onSelectionChange"
-    >
+  </el-card-ex>
+
+  <el-card-ex shadow="never" style="margin-top: 5px">
+    <el-table-ex :data="userList" :page-sizes="appStore.pageSizes" :show-select="true">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column prop="role_id" width="100%" align="center" :label="$t('FIListView.RequestTime')" />
       <el-table-column prop="account" width="100%" align="center" :label="$t('FIListView.MemberName')" />
@@ -103,13 +93,14 @@
       <el-table-column prop="account" width="100%" align="center" :label="$t('FIListView.Memo')" />
       <el-table-column prop="role_id" align="center" :label="$t('FIListView.Edit')" />
     </el-table-ex>
-  </el-card>
+  </el-card-ex>
 </template>
 
 <script setup>
 import { ref, reactive, onBeforeMount, computed, watch, onMounted, onBeforeUnmount, defineProps, defineEmits } from 'vue'
 import { useAppStore } from '@/stores/app'
-import ElTableEx from '../../../components/ElTableEx.vue'
+import ElTableEx from '@/ui/components/ElTableEx.vue'
+import ElCardEx from '@/ui/components/ElCardEx.vue'
 
 const appStore = useAppStore()
 if (appStore.pageNum_userList <= 0) {
@@ -120,6 +111,8 @@ const searchAccount = ref('')
 const value = ref('')
 const value01 = ref('') // 用于日期选择器
 const filterId = ref('')
+
+const userList = reactive([])
 
 const options = [
   {

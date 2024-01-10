@@ -54,6 +54,7 @@ function loadRouteConfig(routerConfig) {
   if (!routerConfig) return
 
   routerConfig.forEach((route) => {
+    console.log(route)
     if (tryLoadRouteGroup(route, '')) {
       // console.log(route)
       router.config.push(route)
@@ -136,7 +137,7 @@ function tryLoadRouteGroup(route, parentPath = '') {
   if (canLoad) {
     if (typeof route.component === 'string') {
       const tempComponent = route.component.replace('${platform}', platform)
-      console.warn(tempComponent, ' || ', comps[tempComponent])
+      // console.warn(tempComponent, ' || ', comps[tempComponent])
       route.component = comps[tempComponent]
 
       // route.meta.componentName = getComponentNameFromPath(tempComponent)
