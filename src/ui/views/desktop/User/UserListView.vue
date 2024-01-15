@@ -33,7 +33,7 @@
     >
       <!--      <el-table-column type="selection" width="55" align="center" />-->
       <el-table-column type="index" width="80" align="center" :label="$t('com.index')" />
-      <el-table-column prop="account" align="center" :label="$t('userListView.account')" />
+      <el-table-column prop="account" align="center" width="100" show-overflow-tooltip :label="$t('userListView.account')" />
 
       <!--   角色名   -->
       <el-table-column prop="role_name" align="center" width="140" :label="$t('userListView.role')" />
@@ -85,8 +85,8 @@
           </div>
         </template>
       </el-table-column>
-      <el-table-column-ts prop="update_ts" align="center" width="220" label="com.updateTime" />
-      <el-table-column-ts prop="create_ts" align="center" width="220" label="com.creatTime" />
+      <el-table-column-timestamp prop="update_ts" align="center" width="220" label="com.updateTime" />
+      <el-table-column-timestamp prop="create_ts" align="center" width="220" label="com.creatTime" />
 
       <!--  操作按钮  -->
       <el-table-column :label="$t('com.handler')" align="center" width="270">
@@ -131,8 +131,7 @@
 
 <script setup>
 import { ref, reactive, onBeforeMount, computed, watch, onMounted, onBeforeUnmount, defineProps, defineEmits } from 'vue'
-import ElTableColumnTs from '@/ui/components/ElTable/ElTableColumnTs.vue'
-import ElInputSearch from '@/ui/components/ElInputSearch.vue'
+import ElInputSearch from '@/ui/components/ElInput/ElInputSearch.vue'
 import CreatUserDialog from './CreatUserDialog.vue'
 import ChangeUserInfoDialog from './ChangeUserInfoDialog.vue'
 import ElTableEx from '@/ui/components/ElTableEx.vue'
@@ -141,6 +140,7 @@ import { useUserStore } from '@/stores/user'
 import { http_post } from '@/utils/axios'
 import { ElMessageBox } from 'element-plus'
 import i18n from '@/i18n'
+import ElTableColumnTimestamp from '@/ui/components/ElTable/ElTableColumnTimestamp.vue'
 
 const appStore = useAppStore()
 if (appStore.pageNum_userList <= 0) {

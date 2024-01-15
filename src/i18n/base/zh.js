@@ -7,6 +7,9 @@ export default {
     signOut: '退出登录',
     requestFail: '请求失败，请稍后再试',
     editI18nLabel: '请输入修改后的内容',
+    searchParamsTitle: '搜索',
+    searchResultTitle: '查询结果',
+    editDialogTitle: '编辑{title}',
   },
   com: {
     btnYes: '是',

@@ -59,7 +59,7 @@
 
 <script lang="ts" setup>
 import { defineEmits, reactive, ref, watch } from 'vue'
-import ElFormEx from '@/ui/components/ElFormEx.vue'
+import ElFormEx from '@/ui/components/ElForm/ElFormEx.vue'
 import { http_post } from '@/utils/axios'
 import { cloneDeep } from 'lodash-es'
 

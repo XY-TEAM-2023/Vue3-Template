@@ -3,7 +3,6 @@ import { useUserStore } from '@/stores/user'
 import { config } from '@/config'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import i18n from '@/i18n'
-import router from '@/router'
 import { useAppStore } from '@/stores/app'
 
 // 创建并配置axios实例
@@ -53,55 +52,44 @@ http.interceptors.response.use(
   }
 )
 
+let isShowedMsgBox = false
 // 成功回调函数
 const successCb = (url, response, reject, resolve, tipType) => {
   const { status, msg, data } = response
   const isKeepOnline = url === '/api/admin/user/keepOnline'
   if (status === -1) {
-    if (!this.isShowMsgBox && !isKeepOnline) {
+    if (!isShowedMsgBox && !isKeepOnline) {
       // 提示需要登录
+      isShowedMsgBox = true
       ElMessageBox.alert(i18n.global.t('app.needLogin'), '', {
         showClose: false,
         type: 'warning',
         confirmButtonText: i18n.global.t('com.btnOk'),
         callback: () => {
-          this.isShowMsgBox = false
+          isShowedMsgBox = false
           // 如果有登录页面, 访问登录页面, 这部分逻辑由router处理
           useUserStore().logout()
         },
       })
     }
-    this.isShowMsgBox = true
   } else if (status === -2) {
-    if (!this.isShowMsgBox && !isKeepOnline) {
+    if (!isShowedMsgBox && !isKeepOnline) {
       // 提示需要登录
+      isShowedMsgBox = true
       ElMessageBox.alert(i18n.global.t('app.loginOtherDevice'), '', {
         showClose: false,
         type: 'error',
         confirmButtonText: i18n.global.t('com.btnOk'),
         callback: () => {
-          this.isShowMsgBox = false
+          isShowedMsgBox = false
           // 如果有登录页面, 访问登录页面, 这部分逻辑由router处理
           useUserStore().logout()
         },
       })
     }
-    this.isShowMsgBox = true
-  } else if (status !== 0) {
-    // 服务器返回的status不为0，代表处理失败，catch返回status，自己处理弹窗提示
-
-    if (tipType === 1) {
-      ElMessageBox.alert(msg, '', {
-        type: 'error',
-        showClose: false,
-        confirmButtonText: i18n.global.t('com.btnOk'),
-      })
-    } else if (tipType === 2) {
-      ElMessage.error({ message: msg, duration: 8000, showClose: true })
-    }
 
     reject({ status, msg, data })
-  } else {
+  } else if (status === 0) {
     // 请求成功
     if (tipType === 1 || tipType === 2) {
       ElMessage({
@@ -111,6 +99,23 @@ const successCb = (url, response, reject, resolve, tipType) => {
     }
 
     resolve(data)
+  } else {
+    // 状态码不为0
+    console.log('>>>>>>>>>>>>', response)
+    if (!isShowedMsgBox && !isKeepOnline && tipType !== 0) {
+      // 提示需要登录
+      isShowedMsgBox = true
+      ElMessageBox.alert(msg, '', {
+        showClose: false,
+        type: 'error',
+        confirmButtonText: i18n.global.t('com.btnOk'),
+        callback: () => {
+          isShowedMsgBox = false
+        },
+      })
+    }
+
+    reject({ status, msg, data })
   }
 }
 
@@ -118,11 +123,16 @@ const successCb = (url, response, reject, resolve, tipType) => {
 const networkErrorCb = (url, retry, retryCount, reject, makeRequest, retryDelay, error) => {
   if (retry >= retryCount - 1) {
     console.error(error)
-    if (url !== '/api/admin/user/keepOnline') {
+    const isKeepOnline = url === '/api/admin/user/keepOnline'
+    if (!isShowedMsgBox && !isKeepOnline) {
+      isShowedMsgBox = true
       ElMessageBox.alert(i18n.global.t('app.requestFail'), '', {
         type: 'error',
         showClose: false,
         confirmButtonText: i18n.global.t('com.btnOk'),
+        callback: () => {
+          isShowedMsgBox = false
+        },
       })
 
       reject({

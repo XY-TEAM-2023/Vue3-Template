@@ -105,7 +105,7 @@ const props = defineProps({
   },
   pageSizes: {
     type: Array,
-    default: () => [3, 50, 100],
+    default: () => [20, 50, 100],
   },
   total: {
     type: Number,

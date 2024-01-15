@@ -52,7 +52,7 @@
 
 <script lang="ts" setup>
 import { defineEmits, reactive, ref, watch } from 'vue'
-import ElFormEx from '@/ui/components/ElFormEx.vue'
+import ElFormEx from '@/ui/components/ElForm/ElFormEx.vue'
 import i18n from '@/i18n'
 import { http_post } from '@/utils/axios'
 

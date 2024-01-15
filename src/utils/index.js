@@ -34,6 +34,17 @@ export function tsToTime(timestamp) {
   }
 }
 
+export function tryGetI18nText(label) {
+  if (!label) {
+    return ''
+  }
+  if (label.includes('.')) {
+    return i18n.global.t(label)
+  } else {
+    return label
+  }
+}
+
 /**
  * 获取国际化文本
  * @param key 键
@@ -133,4 +144,45 @@ export function hasPermission(level) {
   }
 
   return (permission & (1 << i)) !== 0
+}
+
+/** 获取默认页数 */
+export function getDefaultPageSize(url) {
+  const str = localStorage.getItem('defaultPageSize')
+  if (str) {
+    const config = JSON.parse(str)
+    const num = config[url]
+    return num ? num : useAppStore().pageSizes[0]
+  } else {
+    return useAppStore().pageSizes[0]
+  }
+}
+
+/** 设置默认选择的每页的数量 */
+export function setDefaultPageSize(url, pageNum) {
+  const str = localStorage.getItem('defaultPageSize')
+  const defaultPageSizeConfig = str ? JSON.parse(str) : {}
+  defaultPageSizeConfig[url] = pageNum
+  localStorage.setItem('defaultPageSize', JSON.stringify(defaultPageSizeConfig))
+}
+
+/** 以金钱格式显示 */
+export function formatNumberAsMoney(number) {
+  // 检查 number 是否为 null 或 undefined
+  if (number === null || number === undefined) {
+    return '0'
+  }
+
+  // 尝试将 number 转换为数字
+  const num = parseFloat(number)
+
+  // 检查转换后的数字是否为有效的数字
+  if (isNaN(num)) {
+    return '0'
+  }
+
+  return new Intl.NumberFormat('en-US', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(num)
 }

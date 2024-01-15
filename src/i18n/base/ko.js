@@ -6,6 +6,9 @@ export default {
     needLoginBtn: '지금 로그인',
     signOut: '로그아웃하기',
     requestFail: '요청 실패, 나중에 다시 시도해 주세요.',
+    searchParamsTitle: 'xxxxxxx搜索',
+    searchResultTitle: 'xxxxxxxxx查询结果',
+    editDialogTitle: 'xxxxxxxxx编辑{title}',
   },
   com: {
     btnYes: '예',

@@ -74,6 +74,7 @@ function onLogin(isForce = false) {
       router.push({ name: userStore.homePage })
     })
     .catch(({ status, msg }) => {
+      console.log(msg)
       // 已经有人登录过了
       if (status === 106) {
         ElMessageBox.confirm(msg, '', {

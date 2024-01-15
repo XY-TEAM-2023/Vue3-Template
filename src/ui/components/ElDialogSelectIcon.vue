@@ -67,7 +67,7 @@
 <script lang="ts" setup>
 import { defineEmits, reactive, ref, watch } from 'vue'
 import { config } from '@/config'
-import ElInputSearch from '@/ui/components/ElInputSearch.vue'
+import ElInputSearch from '@/ui/components/ElInput/ElInputSearch.vue'
 import UiSvg from '@/ui/components/UiSvg.vue'
 
 const props = defineProps({

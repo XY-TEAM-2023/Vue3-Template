@@ -5,7 +5,7 @@
         {{
           scope.row[props.prop] === null || scope.row[props.prop] === undefined || scope.row[props.prop] === ''
             ? emptyLabel
-            : scope.row[props.prop]
+            : tsToTime(scope.row[props.prop])
         }}
       </span>
     </template>
@@ -16,6 +16,7 @@
 import { computed, defineProps } from 'vue'
 import dialog from '@/ui/components/DIalog/Dialog'
 import { getI18nText, tryGetI18nText } from '@/utils'
+import { tsToTime } from '@/utils'
 
 const props = defineProps({
   /** 表格标题，支持国际化Key */
@@ -45,10 +46,6 @@ const props = defineProps({
   },
   /** 编辑窗口输入提示 */
   editPlaceholder: String,
-  /** 编辑窗口输入最大长度 */
-  editMaxLength: String,
-  /** 编辑窗口输入显示最大长度限制 */
-  editShowWordLimit: Boolean,
   /** 编辑窗口输入是否可以清除 */
   editClearable: {
     type: Boolean,
@@ -68,13 +65,11 @@ const emit = defineEmits(['edit'])
 
 function onClick(index, row) {
   if (props.canEdit) {
-    dialog.input({
+    dialog.inputTimestamp({
       title: props.editTitle ? props.editTitle : getI18nText('app.editDialogTitle', { title: label.value }),
       width: props.editWidth,
       defaultValue: row[props.prop],
       placeholder: props.editPlaceholder ? props.editPlaceholder : '',
-      maxLength: props.editMaxLength,
-      showWordLimit: props.editShowWordLimit,
       clearable: props.editClearable,
       onSubmit: (newValue, cancelCb, closeCb) => {
         emit('edit', index, row, newValue, cancelCb, closeCb)

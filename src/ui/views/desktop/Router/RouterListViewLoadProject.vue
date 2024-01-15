@@ -38,7 +38,7 @@ async function onLoad() {
     const handle = await window.showDirectoryPicker()
     fileDict = await getAllFiles(handle)
 
-    const fileHandle = fileDict['src/router/config.js']
+    const fileHandle = fileDict['src/router/asyncRoutes.js']
 
     if (!fileHandle) {
       console.error('错误的项目路径')

@@ -68,13 +68,11 @@ const emit = defineEmits(['edit'])
 
 function onClick(index, row) {
   if (props.canEdit) {
-    dialog.input({
+    dialog.inputInteger({
       title: props.editTitle ? props.editTitle : getI18nText('app.editDialogTitle', { title: label.value }),
       width: props.editWidth,
       defaultValue: row[props.prop],
       placeholder: props.editPlaceholder ? props.editPlaceholder : '',
-      maxLength: props.editMaxLength,
-      showWordLimit: props.editShowWordLimit,
       clearable: props.editClearable,
       onSubmit: (newValue, cancelCb, closeCb) => {
         emit('edit', index, row, newValue, cancelCb, closeCb)

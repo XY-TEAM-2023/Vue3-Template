@@ -2,11 +2,7 @@
   <el-table-column :label="label" :width="props.width" :align="props.align" :show-overflow-tooltip="true">
     <template #default="scope">
       <span class="input-label" :class="{ 'input-label-edit': canEdit }" @click="onClick(scope.$index, scope.row)">
-        {{
-          scope.row[props.prop] === null || scope.row[props.prop] === undefined || scope.row[props.prop] === ''
-            ? emptyLabel
-            : scope.row[props.prop]
-        }}
+        {{ formatNumberAsMoney(scope.row[props.prop]) }}
       </span>
     </template>
   </el-table-column>
@@ -15,7 +11,7 @@
 <script setup>
 import { computed, defineProps } from 'vue'
 import dialog from '@/ui/components/DIalog/Dialog'
-import { getI18nText, tryGetI18nText } from '@/utils'
+import { formatNumberAsMoney, getI18nText, tryGetI18nText } from '@/utils'
 
 const props = defineProps({
   /** 表格标题，支持国际化Key */
@@ -26,11 +22,6 @@ const props = defineProps({
   width: String,
   /** 对齐方式：left/center/right */
   align: String,
-  /** 值为空时显示文本：没有值怎么显示 */
-  emptyLabel: {
-    type: String,
-    default: '-----',
-  },
   /** 是否可以编辑，为true时，点击内容会弹出修改窗口 */
   canEdit: {
     type: Boolean,
@@ -60,21 +51,15 @@ const label = computed(() => {
   return tryGetI18nText(props.label)
 })
 
-const emptyLabel = computed(() => {
-  return tryGetI18nText(props.emptyLabel)
-})
-
 const emit = defineEmits(['edit'])
 
 function onClick(index, row) {
   if (props.canEdit) {
-    dialog.input({
+    dialog.inputFloat({
       title: props.editTitle ? props.editTitle : getI18nText('app.editDialogTitle', { title: label.value }),
       width: props.editWidth,
       defaultValue: row[props.prop],
       placeholder: props.editPlaceholder ? props.editPlaceholder : '',
-      maxLength: props.editMaxLength,
-      showWordLimit: props.editShowWordLimit,
       clearable: props.editClearable,
       onSubmit: (newValue, cancelCb, closeCb) => {
         emit('edit', index, row, newValue, cancelCb, closeCb)

@@ -1,5 +1,6 @@
 <template>
-  <el-input v-model="inputValue" @input="handleInput" :min="min" :max="max" :placeholder="placeholder"> </el-input>
+  <el-input v-model="inputValue" @input="handleInput" :min="min" :max="max" :placeholder="placeholder" :clearable="props.clearable">
+  </el-input>
 </template>
 
 <script setup>

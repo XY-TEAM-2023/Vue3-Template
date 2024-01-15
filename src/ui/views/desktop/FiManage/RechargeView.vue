@@ -1,305 +1,297 @@
-<script setup>
-import { reactive, ref } from 'vue'
-import { useAppStore } from '@/stores/app'
-import ElTableEx from '../../../components/ElTableEx.vue'
-import ElCardEx from '@/ui/components/ElCardEx.vue'
-import ElInputInteger from '@/ui/components/ElInputInteger.vue'
-import ElInputFloat from '@/ui/components/ElInputFloat.vue'
-
-const appStore = useAppStore()
-if (appStore.pageNum_userList <= 0) {
-  appStore.pageNum_userList = appStore.pageSizes[0]
-}
-
-const searchAccount = ref('')
-const value = ref('')
-const value01 = ref('') // 用于日期选择器
-const filterId = ref('')
-
-const options = [
-  {
-    value: 'Option1',
-    label: 'Option1',
-  },
-  {
-    value: 'Option2',
-    label: 'Option2',
-  },
-  {
-    value: 'Option3',
-    label: 'Option3',
-  },
-]
-
-const searchData = ref(
-  reactive({
-    str: '',
-    num: '',
-    float: '',
-    selectCode: '',
-    timeRange: '',
-  })
-)
-const selectOptions = reactive([
-  {
-    value: 1,
-    label: 'key1',
-  },
-  {
-    value: 2,
-    label: 'key2',
-  },
-])
-
-const selectOptions_Server = reactive([])
-
-const isLoadingOptions = ref(false)
-const requestOptions = () => {
-  isLoadingOptions.value = true
-  setTimeout(() => {
-    isLoadingOptions.value = false
-    selectOptions_Server.value = [
-      {
-        value: 1,
-        label: 'key1',
-      },
-      {
-        value: 2,
-        label: 'key2',
-      },
-    ]
-  }, 3000)
-}
-
-function onOptionsVisibleChange(isShow) {
-  console.log(isShow)
-  if (isShow) {
-    requestOptions()
-  }
-}
-
-const value2 = ref([])
-function onChangeTimeRange() {
-  console.log(value2.value)
-}
-const shortcuts = [
-  {
-    text: '今天',
-    value: () => {
-      const start = new Date()
-      start.setHours(0, 0, 0, 0)
-
-      const end = new Date()
-      end.setDate(start.getDate() + 1)
-      return [start, end]
-    },
-  },
-  {
-    text: '昨天',
-    value: () => {
-      // 获取当前日期
-      const today = new Date()
-
-      // 获取昨天的日期
-      const yesterday = new Date(today)
-      yesterday.setDate(today.getDate() - 1)
-
-      // 设置昨天的开始时间（将时间设置为零点）
-      const start = new Date(yesterday)
-      start.setHours(0, 0, 0, 0)
-
-      // 设置昨天的结束时间（将时间设置为23:59:59.999）
-      const end = new Date(yesterday)
-      end.setHours(23, 59, 59, 999)
-
-      return [start, end]
-    },
-  },
-  {
-    text: '最近7天',
-    value: () => {
-      // 获取当前日期
-      const today = new Date()
-
-      // 设置时间为零点
-      today.setHours(0, 0, 0, 0)
-
-      // 获取7天前的日期
-      const sevenDaysAgo = new Date(today)
-      sevenDaysAgo.setDate(today.getDate() - 7)
-
-      // 获取最近7天的开始时间（7天前的日期）
-      const start = sevenDaysAgo
-
-      // 获取最近7天的结束时间（昨天的日期，时间设置为23:59:59）
-      const end = new Date(today)
-      end.setDate(today.getDate() - 1)
-      end.setHours(23, 59, 59, 999)
-
-      return [start, end]
-    },
-  },
-  {
-    text: '本月',
-    value: () => {
-      // 获取当前日期
-      const current = new Date()
-
-      // 获取本月的第一天
-      const start = new Date(current.getFullYear(), current.getMonth(), 1)
-
-      // 设置时间为零点
-      start.setHours(0, 0, 0, 0)
-
-      return [start, current]
-    },
-  },
-  {
-    text: '上个月',
-    value: () => {
-      // 获取当前日期
-      const today = new Date()
-
-      // 获取上个月的第一天
-      const start = new Date(today.getFullYear(), today.getMonth() - 1, 1)
-
-      // 设置时间为零点
-      start.setHours(0, 0, 0, 0)
-
-      // 获取上个月的最后一天
-      const end = new Date(today.getFullYear(), today.getMonth(), 0)
-      // 设置时间为23:59:59.999
-      end.setHours(23, 59, 59, 999)
-      return [start, end]
-    },
-  },
-]
-</script>
-
 <template>
   <el-card-ex :use-fold="true" shadow="never">
-    <template #header> 过滤器 </template>
-
-    <el-form label-position="top">
+    <template #header> {{ $t('app.searchParamsTitle') }} </template>
+    <el-form ref="searchDataRef" :model="searchData" label-position="top">
       <el-row :gutter="24">
         <el-col :lg="4" :md="8" :sm="12" :xs="24">
-          <el-form-item label="文本" :required="true">
-            <el-input v-model="searchData.str" placeholder="提示文本" :minlength="0" :maxlength="100" clearable />
-          </el-form-item>
+          <el-form-item-date label="指定日期" v-model="searchData.date" prop="date" :placeholder="'指定日期2'" clearable />
         </el-col>
-
         <el-col :lg="4" :md="8" :sm="12" :xs="24">
-          <el-form-item label="整数" :required="true">
-            <el-input-integer v-model="searchData.num" placeholder="提示文本" :min="undefined" :max="100" />
-          </el-form-item>
+          <el-form-item-date-time
+            label="指定日期时间"
+            v-model="searchData.datetime"
+            prop="datetime"
+            :placeholder="'指定日期时间2'"
+            clearable
+          />
         </el-col>
-
         <el-col :lg="4" :md="8" :sm="12" :xs="24">
-          <el-form-item label="小数">
-            <el-input-float v-model="searchData.float" placeholder="提示文本" :min="-1.22" :max="2.12" :format-decimal="2" />
-          </el-form-item>
+          <el-form-item-label label="文本型" v-model="searchData.str" prop="str" :placeholder="'文本型2'" :maxlength="20" clearable />
         </el-col>
-
         <el-col :lg="4" :md="8" :sm="12" :xs="24">
-          <el-form-item label="选择框-代码定义选项">
-            <el-select v-model="searchData.selectCode" clearable placeholder="选择xxx" style="width: 100%">
-              <template v-for="item in selectOptions" :key="item.value">
-                <el-option :label="item.label" :value="item.value" />
-              </template>
-            </el-select>
-          </el-form-item>
+          <el-form-item-integer label="整数型" v-model="searchData.int" prop="int" :placeholder="'整数型2'" :max="20" clearable />
         </el-col>
-
         <el-col :lg="4" :md="8" :sm="12" :xs="24">
-          <el-form-item label="选择框-请求定义选项">
-            <el-select
-              v-model="searchData.selectCode"
-              :loading="isLoadingOptions"
-              remote
-              remote-show-suffix
-              :remote-method="requestOptions"
-              clearable
-              placeholder="选择xxx"
-              style="width: 100%"
-              :visible-change="onOptionsVisibleChange"
-            >
-              <template v-for="item in selectOptions_Server" :key="item.value">
-                <el-option :label="item.label" :value="item.value" />
-              </template>
-            </el-select>
-          </el-form-item>
+          <el-form-item-float
+            label="小数型"
+            v-model="searchData.float"
+            prop="float"
+            :placeholder="'小数型2'"
+            :min="10"
+            :max="20"
+            clearable
+          />
         </el-col>
-
         <el-col :lg="4" :md="8" :sm="12" :xs="24">
-          <el-form-item label="逻辑型">
-            <el-select v-model="searchData.selectCode" clearable placeholder="选择xxx" style="width: 100%">
-              <el-option label="真" :value="true" />
-              <el-option label="假" :value="false" />
-            </el-select>
-          </el-form-item>
+          <el-form-item-select-local
+            label="选择框"
+            v-model="searchData.selelct"
+            :options="[
+              { label: 'key', value: 'value' },
+              { label: 'key2', value: 'value2' },
+            ]"
+            prop="selelct"
+            :placeholder="null"
+            clearable
+          />
         </el-col>
-
         <el-col :lg="4" :md="8" :sm="12" :xs="24">
-          <el-form-item label="时间区间">
-            <el-date-picker
-              v-model="value2"
-              type="datetimerange"
-              :shortcuts="shortcuts"
-              range-separator="To"
-              start-placeholder="Start date"
-              end-placeholder="End date"
-              @change="onChangeTimeRange"
-            />
-          </el-form-item>
+          <el-form-item-checkbox label="逻辑型" v-model="searchData.bool" />
         </el-col>
-
         <el-col :lg="4" :md="8" :sm="12" :xs="24">
-          <el-form-item label="指定天">
-            <el-date-picker v-model="value2" type="date" placeholder="Pick a Date" format="YYYY/MM/DD" value-format="YYYY-MM-DD" />
-          </el-form-item>
+          <el-form-item-select-server
+            label="选择框-server"
+            v-model="searchData.selectServer"
+            prop="selectServer"
+            url="/test/options"
+            field="options"
+            :placeholder="null"
+            clearable
+          />
+        </el-col>
+        <el-col :lg="4" :md="8" :sm="12" :xs="24">
+          <el-form-item-date-range label="时间区间" v-model="searchData.timeRange" prop="timeRange" :placeholder="'时间区间2'" clearable />
         </el-col>
       </el-row>
     </el-form>
+
+    <template #footer>
+      <div style="display: flex; margin-left: auto">
+        <el-button type="warning" @click="onResetSearch" style="width: 100px"> {{ $t('com.btnReset') }} </el-button>
+        <el-button type="primary" @click="onSearch" style="width: 100px"> {{ $t('com.btnSearch') }} </el-button>
+      </div>
+    </template>
   </el-card-ex>
 
-  <el-table-ex
-    :data="userList"
-    v-loading="isRequestUserList"
-    v-model:current-page="searchPage"
-    v-model:page-size="appStore.pageNum_userList"
-    :page-sizes="appStore.pageSizes"
-    :total="total"
-    :show-select="true"
-    style="margin-top: 10px"
-    @current-change="requestUserList"
-    @size-change="requestUserList"
-    @selection-change="onSelectionChange"
-  >
-    <el-table-column type="selection" width="55" align="center" />
-    <el-table-column prop="role_id" width="100%" align="center" :label="$t('FIListView.RequestTime')" />
-    <el-table-column prop="account" width="100%" align="center" :label="$t('FIListView.MemberName')" />
-    <el-table-column prop="account" width="100%" align="center" :label="$t('FIListView.PhoneNumber')" />
-    <el-table-column prop="role_id" width="100%" align="center" :label="$t('FIListView.DepositorName')" />
-    <el-table-column prop="account" width="140px" align="center" :label="$t('FIListView.LastWithdrawalName')" />
-    <el-table-column prop="role_id" sortable width="130px" align="center" :label="$t('FIListView.RequestAmount')" />
-    <el-table-column prop="account" sortable width="140px" align="center" :label="$t('FIListView.BalanceAtDeposit')" />
-    <el-table-column prop="role_id" sortable width="140px" align="center" :label="$t('FIListView.DepositBonus')" />
-    <el-table-column prop="account" width="140px" align="center" :label="$t('FIListView.DepositBankAccount')" />
-    <el-table-column prop="SiteName" sortable width="130px" align="center" :label="$t('FIListView.SiteName')" />
-    <el-table-column prop="GameName" sortable width="100%" align="center" :label="$t('FIListView.GameName')" />
-    <el-table-column prop="MemberStatus" sortable width="130px" align="center" :label="$t('FIListView.MemberStatus')" />
-    <el-table-column prop="role_id" sortable width="130px" align="center" :label="$t('FIListView.MemberLv')" />
-    <el-table-column prop="account" width="100%" align="center" :label="$t('FIListView.MemberAccount')" />
-    <el-table-column prop="role_id" width="100%" align="center" :label="$t('FIListView.MemberID')" />
-    <el-table-column prop="account" width="100%" align="center" :label="$t('FIListView.Agent')" />
-    <el-table-column prop="role_id" width="100%" align="center" :label="$t('FIListView.ShooterID')" />
-    <el-table-column prop="account" width="100%" align="center" :label="$t('FIListView.Memo')" />
-    <el-table-column prop="role_id" align="center" :label="$t('FIListView.Edit')" />
-  </el-table-ex>
+  <el-card-ex :use-fold="false" shadow="never" style="margin-top: 10px">
+    <template #header> {{ $t('app.searchResultTitle') }} </template>
+
+    <el-table-ex
+      :data="tableData"
+      v-loading="isRequestingSearch"
+      :show-pagination="true"
+      :is-small-pagination="true"
+      :current-page="searchPageData.page"
+      :page-size="searchPageData.page_num"
+      :page-sizes="appStore.pageSizes"
+      :total="searchPageData.total"
+      @size-change="onPageNumChange"
+      @current-change="onPageChange"
+    >
+      <el-table-column-integer label="玩家ID" prop="id" align="left" can-edit @edit="tableEvents.onEditId" />
+      <el-table-column-label label="账号" prop="account" align="center" can-edit @edit="tableEvents.onEditAccount" />
+      <el-table-column-float label="角色" prop="role_id" align="center" can-edit @edit="tableEvents.onEditRole_id" />
+      <el-table-column-label label="备注" prop="note" align="left" can-edit @edit="tableEvents.onEditNote" />
+      <el-table-column-switch label="状态" prop="status" align="center" can-edit @edit="tableEvents.onEditStatus" />
+      <el-table-column-label label="otp状态" prop="otp_status" align="center" can-edit @edit="tableEvents.onEditOtp_status" />
+      <el-table-column-timestamp label="创建时间" prop="create_ts" align="left" can-edit @edit="tableEvents.onEditCreate_ts" />
+      <el-table-column-money label="金额" prop="keep_online_ts" align="center" can-edit @edit="tableEvents.onEditKeep_online_ts" />
+    </el-table-ex>
+  </el-card-ex>
 </template>
 
-<style scoped>
-.el-input-number :deep(.el-input__inner) {
-  text-align: left;
+<script setup>
+import { reactive, ref } from 'vue'
+import ElCardEx from '@/ui/components/ElCardEx.vue'
+import ElFormItemLabel from '@/ui/components/ElForm/ElFormItemLabel.vue'
+import ElFormItemInteger from '@/ui/components/ElForm/ElFormItemInteger.vue'
+import ElFormItemSelectLocal from '@/ui/components/ElForm/ElFormItemSelectLocal.vue'
+import ElFormItemSelectServer from '@/ui/components/ElForm/ElFormItemSelectServer.vue'
+import ElFormItemFloat from '@/ui/components/ElForm/ElFormItemFloat.vue'
+import ElFormItemCheckbox from '@/ui/components/ElForm/ElFormItemCheckbox.vue'
+import ElFormItemDateRange from '@/ui/components/ElForm/ElFormItemDateRange.vue'
+import ElFormItemDateTime from '@/ui/components/ElForm/ElFormItemDateTime.vue'
+import ElFormItemDate from '@/ui/components/ElForm/ElFormItemDate.vue'
+import { http_get, http_post } from '@/utils/axios'
+import { useAppStore } from '@/stores/app'
+import { getDefaultPageSize, setDefaultPageSize } from '@/utils'
+import ElTableEx from '@/ui/components/ElTableEx.vue'
+import ElTableColumnLabel from '@/ui/components/ElTable/ElTableColumnLabel.vue'
+import ElTableColumnInteger from '@/ui/components/ElTable/ElTableColumnInteger.vue'
+import ElTableColumnFloat from '@/ui/components/ElTable/ElTableColumnFloat.vue'
+import ElTableColumnMoney from '@/ui/components/ElTable/ElTableColumnMoney.vue'
+import ElTableColumnSwitch from '@/ui/components/ElTable/ElTableColumnSwitch.vue'
+import ElTableColumnTimestamp from '@/ui/components/ElTable/ElTableColumnTimestamp.vue'
+
+const appStore = useAppStore()
+
+/** 搜索Form对象 */
+const searchDataRef = ref(null)
+/** 搜索数据 */
+const searchData = ref({
+  /** 指定日期 */
+  date: undefined,
+  /** 指定日期时间 */
+  datetime: undefined,
+  /** 文本型 */
+  str: undefined,
+  /** 整数型 */
+  int: undefined,
+  /** 小数型 */
+  float: undefined,
+  /** 选择框 */
+  selelct: undefined,
+  /** 逻辑型 */
+  bool: undefined,
+  /** 选择框-server */
+  selectServer: undefined,
+  /** 时间区间 */
+  timeRange: undefined,
+})
+
+function onResetSearch() {
+  searchDataRef.value.resetFields()
+
+  searchData.value.bool = false
 }
-</style>
+
+/** 是否正在搜索中 */
+const isRequestingSearch = ref(false)
+/** 表格显示的数据 */
+const tableData = ref([])
+
+/** 分页查询数据 */
+const searchPageData = ref({
+  page: 1,
+  page_num: getDefaultPageSize('/test/users'),
+  total: 0,
+})
+
+/** 搜索 */
+function requestSearch() {
+  if (isRequestingSearch.value) {
+    return
+  }
+  isRequestingSearch.value = true
+  http_post('/test/users', { ...searchData.value, ...searchPageData.value }, false)
+    .then((response) => {
+      tableData.value = response.result
+      searchPageData.value.total = response.total
+    })
+    .catch(() => {})
+    .finally(() => {
+      isRequestingSearch.value = false
+    })
+  console.log('搜索')
+}
+
+/** 修改每页显示数量 */
+function onPageNumChange(value) {
+  searchPageData.value.page_num = value
+  setDefaultPageSize('/test/users', value)
+}
+
+/** 搜索按钮事件 */
+function onSearch() {
+  searchPageData.value.page = 1
+  requestSearch()
+}
+
+/** 切换页面 */
+function onPageChange(value) {
+  searchPageData.value.page = value
+  requestSearch()
+}
+
+/** 表格相关事件 */
+const tableEvents = {
+  /** 修改玩家ID */
+  onEditId: (index, row, newValue, cancelCb, closeCb) => {
+    http_post('/user/edit/name', { id: row.id, newVal: newValue })
+      .then(() => {
+        requestSearch()
+        closeCb()
+      })
+      .catch(() => {
+        cancelCb()
+      })
+  },
+  /** 修改账号 */
+  onEditAccount: (index, row, newValue, cancelCb, closeCb) => {
+    http_post('/user/edit/account', { id: row.id, undefined: newValue })
+      .then(() => {
+        requestSearch()
+        closeCb()
+      })
+      .catch(() => {
+        cancelCb()
+      })
+  },
+  /** 修改角色 */
+  onEditRole_id: (index, row, newValue, cancelCb, closeCb) => {
+    http_post('/user/edit/role_id', { id: row.id, undefined: newValue })
+      .then(() => {
+        requestSearch()
+        closeCb()
+      })
+      .catch(() => {
+        cancelCb()
+      })
+  },
+  /** 修改备注 */
+  onEditNote: (index, row, newValue, cancelCb, closeCb) => {
+    http_post('/user/edit/note', { id: row.id, undefined: newValue })
+      .then(() => {
+        requestSearch()
+        closeCb()
+      })
+      .catch(() => {
+        cancelCb()
+      })
+  },
+  /** 修改状态 */
+  onEditStatus: (index, row, newValue, cancelCb, closeCb) => {
+    http_post('/user/edit/name', { id: row.id, undefined: newValue })
+      .then(() => {
+        requestSearch()
+        closeCb()
+      })
+      .catch(() => {
+        cancelCb()
+      })
+  },
+  /** 修改otp状态 */
+  onEditOtp_status: (index, row, newValue, cancelCb, closeCb) => {
+    http_post('/user/edit/name', { id: row.id, undefined: newValue })
+      .then(() => {
+        requestSearch()
+        closeCb()
+      })
+      .catch(() => {
+        cancelCb()
+      })
+  },
+  /** 修改创建时间 */
+  onEditCreate_ts: (index, row, newValue, cancelCb, closeCb) => {
+    http_post('undefined', { undefined: row.undefined, undefined: newValue })
+      .then(() => {
+        requestSearch()
+        closeCb()
+      })
+      .catch(() => {
+        cancelCb()
+      })
+  },
+  /** 修改金额 */
+  onEditKeep_online_ts: (index, row, newValue, cancelCb, closeCb) => {
+    http_post('undefined', { undefined: row.undefined, undefined: newValue })
+      .then(() => {
+        requestSearch()
+        closeCb()
+      })
+      .catch(() => {
+        cancelCb()
+      })
+  },
+}
+</script>

@@ -6,6 +6,9 @@ export default {
     needLoginBtn: 'Log in now',
     signOut: 'sign out',
     requestFail: 'Request failed, please try again later.',
+    searchParamsTitle: '~~~~~~~搜索',
+    searchResultTitle: '~~~~~~~~查询结果',
+    editDialogTitle: '~~~~~~~~编辑{title}',
   },
   com: {
     btnYes: 'yes',
