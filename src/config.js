@@ -17,12 +17,12 @@ export const config = {
   /** 网站模式: admin、website、mobile(该模式下只有手机版本) */
   websiteModel: 'admin',
   /** 是否强制为编译版本，admin模式下: true-使用服务器配置, false-使用本地配置 */
-  buildMode: true,
+  buildMode: false,
   /** 无手机模式：没有开发手机版时开启 */
   noMobileModel: false,
   localMode: false,
   /** 服务器 */
-  server: 'http://127.0.0.1',
+  server: 'http://192.168.1.2',
   // server: 'http://api.jadesoft.live',
   /** 给服务器发送请求时，是否需要携带Cookie信息. 服务器Access-Control-Allow-Origin响应头必须指定具体值，不能为‘*’ */
   serverUseCookie: false,
