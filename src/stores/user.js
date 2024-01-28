@@ -3,7 +3,7 @@ import { defineStore } from 'pinia'
 import { useAppStore } from '@/stores/app'
 import { config } from '@/config'
 import router from '@/router'
-import { http_post } from '@/utils/axios'
+import { http_post } from '@/axios'
 
 let keepAliveTimerId = null
 

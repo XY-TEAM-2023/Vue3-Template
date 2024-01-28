@@ -13,6 +13,14 @@
             {{ $t('loginView.loginBtn') }}
           </el-button>
         </div>
+        <div>
+          <el-button v-menu="menuItems" type="info" :loading="isRequesting" @click="ShowBindOtp">
+            {{ $t('otp.titleBind') }}
+          </el-button>
+          <el-button v-menu="menuItems" type="info" :loading="isRequesting" @click="ShowCheckOtp">
+            {{ $t('otp.titleCheck') }}
+          </el-button>
+        </div>
       </el-form>
     </div>
   </div>
@@ -25,24 +33,22 @@ import UiI18n from '@/ui/components/UiI18n.vue'
 import { useUserStore } from '@/stores/user'
 import router from '@/router'
 import { useRoute } from 'vue-router'
-import { ElMessageBox } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import i18n from '@/i18n'
-import { http_post } from '@/utils/axios'
+import { http_post } from '@/axios'
 import { isMobile } from '@/utils'
+import Dialog from '@/ui/components/DIalog/Dialog'
 
 const userStore = useUserStore()
 
-// const account = ref('coco')
-const account = ref('admin')
+const account = ref('coco')
 const password = ref('123456')
-// const account = ref(userStore.account)
-// const password = ref('')
 
 const menuItems = [
   { text: '选项1', icon: 'Finished', hoverColor: '#FF0000', action: () => console.log('选项1被点击') },
   {
     text: '选项2',
-    icon: `<svg t="1703992207510" class="icon" viewBox="0 0 1026 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2478" width="32" height="32"><path d="M347.64 546.3l103.28 357.77 498.07-720zM334.72 523.93l614.27-339.86-872.55 71.61z" fill="#040000" p-id="2479"></path></svg>`,
+    icon: `<svg t='1703992207510' class='icon' viewBox='0 0 1026 1024' version='1.1' xmlns='http://www.w3.org/2000/svg' p-id='2478' width='32' height='32'><path d='M347.64 546.3l103.28 357.77 498.07-720zM334.72 523.93l614.27-339.86-872.55 71.61z' fill='#040000' p-id='2479'></path></svg>`,
     action: () => console.log('选项2被点击'),
   },
   // 其他菜单项
@@ -58,12 +64,18 @@ onMounted(() => {
 })
 
 /** 登录按钮事件 */
-function onLogin(isForce = false) {
+function onLogin(isForce = false, otpCode = '') {
   isRequesting.value = true
   // 用户登录
   http_post(
     '/api/admin/user/login',
-    { account: account.value, password: password.value, force: isForce, device: isMobile() ? 'mobile' : 'pc' },
+    {
+      account: account.value,
+      password: password.value,
+      force: isForce,
+      device: isMobile() ? 'mobile' : 'pc',
+      code: otpCode,
+    },
     false
   )
     .then((data) => {
@@ -73,10 +85,10 @@ function onLogin(isForce = false) {
       // 跳转页面
       router.push({ name: userStore.homePage })
     })
-    .catch(({ status, msg }) => {
+    .catch(({ status, msg, data }) => {
       console.log(msg)
       // 已经有人登录过了
-      if (status === 106) {
+      if (status === 102) {
         ElMessageBox.confirm(msg, '', {
           confirmButtonText: i18n.global.t('com.btnOk'),
           cancelButtonText: i18n.global.t('com.btnCancel'),
@@ -86,6 +98,48 @@ function onLogin(isForce = false) {
             onLogin(true)
           })
           .catch(() => {})
+      } else if (status === 201) {
+        // 需要绑定OTP
+        Dialog.QRCode({
+          title: 'otp.titleBind',
+          content: data.otp_url,
+          desc: 'otp.bindDesc',
+          submitBtnLabel: 'otp.btnNext',
+          onClose: () => {
+            // 取消绑定
+          },
+          onSubmit: (cancelCb, closeCb) => {
+            // 验证
+            closeCb()
+            Dialog.input({
+              title: 'otp.titleCheck',
+              maxLength: 6,
+              onClose: () => {},
+              onSubmit: (value, cancelCb, closeCb) => {
+                if (value === '') {
+                  cancelCb()
+                } else {
+                  onLogin(isForce, value)
+                  closeCb()
+                }
+              },
+            })
+          },
+        })
+      } else if (status === 202) {
+        Dialog.input({
+          title: 'otp.titleCheck',
+          maxLength: '6',
+          onClose: () => {},
+          onSubmit: (value, cancelCb, closeCb) => {
+            if (value === '') {
+              cancelCb()
+            } else {
+              onLogin(isForce, value)
+              closeCb()
+            }
+          },
+        })
       } else {
         ElMessageBox.alert(msg, '', {
           type: 'error',
@@ -98,6 +152,39 @@ function onLogin(isForce = false) {
       // console.log('请求结束')
       isRequesting.value = false
     })
+}
+
+function ShowBindOtp(otp_url) {
+  Dialog.QRCode({
+    title: 'otp.titleBind',
+    content: otp_url,
+    desc: 'otp.bindDesc',
+    submitBtnLabel: 'otp.btnNext',
+    onClose: () => {
+      console.log('取消')
+    },
+    onSubmit: (cancelCb, closeCb) => {
+      console.log('点击了下一步')
+    },
+  })
+}
+
+function ShowCheckOtp() {
+  Dialog.input({
+    title: 'otp.titleCheck',
+    onClose: () => {},
+    onSubmit: (newValue, cancelCb, closeCb) => {
+      http_post('/otp/check', { code: newValue }, false)
+        .then(() => {
+          // TODO: 验证成功
+          closeCb()
+        })
+        .catch(() => {
+          // TODO: 验证失败
+          cancelCb()
+        })
+    },
+  })
 }
 </script>
 

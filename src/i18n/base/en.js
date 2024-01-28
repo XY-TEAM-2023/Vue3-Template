@@ -29,6 +29,12 @@ export default {
     index: 'Index',
     noPermission: 'No permission',
   },
+  otp: {
+    titleBind: 'Bind OTP',
+    bindDesc: 'After binding successfully, click next',
+    titleCheck: 'OTP Verification',
+    btnNext: 'Next Step',
+  },
   language: '英语',
   person: {
     name: '张三',

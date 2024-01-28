@@ -54,7 +54,7 @@
 import { defineEmits, reactive, ref, watch } from 'vue'
 import ElFormEx from '@/ui/components/ElForm/ElFormEx.vue'
 import i18n from '@/i18n'
-import { http_post } from '@/utils/axios'
+import { http_post } from '@/axios'
 
 const props = defineProps({
   isShow: {

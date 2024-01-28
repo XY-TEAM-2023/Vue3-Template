@@ -65,7 +65,7 @@ import ChangeRoleInfoDialog from '@/ui/views/desktop/Role/ChangeRoleInfoDialog.v
 import i18n from '@/i18n'
 import { ElMessageBox } from 'element-plus'
 import UiSvg from '@/ui/components/UiSvg.vue'
-import { http_post } from '@/utils/axios'
+import { http_post } from '@/axios'
 
 const appStore = useAppStore()
 if (appStore.pageNum_userList <= 0) {

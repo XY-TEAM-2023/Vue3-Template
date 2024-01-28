@@ -89,7 +89,7 @@ import { useAppStore } from '@/stores/app'
 import UiSvg from '@/ui/components/UiSvg.vue'
 import { cloneDeep } from 'lodash-es'
 import { CaretBottom, CaretTop } from '@element-plus/icons-vue'
-import { http_post } from '@/utils/axios'
+import { http_post } from '@/axios'
 
 const appStore = useAppStore()
 if (appStore.pageNum_userList <= 0) {

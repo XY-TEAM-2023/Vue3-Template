@@ -69,7 +69,7 @@
 import { ref, reactive, computed, watch, onMounted, onBeforeUnmount, defineProps, defineEmits, useAttrs } from 'vue'
 import { useAppStore } from '@/stores/app'
 import i18n from '@/i18n'
-import { http_post } from '@/utils/axios'
+import { http_post } from '@/axios'
 
 const props = defineProps({
   // 显示模式: 是否显示修改权限按钮

@@ -30,6 +30,12 @@ export default {
     index: '索引',
     noPermission: '无权限',
   },
+  otp: {
+    titleBind: '绑定OTP',
+    bindDesc: '绑定成功后，点击下一步',
+    titleCheck: 'OTP验证',
+    btnNext: '下一步',
+  },
   language: '中文',
   person: {
     name: '张三',

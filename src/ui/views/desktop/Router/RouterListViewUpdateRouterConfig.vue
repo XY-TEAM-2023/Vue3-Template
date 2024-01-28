@@ -6,7 +6,7 @@
 
 <script setup>
 import { defineProps, defineEmits, computed, ref } from 'vue'
-import { http_post } from '@/utils/axios'
+import { http_post } from '@/axios'
 
 const emit = defineEmits(['refresh'])
 

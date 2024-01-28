@@ -38,7 +38,7 @@
 import { defineEmits, reactive, ref, watch } from 'vue'
 import ElFormEx from '@/ui/components/ElForm/ElFormEx.vue'
 import { cloneDeep } from 'lodash-es'
-import { http_post } from '@/utils/axios'
+import { http_post } from '@/axios'
 
 const props = defineProps({
   isShow: {

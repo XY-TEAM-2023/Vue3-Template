@@ -152,6 +152,17 @@ function tryLoadRouteGroup(route, parentPath = '') {
  * 根据手机还是PC, 重新加载路由
  */
 const reloadRoutesHandler = function (asyncRoutesConfig) {
+  asyncRoutesConfig.forEach((item) => {
+    if (!item.meta) {
+      item.meta = {
+        needLogin: true,
+      }
+    }
+    if (item.meta.needLogin === undefined) {
+      item.meta.needLogin = true
+    }
+  })
+
   // console.error('asyncRoutesConfig', asyncRoutesConfig)
   // 清空路由
   router.getRoutes().forEach((route) => {

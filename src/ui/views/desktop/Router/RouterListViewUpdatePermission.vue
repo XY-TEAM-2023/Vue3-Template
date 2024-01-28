@@ -7,7 +7,7 @@
 <script setup>
 import { ref, reactive, onMounted, computed, defineEmits } from 'vue'
 import i18n from '@/i18n'
-import { http_post } from '@/utils/axios'
+import { http_post } from '@/axios'
 
 const props = defineProps({
   routerList: Array,

@@ -9,6 +9,7 @@
     :collapse="props.collapse"
     :menu-trigger="props.menuTrigger"
     :collapse-transition="false"
+    :default-openeds="props.defaultOpeneds"
     class="unselect menu"
   >
     <template v-for="(route, index) in layoutRoutes" :key="index">
@@ -55,6 +56,8 @@ const props = defineProps({
     type: String,
     default: 'hover',
   },
+  /** 默认打开的数组*/
+  defaultOpeneds: Array,
 })
 
 const layoutRoutes = computed(() => {
