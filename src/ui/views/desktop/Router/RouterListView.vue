@@ -155,7 +155,7 @@ import RouterListViewUpdatePermission from './RouterListViewUpdatePermission.vue
 import RouterListViewUpdateRouterConfig from './RouterListViewUpdateRouterConfig.vue'
 import UiMenuPermission from '@/ui/components/UiMenuPermission.vue'
 import { useAppStore } from '@/stores/app'
-import { http_post } from '@/utils/axios'
+import { http_post } from '@/axios'
 
 const tagStyle = computed(() => {
   return {

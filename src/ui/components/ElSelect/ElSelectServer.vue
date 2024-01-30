@@ -17,7 +17,7 @@
 <script setup lang="ts">
 import { computed, defineProps, defineModel, ref } from 'vue'
 import { tryGetI18nText } from '@/utils'
-import { http_post } from '@/utils/axios'
+import { http_post } from '@/axios'
 
 const model = defineModel()
 const props = defineProps<{

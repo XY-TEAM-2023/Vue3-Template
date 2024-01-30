@@ -4,6 +4,7 @@ import { config } from '@/config'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import i18n from '@/i18n'
 import { useAppStore } from '@/stores/app'
+import { getStatusTipCb, getStatusTipMsg } from '@/axios/axiosHanlder'
 
 // 创建并配置axios实例
 const http = axios.create({
@@ -52,95 +53,73 @@ http.interceptors.response.use(
   }
 )
 
-let isShowedMsgBox = false
+/** 显示中的对话框 */
+const isTipShowing = {
+  '/api/admin/user/keepOnline': true, // 屏蔽心跳
+}
+
 // 成功回调函数
 const successCb = (url, response, reject, resolve, tipType) => {
   const { status, msg, data } = response
-  const isKeepOnline = url === '/api/admin/user/keepOnline'
-  if (status === -1) {
-    if (!isShowedMsgBox && !isKeepOnline) {
-      // 提示需要登录
-      isShowedMsgBox = true
-      ElMessageBox.alert(i18n.global.t('app.needLogin'), '', {
-        showClose: false,
-        type: 'warning',
-        confirmButtonText: i18n.global.t('com.btnOk'),
-        callback: () => {
-          isShowedMsgBox = false
-          // 如果有登录页面, 访问登录页面, 这部分逻辑由router处理
-          useUserStore().logout()
-        },
-      })
-    }
-  } else if (status === -2) {
-    if (!isShowedMsgBox && !isKeepOnline) {
-      // 提示需要登录
-      isShowedMsgBox = true
-      ElMessageBox.alert(i18n.global.t('app.loginOtherDevice'), '', {
-        showClose: false,
-        type: 'error',
-        confirmButtonText: i18n.global.t('com.btnOk'),
-        callback: () => {
-          isShowedMsgBox = false
-          // 如果有登录页面, 访问登录页面, 这部分逻辑由router处理
-          useUserStore().logout()
-        },
-      })
+
+  const tip_type = status === 0 ? 'success' : 'error'
+  let tip_msg = getStatusTipMsg(status, msg)
+
+  let tip_callback = () => {
+    if (status === 0) {
+      resolve(data)
+    } else {
+      reject(response)
     }
 
-    reject({ status, msg, data })
-  } else if (status === 0) {
-    // 请求成功
-    if (tipType === 1 || tipType === 2) {
+    getStatusTipCb(status, data)()
+  }
+
+  if (!isTipShowing[url]) {
+    if (tipType === 1) {
+      isTipShowing[url] = true
+      ElMessageBox.alert(tip_msg, '', {
+        showClose: false,
+        type: tip_type,
+        confirmButtonText: i18n.global.t('com.btnOk'),
+        callback: () => {
+          isTipShowing[url] = false
+          tip_callback()
+        },
+      })
+    } else if (tipType === 2) {
       ElMessage({
-        message: msg,
-        type: 'success',
+        message: tip_msg,
+        type: tip_type,
       })
+      tip_callback()
+    } else {
+      isTipShowing[url] = false
+      tip_callback()
     }
-
-    resolve(data)
-  } else {
-    // 状态码不为0
-    console.log('>>>>>>>>>>>>', response)
-    if (!isShowedMsgBox && !isKeepOnline && tipType !== 0) {
-      // 提示需要登录
-      isShowedMsgBox = true
-      ElMessageBox.alert(msg, '', {
-        showClose: false,
-        type: 'error',
-        confirmButtonText: i18n.global.t('com.btnOk'),
-        callback: () => {
-          isShowedMsgBox = false
-        },
-      })
-    }
-
-    reject({ status, msg, data })
   }
 }
 
 // 网络错误回调函数
-const networkErrorCb = (url, retry, retryCount, reject, makeRequest, retryDelay, error) => {
+const networkErrorCb = (url, tipType, retry, retryCount, reject, makeRequest, retryDelay, error) => {
   if (retry >= retryCount - 1) {
     console.error(error)
-    const isKeepOnline = url === '/api/admin/user/keepOnline'
-    if (!isShowedMsgBox && !isKeepOnline) {
-      isShowedMsgBox = true
+    if (!isTipShowing[url] && tipType !== 0) {
+      isTipShowing[url] = true
       ElMessageBox.alert(i18n.global.t('app.requestFail'), '', {
         type: 'error',
         showClose: false,
         confirmButtonText: i18n.global.t('com.btnOk'),
         callback: () => {
-          isShowedMsgBox = false
+          isTipShowing[url] = false
         },
       })
-
-      reject({
-        status: 99999,
-        msg: i18n.global.t('app.requestFail'),
-        data: {},
-      })
     }
+    reject({
+      status: 99999,
+      msg: i18n.global.t('app.requestFail'),
+      data: {},
+    })
   } else {
     retry++
     setTimeout(makeRequest, retryDelay)
@@ -163,7 +142,7 @@ const get = (url, params = {}, tipType = 1, timeout = 15000, retryCount = 0, ret
           successCb(url, response, reject, resolve, tipType)
         })
         .catch((error) => {
-          networkErrorCb(url, retry, retryCount, reject, makeRequest, retryDelay, error)
+          networkErrorCb(url, tipType, retry, retryCount, reject, makeRequest, retryDelay, error)
         })
     }
 
@@ -186,7 +165,7 @@ const post = (url, data = {}, tipType = 1, timeout = 15000, retryCount = 0, retr
           successCb(url, response, reject, resolve, tipType)
         })
         .catch((error) => {
-          networkErrorCb(url, retry, retryCount, reject, makeRequest, retryDelay, error)
+          networkErrorCb(url, tipType, retry, retryCount, reject, makeRequest, retryDelay, error)
         })
     }
 
@@ -210,7 +189,7 @@ export const http_get = (
   url,
   data = {},
   displayTip = true,
-  tipType = 1,
+  tipType = 2,
   timeout = 15000,
   retryCount = 0,
   retryDelay = 1000,
@@ -235,7 +214,7 @@ export const http_post = (
   url,
   data = {},
   displayTip = true,
-  tipType = 1,
+  tipType = 2,
   timeout = 15000,
   retryCount = 0,
   retryDelay = 1000,

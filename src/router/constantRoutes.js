@@ -22,7 +22,7 @@ export const constantRoutes = [
   {
     path: '/login',
     name: 'login',
-    component: `/src/ui/views/${platform}/LoginView.vue`,
+    component: `/src/ui/views/${platform}/Login/LoginView.vue`,
     meta: {
       title: 'Login',
       needLogin: false,

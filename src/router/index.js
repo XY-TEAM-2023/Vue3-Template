@@ -8,6 +8,7 @@ import { useAppStore } from '@/stores/app'
 import { asyncRoutes, platform } from './asyncRoutes'
 import { constantRoutes } from './constantRoutes'
 import { cloneDeep } from 'lodash-es'
+import { getParentPath } from '@/utils'
 
 let router = createRouter({
   history: config.localMode ? createWebHashHistory(import.meta.env.BASE_URL) : createWebHistory(import.meta.env.BASE_URL),
@@ -45,7 +46,7 @@ function checkRouterIsPublic(r) {
 }
 
 let consoleIndex = 0
-const comps = import.meta.glob('/src/ui/**/*.vue')
+const comps = import.meta.glob('/src/ui/**/*.*')
 
 /**
  * 加载Route的配置
@@ -54,7 +55,7 @@ function loadRouteConfig(routerConfig) {
   if (!routerConfig) return
 
   routerConfig.forEach((route) => {
-    console.log(route)
+    // console.log(route)
     if (tryLoadRouteGroup(route, '')) {
       // console.log(route)
       router.config.push(route)
@@ -136,11 +137,11 @@ function tryLoadRouteGroup(route, parentPath = '') {
   }
   if (canLoad) {
     if (typeof route.component === 'string') {
-      const tempComponent = route.component.replace('${platform}', platform)
-      // console.warn(tempComponent, ' || ', comps[tempComponent])
-      route.component = comps[tempComponent]
-
-      // route.meta.componentName = getComponentNameFromPath(tempComponent)
+      if (!route.meta) {
+        route.meta = {}
+      }
+      route.meta.componentPath = route.component.replace('${platform}', platform)
+      route.component = comps[route.meta.componentPath]
     }
     // console.log(`${++consoleIndex}. ${route.fullPath}`)
   }
@@ -152,6 +153,17 @@ function tryLoadRouteGroup(route, parentPath = '') {
  * 根据手机还是PC, 重新加载路由
  */
 const reloadRoutesHandler = function (asyncRoutesConfig) {
+  asyncRoutesConfig.forEach((item) => {
+    if (!item.meta) {
+      item.meta = {
+        needLogin: true,
+      }
+    }
+    if (item.meta.needLogin === undefined) {
+      item.meta.needLogin = true
+    }
+  })
+
   // console.error('asyncRoutesConfig', asyncRoutesConfig)
   // 清空路由
   router.getRoutes().forEach((route) => {
@@ -221,6 +233,18 @@ router.beforeEach(
     const userStore = useUserStore()
     // 登录状态 -1未登录；0已登录；1登录失效；
     const loginStatus = userStore.loginStatus
+    console.log('>>>>>>>>>>>>>>>', to)
+
+    const nextCb = (next_data) => {
+      tryLoadI18n(to.meta.componentPath)
+        .then(() => {})
+        .catch(() => {})
+        .finally(() => {
+          console.log('>>>>>>>>>>>>>>>', to.meta.componentPath)
+          console.log('next_data', next_data)
+          next(next_data)
+        })
+    }
 
     // console.error('to.path', to.path)
     if (to.path === '/') {
@@ -229,29 +253,29 @@ router.beforeEach(
         if (config.router.loginPage && config.router.loginPage !== to.path) {
           // 跳转到登录页面
           if (config.router.loginPage.startsWith('/')) {
-            next({ path: config.router.loginPage })
+            nextCb({ path: config.router.loginPage })
           } else {
-            next({ name: config.router.loginPage })
+            nextCb({ name: config.router.loginPage })
           }
         } else {
-          next()
+          nextCb()
         }
       } else {
         const homePage = isBuildMode ? userStore.homePage : config.router.homePage
         // 跳转到登录成功后的第一个页面
         if (homePage && homePage !== to.path) {
           if (homePage.startsWith('/')) {
-            next({ path: homePage })
+            nextCb({ path: homePage })
           } else {
-            next({ name: homePage })
+            nextCb({ name: homePage })
           }
         } else {
-          next()
+          nextCb()
         }
       }
     } else if (!to.meta || !to.meta.needLogin) {
       // 不需要登录, 直接访问页面
-      next()
+      nextCb()
     } else if (loginStatus === -1) {
       // 未登录
       ElMessageBox.alert(i18n.global.t('app.needLogin'), '', {
@@ -260,7 +284,7 @@ router.beforeEach(
         callback: () => {
           // 如果有登录页面, 访问登录页面
           if (config.router.loginPage) {
-            next(config.router.loginPage)
+            nextCb(config.router.loginPage)
           }
         },
       })
@@ -272,7 +296,7 @@ router.beforeEach(
         callback: () => {
           // 如果有登录页面, 访问登录页面
           if (config.router.loginPage) {
-            next(config.router.loginPage)
+            nextCb(config.router.loginPage)
           }
         },
       })
@@ -282,17 +306,49 @@ router.beforeEach(
         // 需要角色权限
         if (to.roles.some((item) => userStore.roles.includes(item))) {
           // 可以访问
-          next()
+          nextCb()
         } else {
           // 无权限访问
-          next('/noPermission')
+          nextCb('/noPermission')
         }
       } else {
-        next()
+        nextCb()
       }
     }
   }
 )
+
+/** 尝试加载页面对应的国际化文本 */
+const tryLoadI18n = (componentPath) => {
+  return new Promise((resolve, reject) => {
+    const i18nPath = getParentPath(componentPath) + '/i18n.js'
+    const i18nFileLoad = comps[i18nPath]
+    if (!i18nFileLoad) {
+      reject()
+      return // 没有找到翻译文件
+    }
+
+    i18nFileLoad()
+      .then((messagesModule) => {
+        const newTranslations = messagesModule.default
+
+        // 遍历每种语言并合并翻译
+        Object.keys(newTranslations).forEach((lang) => {
+          // 获取现有的翻译（如果存在）
+          const existingTranslations = i18n.global.messages[lang] || {}
+
+          // 合并现有的翻译与新的翻译，并设置到 i18n 实例中
+          i18n.global.setLocaleMessage(lang, { ...existingTranslations, ...newTranslations[lang] })
+        })
+
+        resolve()
+      })
+      .catch((error) => {
+        console.error('Failed to load i18n file:', error)
+        reject()
+      })
+  })
+}
 
 const getComponentNameFromPath = (filePath) => {
   const pathParts = filePath.split('/') // 分割路径
@@ -316,6 +372,7 @@ router.afterEach(() => {
   appStore.routerPath = new_full_path
   appStore.routerName = curRouteName
 
+  // console.error(router.currentRoute.value)
   // 如果跳转的是登录页面, 清空用户信息
   if (new_full_path === config.router.loginPage) {
     useUserStore().logout()

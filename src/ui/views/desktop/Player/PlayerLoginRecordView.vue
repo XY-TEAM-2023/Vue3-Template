@@ -1,9 +1,9 @@
 <script>
 export default {
-  name: 'DevTools',
+  name: 'PlayerLoginRecordView.vue',
 }
 </script>
 
-<template>123123</template>
+<template></template>
 
 <style scoped lang="scss"></style>

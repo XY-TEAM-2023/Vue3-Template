@@ -29,6 +29,12 @@ export default {
     index: '인덱스',
     noPermission: '권한 없음',
   },
+  otp: {
+    titleBind: 'OTP 바인딩',
+    bindDesc: '바인딩 성공 후, 다음을 클릭하십시오',
+    titleCheck: 'OTP 검증',
+    btnNext: '다음 단계',
+  },
   language: '韩语',
   person: {
     name: '张三',
@@ -68,7 +74,7 @@ export default {
     onlineStatus: '온라인 상태',
     onlineStatus_on: '온라인',
     onlineStatus_off: '오프라인',
-    deleteAccountTip: '사용자 {account}를 삭제하시겠습니까?',
+    deleteAccountTip: '사용자 {search_account}를 삭제하시겠습니까?',
   },
   createUserDialog: {
     account: '계정',

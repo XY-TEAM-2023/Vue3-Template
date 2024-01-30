@@ -30,6 +30,12 @@ export default {
     index: '索引',
     noPermission: '无权限',
   },
+  otp: {
+    titleBind: '绑定OTP',
+    bindDesc: '绑定成功后，点击下一步',
+    titleCheck: 'OTP验证',
+    btnNext: '下一步',
+  },
   language: '中文',
   person: {
     name: '张三',
@@ -69,7 +75,7 @@ export default {
     onlineStatus: '在线状态',
     onlineStatus_on: '在线',
     onlineStatus_off: '离线',
-    deleteAccountTip: '是否确定删除用户{account}?',
+    deleteAccountTip: '是否确定删除用户{search_account}?',
   },
   createUserDialog: {
     account: '账号',

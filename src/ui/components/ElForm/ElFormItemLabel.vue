@@ -1,6 +1,11 @@
 <template>
   <el-form-item :label="label" :required="required" :prop="props.prop">
-    <el-input v-model="model" :placeholder="placeholder" :maxlength="props.maxlength" :clearable="true" style="width: 100%" />
+    <template v-if="props.readonly">
+      {{ label }}
+    </template>
+    <template v-else>
+      <el-input v-model="model" :placeholder="placeholder" :maxlength="props.maxlength" :clearable="true" style="width: 100%" />
+    </template>
   </el-form-item>
 </template>
 
@@ -19,6 +24,8 @@ const props = defineProps({
   /** el-form 使用rules规则检查时用到 */
   prop: String,
   maxlength: Number,
+  /** 是否只读 */
+  readonly: Boolean,
 })
 
 const label = computed(() => {

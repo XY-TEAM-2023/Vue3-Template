@@ -23,7 +23,7 @@ import UiI18n from '@/ui/components/UiI18n.vue'
 import { useUserStore } from '@/stores/user'
 import router from '@/router'
 import { useRoute } from 'vue-router'
-import { http_post } from '@/utils/axios'
+import { http_post } from '@/axios'
 import { isMobile } from '@/utils'
 import { ElMessageBox } from 'element-plus'
 import i18n from '@/i18n'
@@ -32,7 +32,7 @@ const userStore = useUserStore()
 
 const account = ref('coco')
 const password = ref('13214566036')
-// const account = ref(userStore.account)
+// const search_account = ref(userStore.search_account)
 // const password = ref('')
 
 /** 是否正在登录中 */
