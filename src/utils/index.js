@@ -167,7 +167,7 @@ export function setDefaultPageSize(url, pageNum) {
 }
 
 /** 以金钱格式显示 */
-export function formatNumberAsMoney(number) {
+export function formatNumberAsMoney(number, saveFloat = false) {
   // 检查 number 是否为 null 或 undefined
   if (number === null || number === undefined) {
     return '0'
@@ -182,7 +182,24 @@ export function formatNumberAsMoney(number) {
   }
 
   return new Intl.NumberFormat('en-US', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
+    minimumFractionDigits: saveFloat ? 2 : 0,
+    maximumFractionDigits: saveFloat ? 2 : 0,
   }).format(num)
+}
+
+
+/**
+ * 取路径的父路径
+ * @param path 路径
+ * @returns {string} 父路径
+ */
+export function getParentPath(path) {
+  // 将所有反斜杠替换为斜杠
+  const normalizedPath = path.replace(/\\/g, '/')
+
+  // 查找最后一个斜杠的位置
+  const lastSlashIndex = normalizedPath.lastIndexOf('/')
+
+  // 截取从字符串开头到最后一个斜杠的位置
+  return normalizedPath.substring(0, lastSlashIndex)
 }

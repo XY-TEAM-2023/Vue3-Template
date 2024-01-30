@@ -2,14 +2,14 @@
   <el-table-column :label="label" :width="props.width" :align="props.align" :show-overflow-tooltip="true">
     <template #default="scope">
       <span class="input-label" :class="{ 'input-label-edit': canEdit }" @click="onClick(scope.$index, scope.row)">
-        {{ formatNumberAsMoney(scope.row[props.prop]) }}
+        {{ formatNumberAsMoney(scope.row[props.prop], props.showFloat) }}
       </span>
     </template>
   </el-table-column>
 </template>
 
 <script setup>
-import { computed, defineProps } from 'vue'
+import { computed, defineProps, getCurrentInstance } from 'vue'
 import dialog from '@/ui/components/DIalog/Dialog'
 import { formatNumberAsMoney, getI18nText, tryGetI18nText } from '@/utils'
 
@@ -45,16 +45,18 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
+  showFloat: Boolean,
 })
 
 const label = computed(() => {
   return tryGetI18nText(props.label)
 })
 
-const emit = defineEmits(['edit'])
+const emit = defineEmits(['edit', 'click'])
+const instance = getCurrentInstance()
 
 function onClick(index, row) {
-  if (props.canEdit) {
+  if (instance.vnode.props.onEdit && props.canEdit) {
     dialog.inputFloat({
       title: props.editTitle ? props.editTitle : getI18nText('app.editDialogTitle', { title: label.value }),
       width: props.editWidth,
@@ -65,6 +67,8 @@ function onClick(index, row) {
         emit('edit', index, row, newValue, cancelCb, closeCb)
       },
     })
+  } else if (instance.vnode.props.onClick) {
+    emit('click', index, row)
   }
 }
 </script>

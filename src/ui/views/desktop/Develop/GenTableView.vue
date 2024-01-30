@@ -84,17 +84,6 @@
         <template #header> 筛选条件 </template>
 
         <template #default>
-          <!--  添加搜索字段  -->
-          <el-form-item label="添加搜索" label-width="80">
-            <el-button-group>
-              <el-button v-for="item in searchDataTypeList" :key="item.value" type="primary" @click="searchData.add(item)">
-                {{ item.text }}
-              </el-button>
-            </el-button-group>
-
-            <el-button style="margin-left: 10px" type="danger" @click="data_search.splice(0, data_search.length)">清空</el-button>
-          </el-form-item>
-
           <!--  添加的搜索条件  -->
           <div style="padding-left: 80px">
             <template v-for="(item, index) in data_search" :key="index">
@@ -540,6 +529,17 @@
               </el-card-ex>
             </template>
           </div>
+
+          <!--  添加搜索字段  -->
+          <el-form-item label="添加搜索" label-width="80">
+            <el-button-group>
+              <el-button v-for="item in searchDataTypeList" :key="item.value" type="primary" @click="searchData.add(item)">
+                {{ item.text }}
+              </el-button>
+            </el-button-group>
+
+            <el-button style="margin-left: 10px" type="danger" @click="data_search.splice(0, data_search.length)">清空</el-button>
+          </el-form-item>
         </template>
       </el-card-ex>
 
@@ -548,17 +548,6 @@
         <template #header> 表格显示 </template>
 
         <template #default>
-          <!--  添加搜索字段  -->
-          <el-form-item label="添加列" label-width="80">
-            <el-button-group>
-              <el-button v-for="item in tableDataTypeList" :key="item.value" type="primary" @click="tableData.add(item)">
-                {{ item.text }}
-              </el-button>
-            </el-button-group>
-
-            <el-button style="margin-left: 10px" type="danger" @click="data_table.splice(0, data_table.length)">清空</el-button>
-          </el-form-item>
-
           <!--  添加的搜索条件  -->
           <div style="padding-left: 80px">
             <template v-for="(item, index) in data_table" :key="index">
@@ -621,6 +610,17 @@
               </el-card-ex>
             </template>
           </div>
+
+          <!--  添加搜索字段  -->
+          <el-form-item label="添加列" label-width="80">
+            <el-button-group>
+              <el-button v-for="item in tableDataTypeList" :key="item.value" type="primary" @click="tableData.add(item)">
+                {{ item.text }}
+              </el-button>
+            </el-button-group>
+
+            <el-button style="margin-left: 10px" type="danger" @click="data_table.splice(0, data_table.length)">清空</el-button>
+          </el-form-item>
         </template>
       </el-card-ex>
 
@@ -1058,7 +1058,8 @@ ${temp_search_data_list}
   </el-card-ex>`
   }
 
-  let code_tableFields = ''
+  let code_tableFields = `
+      <el-table-column-index label="com.index" width="80" align="center" />`
   let code_table = ''
   data_table.forEach((field) => {
     let temp_edit_fun_name = ''
@@ -1093,12 +1094,16 @@ ${temp_search_data_list}
       code_tableFields += `
       <el-table-column-timestamp label="${field.title}" prop="${field.field}" align="${field.align}" ${temp_edit} />`
     } else if (field.type === 7) {
+      //时间戳
       code_tableFields += `
-      <el-table-column label="${field.title}" prop="${field.field}"  align="${field.align}">
+      <el-table-column-link label="${field.title}" prop="${field.field}" align="${field.align}" />`
+    } else if (field.type === 8) {
+      code_tableFields += `
+      <el-table-column-ex label="${field.title}" prop="${field.field}"  align="${field.align}">
         <template #default="scope">
           {{ scope.row.${field.field}}}
         </template>
-      </el-table-column>`
+      </el-table-column-ex>`
     }
 
     if (temp_edit_fun_name) {
@@ -1130,7 +1135,7 @@ ${temp_search_data_list}
           ? ''
           : `
       :current-page="searchPageData.page"
-      :page-size="searchPageData.page_num"
+      :page-size="searchPageData.page_size"
       :page-sizes="appStore.pageSizes"
       :total="searchPageData.total"
       @size-change="onPageNumChange"
@@ -1151,7 +1156,7 @@ ${code_tableFields}
         ? ''
         : `
       :current-page="searchPageData.page"
-      :page-size="searchPageData.page_num"
+      :page-size="searchPageData.page_size"
       :page-sizes="appStore.pageSizes"
       :total="searchPageData.total"
       @size-change="onPageNumChange"
@@ -1180,7 +1185,7 @@ import ElFormItemCheckbox from '@/ui/components/ElForm/ElFormItemCheckbox.vue'
 import ElFormItemDateRange from '@/ui/components/ElForm/ElFormItemDateRange.vue'
 import ElFormItemDateTime from '@/ui/components/ElForm/ElFormItemDateTime.vue'
 import ElFormItemDate from '@/ui/components/ElForm/ElFormItemDate.vue'
-import { http_get, http_post } from '@/utils/axios'
+import { http_get, http_post } from '@/axios'
 import { useAppStore } from '@/stores/app'
 import { getDefaultPageSize, setDefaultPageSize } from '@/utils'
 import ElTableEx from '@/ui/components/ElTableEx.vue'
@@ -1190,6 +1195,9 @@ import ElTableColumnFloat from '@/ui/components/ElTable/ElTableColumnFloat.vue'
 import ElTableColumnMoney from '@/ui/components/ElTable/ElTableColumnMoney.vue'
 import ElTableColumnSwitch from '@/ui/components/ElTable/ElTableColumnSwitch.vue'
 import ElTableColumnTimestamp from '@/ui/components/ElTable/ElTableColumnTimestamp.vue'
+import ElTableColumnIndex from '@/ui/components/ElTable/ElTableColumnIndex.vue'
+import ElTableColumnEx from '@/ui/components/ElTable/ElTableColumnEx.vue'
+import ElTableColumnLink from '@/ui/components/ElTable/ElTableColumnLink.vue'
 
 const appStore = useAppStore()
 
@@ -1214,7 +1222,7 @@ const tableData = ref([])
 /** 分页查询数据 */
 const searchPageData = ref({
   page: 1,
-  page_num: getDefaultPageSize('${data_searchRequest.value.url}'),
+  page_size: getDefaultPageSize('${data_searchRequest.value.url}'),
   total: 0,
 })
 
@@ -1243,7 +1251,7 @@ ${
     ? ''
     : `/** 修改每页显示数量 */
 function onPageNumChange(value) {
-  searchPageData.value.page_num = value
+  searchPageData.value.page_size = value
   setDefaultPageSize('${data_searchRequest.value.url}', value)
   onSearch()
 }
@@ -1326,7 +1334,8 @@ const tableDataTypeList = [
   { text: '金钱', value: 4, color: '#0eb8aa' },
   { text: '逻辑型', value: 5, color: '#c32136' },
   { text: '时间戳', value: 6, color: '#ac4fb6' },
-  { text: '自定义', value: 7, color: '#b6ad4f' },
+  { text: 'URL地址', value: 7, color: '#1376ab' },
+  { text: '自定义', value: 8, color: '#b6ad4f' },
 ]
 
 const data_table = reactive([])
@@ -1339,7 +1348,7 @@ const tableData = {
       typeTitle: item.text,
       type: item.value,
       color: item.color,
-      align: 'left', // 对齐方式
+      align: 'center', // 对齐方式
       canEdit: false, // 是否可以编辑
       editUrl: '',
       reqMainField: 'id',

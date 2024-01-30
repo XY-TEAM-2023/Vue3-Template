@@ -13,7 +13,7 @@
 </template>
 
 <script setup>
-import { computed, defineProps } from 'vue'
+import { computed, defineProps, getCurrentInstance } from 'vue'
 import dialog from '@/ui/components/DIalog/Dialog'
 import { getI18nText, tryGetI18nText } from '@/utils'
 
@@ -65,9 +65,10 @@ const emptyLabel = computed(() => {
 })
 
 const emit = defineEmits(['edit'])
+const instance = getCurrentInstance()
 
 function onClick(index, row) {
-  if (props.canEdit) {
+  if (instance.vnode.props.onEdit && props.canEdit) {
     dialog.inputInteger({
       title: props.editTitle ? props.editTitle : getI18nText('app.editDialogTitle', { title: label.value }),
       width: props.editWidth,
@@ -78,6 +79,8 @@ function onClick(index, row) {
         emit('edit', index, row, newValue, cancelCb, closeCb)
       },
     })
+  } else if (instance.vnode.props.onClick) {
+    emit('click', index, row)
   }
 }
 </script>
