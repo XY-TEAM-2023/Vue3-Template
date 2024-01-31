@@ -75,7 +75,7 @@ export default {
     onlineStatus: '在线状态',
     onlineStatus_on: '在线',
     onlineStatus_off: '离线',
-    deleteAccountTip: '是否确定删除用户{account}?',
+    deleteAccountTip: '是否确定删除用户{search_account}?',
   },
   createUserDialog: {
     account: '账号',

@@ -64,7 +64,7 @@ const emptyLabel = computed(() => {
   return tryGetI18nText(props.emptyLabel)
 })
 
-const emit = defineEmits(['edit'])
+const emit = defineEmits(['edit', 'click'])
 const instance = getCurrentInstance()
 
 function onClick(index, row) {

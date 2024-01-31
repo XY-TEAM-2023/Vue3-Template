@@ -74,7 +74,7 @@ export default {
     onlineStatus: '온라인 상태',
     onlineStatus_on: '온라인',
     onlineStatus_off: '오프라인',
-    deleteAccountTip: '사용자 {account}를 삭제하시겠습니까?',
+    deleteAccountTip: '사용자 {search_account}를 삭제하시겠습니까?',
   },
   createUserDialog: {
     account: '계정',

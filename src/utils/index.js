@@ -26,11 +26,17 @@ export function isMobile() {
  * @returns {String}
  */
 export function tsToTime(timestamp) {
+  if (timestamp === 0) {
+    return '-----'
+  }
+  if ((timestamp + '').length === 10) {
+    timestamp = timestamp * 1000
+  }
   try {
     const targetTime = DateTime.fromMillis(timestamp).setZone(config.timezone)
     return targetTime.toFormat('yyyy/MM/dd HH:mm:ss')
   } catch (error) {
-    return ''
+    return '??????'
   }
 }
 
@@ -186,7 +192,6 @@ export function formatNumberAsMoney(number, saveFloat = false) {
     maximumFractionDigits: saveFloat ? 2 : 0,
   }).format(num)
 }
-
 
 /**
  * 取路径的父路径

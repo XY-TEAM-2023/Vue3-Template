@@ -15,7 +15,19 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, watch, onMounted, onBeforeUnmount, defineProps, defineEmits, useAttrs, defineExpose } from 'vue'
+import {
+  ref,
+  reactive,
+  computed,
+  watch,
+  onMounted,
+  onBeforeUnmount,
+  defineProps,
+  defineEmits,
+  useAttrs,
+  defineExpose,
+  getCurrentInstance,
+} from 'vue'
 import { useUserStore } from '@/stores/user'
 import { useAppStore } from '@/stores/app'
 
@@ -34,6 +46,11 @@ const props = defineProps({
     default: false,
   },
 })
+
+/** 获取所有绑定的参数和时间 */
+const instance = getCurrentInstance()
+console.log(instance.vnode.props)
+
 const { text, closable } = props
 /* 实现外部修改了变量，内部同步变化 */
 watch(

@@ -79,14 +79,14 @@ function onLogin(isForce = false, otpCode = '') {
     false
   )
     .then((data) => {
-      console.log(data)
       // 刷新用户全局数据，记录登录状态
       userStore.loginSuccess(account.value, data)
+      console.log('>>>>>>>>>>>登录成功', userStore.homePage, data)
       // 跳转页面
       router.push({ name: userStore.homePage })
     })
     .catch(({ status, msg, data }) => {
-      console.log(msg)
+      console.log('>>>>>>>>>>>登录失败', msg)
       // 已经有人登录过了
       if (status === 102) {
         ElMessageBox.confirm(msg, '', {

@@ -32,7 +32,7 @@ const userStore = useUserStore()
 
 const account = ref('coco')
 const password = ref('13214566036')
-// const account = ref(userStore.account)
+// const search_account = ref(userStore.search_account)
 // const password = ref('')
 
 /** 是否正在登录中 */

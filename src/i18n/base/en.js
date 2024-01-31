@@ -1,7 +1,7 @@
 export default {
   app: {
     needLogin: 'You need to log in to access this page.',
-    loginOtherDevice: 'Your account has been logged in on another device',
+    loginOtherDevice: 'Your search_account has been logged in on another device',
     sessionTimeout: 'Login has expired.',
     needLoginBtn: 'Log in now',
     signOut: 'sign out',
@@ -42,9 +42,9 @@ export default {
   },
   // 登录页面
   loginView: {
-    inputAccount: 'Enter your account',
+    inputAccount: 'Enter your search_account',
     inputPassword: 'Enter your password',
-    loginFail: 'Incorrect account or password',
+    loginFail: 'Incorrect search_account or password',
     accountIsLock: 'Account is locked',
     remainLoginTimes: 'Remaining login attempts: ',
     loginBtn: 'Login',
@@ -74,7 +74,7 @@ export default {
     onlineStatus: 'Online Status',
     onlineStatus_on: 'Online',
     onlineStatus_off: 'Offline',
-    deleteAccountTip: 'Are you sure you want to delete user {account}?',
+    deleteAccountTip: 'Are you sure you want to delete user {search_account}?',
   },
   createUserDialog: {
     account: 'Account',
