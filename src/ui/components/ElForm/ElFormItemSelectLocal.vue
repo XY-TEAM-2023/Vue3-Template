@@ -1,15 +1,23 @@
 <!--  Form：输入文本  -->
 <template>
   <el-form-item :label="label" :required="required" :prop="props.prop">
-    <el-select-local v-model="model" :clearable="true" :options="options" :placeholder="placeholder" style="width: 100%" />
+    <el-select-local
+      v-model="model"
+      :multiple="props.multiple"
+      collapse-tags
+      collapse-tags-tooltip
+      :clearable="true"
+      :options="options"
+      :placeholder="placeholder"
+      style="width: 100%"
+    />
   </el-form-item>
 </template>
 
 <script setup lang="ts">
-import { computed, defineProps, defineModel } from 'vue'
+import { computed, defineProps, defineModel, ref } from 'vue'
 import { tryGetI18nText } from '@/utils'
 import ElSelectLocal from '@/ui/components/ElSelect/ElSelectLocal.vue'
-import ElDatePickerDate from '@/ui/components/ElDatePicker/ElDatePickerDate.vue'
 
 type OptionStruct = {
   label: String
@@ -28,6 +36,8 @@ const props = defineProps<{
   prop?: String
   /** 选项 */
   options: OptionStruct[]
+  /** 多选 */
+  multiple?: Boolean
 }>()
 
 const label = computed(() => {
