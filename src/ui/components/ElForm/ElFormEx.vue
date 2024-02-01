@@ -8,6 +8,7 @@
     :show-message="props.showMessage"
     :status-icon="props.statusIcon"
     :disabled="props.disabled"
+    :label-position="props.labelPosition"
     :size="props.size"
     :scroll-to-error="props.scrollToError"
   >
@@ -40,6 +41,10 @@ const props = defineProps({
   scrollToError: {
     type: Boolean,
     default: false,
+  },
+  labelPosition: {
+    type: String,
+    default: 'top',
   },
 })
 

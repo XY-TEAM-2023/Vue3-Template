@@ -35,26 +35,19 @@ const handleInput = (value) => {
 
   // 尝试将处理后的值转换为浮点数
   let numericValue = parseInt(processedValue)
-
   // 检查转换后的数值是否为NaN（不是一个数字），如果是，则重置为0
   if (isNaN(numericValue)) {
-    numericValue = 0
+    numericValue = undefined
   }
 
-  // 应用最小值限制
-  if (props.min !== undefined && numericValue < props.min) {
+  if (props.min !== undefined && props.min !== null && numericValue < props.min) {
+    // 应用最小值限制
     processedValue = String(props.min)
-  }
-
-  // 应用最大值限制
-  if (props.max !== undefined && numericValue > props.max) {
+  } else if (!props.max !== undefined && props.max !== null && numericValue > props.max) {
+    // 应用最大值限制
     processedValue = String(props.max)
-  }
-
-  // 检查并应用小数位数限制
-  if (props.formatDecimal !== undefined) {
-    const regex = new RegExp(`^-?\\d+(?:\\.\\d{0,${props.formatDecimal}})?`)
-    processedValue = (processedValue.match(regex) || [])[0] || ''
+  } else {
+    processedValue = numericValue
   }
 
   model.value = processedValue

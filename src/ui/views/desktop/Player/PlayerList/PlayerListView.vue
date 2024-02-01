@@ -1,8 +1,19 @@
 <template>
   <el-card-ex :use-fold="true" shadow="never">
     <template #header> {{ $t('app.searchParamsTitle') }}</template>
+
     <el-form ref="searchDataRef" :model="searchData" label-position="top">
       <el-row :gutter="24">
+        <el-col :lg="4" :md="8" :sm="12" :xs="24">
+          <el-form-item-select-local
+            label="PlayerListView.brand"
+            v-model="searchData.search_brands"
+            prop="search_brands"
+            :options="brandOptions"
+            :multiple="true"
+          />
+        </el-col>
+
         <el-col :lg="4" :md="8" :sm="12" :xs="24">
           <el-form-item-label
             label="PlayerListView.playerId"
@@ -69,6 +80,7 @@
       @current-change="onPageChange"
     >
       <el-table-column-index label="com.index" width="80" align="center" />
+      <el-table-column-label label="PlayerListView.brand" prop="brand" align="center" width="100" />
       <el-table-column-integer label="PlayerListView.playerId" prop="id" align="center" width="80" />
       <el-table-column-label label="PlayerListView.agent" prop="agent_code" align="center" width="180" />
       <el-table-column-label label="PlayerListView.level" prop="level" align="center" width="100" />
@@ -136,7 +148,7 @@
 </template>
 
 <script setup>
-import { reactive, ref } from 'vue'
+import { reactive, ref, onMounted } from 'vue'
 import ElCardEx from '@/ui/components/ElCardEx.vue'
 import ElFormItemLabel from '@/ui/components/ElForm/ElFormItemLabel.vue'
 import ElFormItemInteger from '@/ui/components/ElForm/ElFormItemInteger.vue'
@@ -149,7 +161,7 @@ import ElFormItemDateTime from '@/ui/components/ElForm/ElFormItemDateTime.vue'
 import ElFormItemDate from '@/ui/components/ElForm/ElFormItemDate.vue'
 import { http_get, http_post } from '@/axios'
 import { useAppStore } from '@/stores/app'
-import { getDefaultPageSize, setDefaultPageSize } from '@/utils'
+import { getBrandOptions, getDefaultPageSize, setDefaultPageSize } from '@/utils'
 import ElTableEx from '@/ui/components/ElTableEx.vue'
 import ElTableColumnLabel from '@/ui/components/ElTable/ElTableColumnLabel.vue'
 import ElTableColumnInteger from '@/ui/components/ElTable/ElTableColumnInteger.vue'
@@ -176,7 +188,29 @@ const searchData = ref({
   search_name: undefined,
   /** 手机号 */
   search_phone: undefined,
+  /** 搜索的品牌 */
+  search_brands: [],
 })
+
+onMounted(() => {
+  requestBrands()
+})
+const requestingBrands = ref(false)
+const brandOptions = ref([])
+function requestBrands() {
+  requestingBrands.value = true
+  getBrandOptions()
+    .then(({ options, selectAll }) => {
+      brandOptions.value.push(...options)
+      searchData.value.search_brands.push(...selectAll)
+    })
+    .catch(() => {
+      // setTimeout(requestBrands, 1000)
+    })
+    .finally(() => {
+      requestingBrands.value = false
+    })
+}
 
 function onResetSearch() {
   searchDataRef.value.resetFields()

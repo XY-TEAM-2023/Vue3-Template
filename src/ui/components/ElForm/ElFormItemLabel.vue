@@ -4,7 +4,16 @@
       {{ label }}
     </template>
     <template v-else>
-      <el-input v-model="model" :placeholder="placeholder" :maxlength="props.maxlength" :clearable="true" style="width: 100%" />
+      <el-input
+        v-model="model"
+        :placeholder="placeholder"
+        :maxlength="props.maxlength"
+        :show-word-limit="props.showWordLimit"
+        :type="labelType"
+        :clearable="true"
+        :rows="props.rows"
+        style="width: 100%"
+      />
     </template>
   </el-form-item>
 </template>
@@ -26,6 +35,17 @@ const props = defineProps({
   maxlength: Number,
   /** 是否只读 */
   readonly: Boolean,
+  /** 是否显示字数限制 */
+  showWordLimit: Boolean,
+  /** 输入类型 */
+  rows: {
+    type: Number,
+    default: 1,
+  },
+})
+
+const labelType = computed(() => {
+  return props.rows > 1 ? 'textarea' : 'text'
 })
 
 const label = computed(() => {

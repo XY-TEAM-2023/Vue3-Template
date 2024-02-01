@@ -22,7 +22,7 @@ export const config = {
   noMobileModel: false,
   localMode: false,
   /** 服务器 */
-  server: 'http://192.168.1.2',
+  server: 'http://192.168.1.3',
   // server: 'http://api.jadesoft.live',
   /** 给服务器发送请求时，是否需要携带Cookie信息. 服务器Access-Control-Allow-Origin响应头必须指定具体值，不能为‘*’ */
   serverUseCookie: false,

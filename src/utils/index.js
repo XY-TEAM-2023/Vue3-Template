@@ -3,6 +3,8 @@ import { DateTime } from 'luxon'
 import { useUserStore } from '@/stores/user'
 import { useAppStore } from '@/stores/app'
 import i18n from '@/i18n'
+import { ref } from 'vue'
+import { http_post } from '@/axios'
 
 /**
  * 判断是否是移动设备
@@ -44,7 +46,8 @@ export function tryGetI18nText(label) {
   if (!label) {
     return ''
   }
-  if (label.includes('.')) {
+
+  if (i18n.global.te(label)) {
     return i18n.global.t(label)
   } else {
     return label
@@ -207,4 +210,23 @@ export function getParentPath(path) {
 
   // 截取从字符串开头到最后一个斜杠的位置
   return normalizedPath.substring(0, lastSlashIndex)
+}
+
+/** 获取品牌下拉框默认参数 */
+export function getBrandOptions() {
+  return new Promise((resolve, reject) => {
+    http_post('/api/admin/brand/list', {}, false)
+      .then((data) => {
+        const options = []
+        const selectAll = []
+        for (const item of data.brands) {
+          selectAll.push(item.id)
+          options.push({ label: item.name, value: item.id })
+        }
+        resolve({ options, selectAll })
+      })
+      .catch(() => {
+        reject()
+      })
+  })
 }

@@ -10,7 +10,9 @@
       @cancel="onClose"
       class="unselect"
     >
-      {{ tryGetI18nText(props.content) }}
+      <p style="white-space: pre-wrap">
+        {{ tryGetI18nText(props.content) }}
+      </p>
 
       <template #footer>
         <span class="dialog-footer">

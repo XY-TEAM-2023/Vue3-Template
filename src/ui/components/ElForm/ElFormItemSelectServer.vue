@@ -2,6 +2,9 @@
   <el-form-item :label="label" :required="props.required" :prop="props.prop">
     <el-select-server
       v-model="model"
+      :multiple="props.multiple"
+      collapse-tags
+      collapse-tags-tooltip
       :url="props.url"
       :field="props.field"
       :clearable="true"
@@ -15,6 +18,7 @@
 import { computed, defineProps, defineModel } from 'vue'
 import { tryGetI18nText } from '@/utils'
 import ElSelectServer from '@/ui/components/ElSelect/ElSelectServer.vue'
+import ElSelectLocal from '@/ui/components/ElSelect/ElSelectLocal.vue'
 
 type OptionStruct = {
   label: String
@@ -35,6 +39,8 @@ const props = defineProps<{
   url: String
   /** 响应后options保存的字段 a.b */
   field: String
+  /** 多选 */
+  multiple?: Boolean
 }>()
 
 const label = computed(() => {
