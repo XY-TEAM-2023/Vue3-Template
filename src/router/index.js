@@ -233,30 +233,35 @@ router.beforeEach(
     const userStore = useUserStore()
     // 登录状态 -1未登录；0已登录；1登录失效；
     const loginStatus = userStore.loginStatus
-    console.log('>>>>>>>>>>>>>>>', to)
+    // console.log('>>>>>>>>>>>>>>>', to)
 
-    const nextCb = (next_data) => {
+    const nextCb = (page) => {
       tryLoadI18n(to.meta.componentPath)
         .then(() => {})
         .catch(() => {})
         .finally(() => {
-          console.log('>>>>>>>>>>>>>>>', to.meta.componentPath)
-          console.log('next_data', next_data)
-          next(next_data)
+          if (!page) {
+            next()
+            return
+          }
+          if ((page + '').startsWith('/')) {
+            // console.log('>>>> next ', page)
+            next({ path: page })
+          } else {
+            // console.log('>>>> next ', page)
+            next({ name: page })
+          }
         })
     }
 
-    // console.error('to.path', to.path)
+    console.error('to.path', to)
     if (to.path === '/') {
       // 如果访问的是根目录
+      // console.log('如果访问的是根目录')
       if (loginStatus === -1) {
         if (config.router.loginPage && config.router.loginPage !== to.path) {
           // 跳转到登录页面
-          if (config.router.loginPage.startsWith('/')) {
-            nextCb({ path: config.router.loginPage })
-          } else {
-            nextCb({ name: config.router.loginPage })
-          }
+          nextCb(config.router.loginPage)
         } else {
           nextCb()
         }
@@ -264,44 +269,40 @@ router.beforeEach(
         const homePage = isBuildMode ? userStore.homePage : config.router.homePage
         // 跳转到登录成功后的第一个页面
         if (homePage && homePage !== to.path) {
-          if (homePage.startsWith('/')) {
-            nextCb({ path: homePage })
-          } else {
-            nextCb({ name: homePage })
-          }
+          nextCb(homePage)
         } else {
           nextCb()
         }
       }
     } else if (!to.meta || !to.meta.needLogin) {
       // 不需要登录, 直接访问页面
+      // console.log('不需要登录, 直接访问页面')
       nextCb()
     } else if (loginStatus === -1) {
       // 未登录
+      // console.log('未登录')
       ElMessageBox.alert(i18n.global.t('app.needLogin'), '', {
         showClose: false,
         confirmButtonText: i18n.global.t('com.btnOk'),
         callback: () => {
           // 如果有登录页面, 访问登录页面
-          if (config.router.loginPage) {
-            nextCb(config.router.loginPage)
-          }
+          nextCb(config.router.loginPage)
         },
       })
     } else if (loginStatus === 1) {
       // 登录失效
+      // console.log('登录失效')
       ElMessageBox.alert(i18n.global.t('app.sessionTimeout'), '', {
         showClose: false,
         confirmButtonText: i18n.global.t('com.btnOk'),
         callback: () => {
           // 如果有登录页面, 访问登录页面
-          if (config.router.loginPage) {
-            nextCb(config.router.loginPage)
-          }
+          nextCb(config.router.loginPage)
         },
       })
     } else {
       // 已登录, 判断角色权限
+      // console.log('已登录, 判断角色权限')
       if (to.roles && to.roles.length > 0) {
         // 需要角色权限
         if (to.roles.some((item) => userStore.roles.includes(item))) {
@@ -344,7 +345,7 @@ const tryLoadI18n = (componentPath) => {
         resolve()
       })
       .catch((error) => {
-        console.error('Failed to load i18n file:', error)
+        // console.error('Failed to load i18n file:', error)
         reject()
       })
   })

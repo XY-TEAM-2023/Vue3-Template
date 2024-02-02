@@ -5,6 +5,7 @@
       v-loading="props.loading"
       :border="props.border"
       style="width: 100%"
+      :size="props.size"
       :highlight-current-row="props.highlightCurrentRow"
       :header-cell-style="tableHeader"
       @selection-change="onSelectionChange"
@@ -39,7 +40,10 @@
 import { nextTick, defineProps, computed, onMounted, reactive, ref, watch, defineExpose, useAttrs } from 'vue'
 
 const props = defineProps({
-  size: String,
+  size: {
+    type: String,
+    default: 'default',
+  },
   // 接收外部传入的加载状态
   loading: {
     type: Boolean,

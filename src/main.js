@@ -11,6 +11,7 @@ import * as ElIconModules from '@element-plus/icons-vue'
 import { config } from '@/config'
 import menu from '@/ui/components/Menu/v-menu'
 import { hasPermission } from '@/utils'
+import { useUserStore } from '@/stores/user'
 
 router.reloadRoutes()
 const app = createApp(App)
@@ -28,7 +29,16 @@ for (const iconName in ElIconModules) {
   app.component(iconName, ElIconModules[iconName])
 }
 
-// 注册指令: 元素是否可见
+// 注册指令: 元素是否可见, 需要开发者权限
+app.directive('dev', {
+  mounted(el) {
+    if (!useUserStore().isDev) {
+      el.parentNode && el.parentNode.removeChild(el)
+    }
+  },
+})
+
+// 注册指令: 元素是否可见。值针对页面唯一
 app.directive('permission', {
   mounted(el, binding) {
     // 检查权限
@@ -39,7 +49,7 @@ app.directive('permission', {
   },
 })
 
-// 注册指令：是否可以触发鼠标事件
+// 注册指令：是否可以触发鼠标事件。值针对页面唯一
 app.directive('permission-event', {
   mounted(el, binding) {
     if (!hasPermission(binding.value)) {
@@ -84,7 +94,7 @@ function lockElementEvent(el) {
   el.style.cursor = 'default' // 更改鼠标样式
 }
 
-// 注册指令：无权限时候置灰且无法触发点击事件
+// 注册指令：无权限时候置灰且无法触发点击事件。值针对页面唯一
 app.directive('permission-enable', {
   beforeMount(el, binding) {
     if (!hasPermission(binding.value)) {

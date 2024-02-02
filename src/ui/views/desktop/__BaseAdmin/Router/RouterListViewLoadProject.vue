@@ -35,6 +35,7 @@ async function onLoad() {
   loading = true
 
   try {
+    console.error('请使用 127.0.0.1 进行访问')
     const handle = await window.showDirectoryPicker()
     fileDict = await getAllFiles(handle)
 
