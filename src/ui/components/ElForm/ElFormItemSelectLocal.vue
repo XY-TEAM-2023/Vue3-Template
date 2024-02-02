@@ -4,7 +4,7 @@
     <el-select-local
       v-model="model"
       :multiple="props.multiple"
-      collapse-tags
+      :collapse-tags="collapseTags"
       collapse-tags-tooltip
       :clearable="true"
       :options="options"
@@ -38,7 +38,11 @@ const props = defineProps<{
   options: OptionStruct[]
   /** 多选 */
   multiple?: Boolean
+  /** 合并选中 */
+  collapseTags?: Boolean
 }>()
+
+const collapseTags = computed(() => (props.collapseTags === undefined || props.collapseTags === null ? true : props.collapseTags))
 
 const label = computed(() => {
   return tryGetI18nText(props.label)

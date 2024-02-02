@@ -45,7 +45,7 @@ const handleInput = (value) => {
 
   // 检查转换后的数值是否为NaN（不是一个数字），如果是，则重置为0
   if (isNaN(numericValue)) {
-    numericValue = 0
+    numericValue = undefined
   }
 
   if (props.min !== undefined && props.min !== null && numericValue < props.min) {

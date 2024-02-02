@@ -32,7 +32,7 @@ class Dialog {
    * @param width 对话框的宽度
    * @param displayCancelBtn 是否显示取消按钮
    * @param onClose 点击关闭按钮回调
-   * @param onSubmit 点击提交按钮回调，function(string value)
+   * @param onSubmit 点击提交按钮回调，function()
    * @returns {number} 返回对话框唯一ID
    */
   static tip({ content, width = '300', displayCancelBtn = false, onClose, onSubmit }) {

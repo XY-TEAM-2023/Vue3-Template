@@ -1,5 +1,5 @@
 <template>
-  <el-table-column :label="label" :width="props.width" :align="props.align" :show-overflow-tooltip="true">
+  <el-table-column :label="label" :width="props.width" :align="props.align" :show-overflow-tooltip="props.showOverflowTooltip">
     <template #default="scope">
       <span class="input-label" :class="{ 'input-label-edit': canEdit }" @click="onClick(scope.$index, scope.row)">
         {{
@@ -26,6 +26,10 @@ const props = defineProps({
   width: String,
   /** 对齐方式：left/center/right */
   align: String,
+  showOverflowTooltip: {
+    type: Boolean,
+    default: true,
+  },
   /** 值为空时显示文本：没有值怎么显示 */
   emptyLabel: {
     type: String,

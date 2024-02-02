@@ -1092,7 +1092,7 @@ ${temp_search_data_list}
     } else if (field.type === 6) {
       //时间戳
       code_tableFields += `
-      <el-table-column-timestamp label="${field.title}" prop="${field.field}" align="${field.align}" ${temp_edit} />`
+      <el-table-column-timestamp label="${field.title}" prop="${field.field}" align="${field.align}" ${temp_edit} width='160' />`
     } else if (field.type === 7) {
       //时间戳
       code_tableFields += `

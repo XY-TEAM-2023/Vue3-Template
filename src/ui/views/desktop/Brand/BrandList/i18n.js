@@ -8,9 +8,19 @@ export default {
     },
   },
   en: {
-    BrandListView: {},
+    BrandListView: {
+      brandId: 'Brand Id',
+      brandName: 'Brand Name',
+      portal: 'Portal Site',
+      invoke: 'Operation',
+    },
   },
   ko: {
-    BrandListView: {},
+    BrandListView: {
+      brandId: '브랜드Id',
+      brandName: '브랜드명',
+      portal: '포털 사이트',
+      invoke: '작동',
+    },
   },
 }

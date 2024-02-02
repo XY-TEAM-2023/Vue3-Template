@@ -1,6 +1,7 @@
 export default {
   zh: {
     PlayerListView: {
+      brand: '品牌',
       playerId: '玩家id',
       account: '账号',
       nickName: '用户名',
@@ -27,6 +28,7 @@ export default {
   },
   en: {
     PlayerListView: {
+      brand: 'Brand',
       playerId: 'Player ID',
       account: 'Account',
       nickName: 'Nickname',
@@ -53,6 +55,7 @@ export default {
   },
   ko: {
     PlayerListView: {
+      brand: '브랜드',
       playerId: '플레이어 ID',
       account: '계정',
       nickName: '닉네임',

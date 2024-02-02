@@ -14,7 +14,9 @@
     <div style="width: 100%; display: flex; flex-direction: column; align-items: center">
       <qrcode-vue :value="content" :size="200" style="margin-left: auto; margin-right: auto"></qrcode-vue>
       <div v-if="props.desc" style="margin-top: 10px">
-        {{ desc }}
+        <p style="white-space: pre-wrap">
+          {{ desc }}
+        </p>
       </div>
     </div>
 
