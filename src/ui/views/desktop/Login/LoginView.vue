@@ -88,7 +88,7 @@ function onLogin(isForce = false, otpCode = '') {
     .catch(({ status, msg, data }) => {
       console.log('>>>>>>>>>>>登录失败', msg)
       // 已经有人登录过了
-      if (status === 102) {
+      if (status === 12) {
         ElMessageBox.confirm(msg, '', {
           confirmButtonText: i18n.global.t('com.btnOk'),
           cancelButtonText: i18n.global.t('com.btnCancel'),
@@ -98,7 +98,7 @@ function onLogin(isForce = false, otpCode = '') {
             onLogin(true)
           })
           .catch(() => {})
-      } else if (status === 201) {
+      } else if (status === 31) {
         // 需要绑定OTP
         Dialog.QRCode({
           title: 'otp.titleBind',
@@ -126,7 +126,7 @@ function onLogin(isForce = false, otpCode = '') {
             })
           },
         })
-      } else if (status === 202) {
+      } else if (status === 32) {
         Dialog.input({
           title: 'otp.titleCheck',
           maxLength: '6',
