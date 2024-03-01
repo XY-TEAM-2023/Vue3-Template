@@ -1,8 +1,16 @@
 <!--  选项使用本地数据  -->
 <template>
-  <el-select v-model="model" :multiple="props.multiple" :clearable="clearable" :placeholder="placeholder" style="width: 100%">
+  <el-select
+    v-model="model"
+    :multiple="props.multiple"
+    :clearable="clearable"
+    :placeholder="placeholder"
+    style="width: 100%"
+    @change="onchange"
+    :class="props.readonly ? 'disabled-component' : ''"
+  >
     <template #header v-if="props.multiple">
-      <el-checkbox v-model="checkAll" :indeterminate="indeterminate" @change="handleCheckAll"> All </el-checkbox>
+      <el-checkbox v-model="checkAll" :indeterminate="indeterminate" @change="handleCheckAll"> All</el-checkbox>
     </template>
 
     <template v-for="item in options" :key="item.value">
@@ -12,7 +20,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, defineProps, defineModel, watch } from 'vue'
+import { ref, computed, defineProps, defineModel, watch, defineEmits } from 'vue'
 import { tryGetI18nText } from '@/utils'
 
 type OptionStruct = {
@@ -32,6 +40,7 @@ const props = defineProps<{
   options: OptionStruct[]
   /** 多选 */
   multiple?: Boolean
+  readonly?: Boolean
 }>()
 
 watch(model, (val) => {
@@ -58,6 +67,29 @@ const handleCheckAll = (val) => {
 const placeholder = computed(() => {
   return tryGetI18nText(props.placeholder)
 })
+
+const emit = defineEmits(['change'])
+
+function onchange() {
+  emit('change')
+}
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.disabled-component {
+  /* 禁止接受鼠标事件 */
+  pointer-events: none;
+
+  :deep(.el-select__suffix) {
+    display: none;
+  }
+
+  :deep(.el-select__wrapper) {
+    box-shadow: none;
+  }
+
+  :deep(.el-select__wrapper) {
+    padding: 0 0 0 0;
+  }
+}
+</style>

@@ -1,0 +1,145 @@
+.table-search-container {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+}
+
+.table-search-item {
+    width: calc(100% / 1);
+    box-sizing: border-box;
+    /*border: 1px solid #ccc;*/
+    height: 64px;
+    margin-left: 10px;
+}
+
+:deep(.el-form-item:not(:last-child)) {
+    margin-bottom: 0 !important;
+}
+
+/* 1个元素 */
+@media (max-width: 600px) {
+    .table-search-item {
+        width: calc(100% / 1);
+    }
+
+    .table-search-item:nth-child(n + 2) {
+        margin-top: 6px; /* 给除了第一行以外的所有行的元素添加上方填充 */
+    }
+
+}
+
+/* 2个元素 */
+@media (min-width: 601px) and (max-width: 800px) {
+    .table-search-item {
+        width: calc(100% / 2 - (10px * (2 - 1)) / 2);
+    }
+
+    /* 前面2个元素顶部为0 */
+    .table-search-item:nth-child(-n + 2) {
+        margin-top: 0;
+    }
+
+    /* 包含第三个元素以后顶部为6 */
+    .table-search-item:nth-child(n + 3) {
+        margin-top: 6px; /* 给除了第一行以外的所有行的元素添加上方填充 */
+    }
+
+    /* 每两个元素为一组，组里第一个元素左侧为0 */
+    .table-search-item:nth-child(2n + 1) {
+        margin-left: 0;
+    }
+}
+
+
+/* 3个元素 */
+@media (min-width: 801px)  and (max-width: 900px) {
+    .table-search-item {
+        width: calc(100% / 3 - (10px * (3 - 1)) / 3);
+    }
+
+    /* 前面2个元素顶部为0 */
+    .table-search-item:nth-child(-n + 3) {
+        margin-top: 0;
+    }
+
+    /* 包含第三个元素以后顶部为6 */
+    .table-search-item:nth-child(n + 4) {
+        margin-top: 6px; /* 给除了第一行以外的所有行的元素添加上方填充 */
+    }
+
+    /* 每两个元素为一组，组里第一个元素左侧为0 */
+    .table-search-item:nth-child(3n + 1) {
+        margin-left: 0;
+    }
+}
+
+
+/* 4个元素 */
+@media (min-width: 901px) and (max-width: 1100px) {
+    .table-search-item {
+        width: calc(100% / 4 - (10px * (4 - 1)) / 4);
+    }
+
+    /* 前面2个元素顶部为0 */
+    .table-search-item:nth-child(-n + 4) {
+        margin-top: 0;
+    }
+
+    /* 包含第三个元素以后顶部为6 */
+    .table-search-item:nth-child(n + 5) {
+        margin-top: 6px; /* 给除了第一行以外的所有行的元素添加上方填充 */
+    }
+
+    /* 每两个元素为一组，组里第一个元素左侧为0 */
+    .table-search-item:nth-child(4n + 1) {
+        margin-left: 0;
+    }
+}
+
+
+/* 5个元素 */
+@media (min-width: 1101px) and (max-width: 1200px) {
+    .table-search-item {
+        width: calc(100% / 5 - (10px * (5 - 1)) / 5);
+    }
+
+    /* 前面2个元素顶部为0 */
+    .table-search-item:nth-child(-n + 5) {
+        margin-top: 0;
+    }
+
+    /* 包含第三个元素以后顶部为6 */
+    .table-search-item:nth-child(n + 6) {
+        margin-top: 6px; /* 给除了第一行以外的所有行的元素添加上方填充 */
+    }
+
+    /* 每两个元素为一组，组里第一个元素左侧为0 */
+    .table-search-item:nth-child(5n + 1) {
+        margin-left: 0;
+    }
+}
+
+
+/* 6个元素 */
+@media (min-width: 1201px) {
+    .table-search-item {
+        width: calc(100% / 6 - (10px * (6 - 1)) / 6);
+    }
+
+    /* 前面2个元素顶部为0 */
+    .table-search-item:nth-child(-n + 6) {
+        margin-top: 0;
+    }
+
+    /* 包含第三个元素以后顶部为6 */
+    .table-search-item:nth-child(n + 7) {
+        margin-top: 6px; /* 给除了第一行以外的所有行的元素添加上方填充 */
+    }
+
+    /* 每两个元素为一组，组里第一个元素左侧为0 */
+    .table-search-item:nth-child(6n + 1) {
+        margin-left: 0;
+    }
+}

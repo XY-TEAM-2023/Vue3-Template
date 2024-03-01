@@ -1,16 +1,18 @@
 <!--  选项使用本地数据  -->
 <template>
   <el-select
-    :loading="isRequesting"
     :multiple="props.multiple"
+    :collapse-tags-tooltip="props.collapseTagsTooltip"
+    :max-collapse-tags="props.maxCollapseTags"
     v-model="model"
+    v-loading="isRequesting"
     :clearable="clearable"
     :placeholder="placeholder"
     style="width: 100%"
     @click="requestOptions"
   >
     <template #header v-if="props.multiple">
-      <el-checkbox v-model="checkAll" :indeterminate="indeterminate" @change="handleCheckAll"> All </el-checkbox>
+      <el-checkbox v-model="checkAll" :indeterminate="indeterminate" @change="handleCheckAll"> All</el-checkbox>
     </template>
 
     <template v-for="item in options" :key="item.value">
@@ -20,9 +22,10 @@
 </template>
 
 <script setup lang="ts">
-import { computed, defineProps, defineModel, ref, watch } from 'vue'
+import { computed, defineProps, defineModel, ref, watch, onMounted } from 'vue'
 import { tryGetI18nText } from '@/utils'
 import { http_post } from '@/axios'
+import { forEach } from 'lodash-es'
 
 const checkAll = ref(false)
 const model = defineModel()
@@ -32,12 +35,20 @@ const props = defineProps<{
   url: String
   /** 响应后options保存的字段 a.b */
   field: String
+  /** 选项对应的文本 */
+  fieldLabel: String
+  /** 选项对应的值 */
+  fieldValue: String
   /** 支持直接输入国际化的key */
   placeholder?: String
   /** 是否可以清除 */
   clearable?: Boolean
   /** 多选 */
   multiple?: Boolean
+  /** 多选多少个选项后开始折叠 */
+  maxCollapseTags?: Number
+  /** 多选折叠显示 */
+  collapseTagsTooltip?: Boolean
 }>()
 
 type OptionStruct = {
@@ -51,6 +62,10 @@ const isRequesting = ref(false)
 
 const placeholder = computed(() => {
   return tryGetI18nText(props.placeholder)
+})
+
+onMounted(() => {
+  requestOptions()
 })
 
 function requestOptions() {
@@ -69,14 +84,23 @@ function requestOptions() {
   http_post(props.url, {}, false)
     .then((data) => {
       isInited = true
-      const parts = props.field.split('.')
-      let obj = data
-      parts.forEach((part) => {
-        obj = obj[part]
+
+      // 取返回的数据数组
+      const pathData = props.field.split('.')
+      let resTable = data
+      pathData.forEach((part) => {
+        resTable = resTable[part]
       })
 
-      options.value = obj
-      console.log(options.value)
+      const temp_options = []
+      resTable.forEach((obj) => {
+        temp_options.push({
+          label: obj[props.fieldLabel],
+          value: obj[props.fieldValue],
+        })
+      })
+
+      options.value = temp_options
     })
     .catch(() => {})
     .finally(() => {
@@ -86,6 +110,10 @@ function requestOptions() {
 }
 
 watch(model, (val) => {
+  if (!val) {
+    return
+  }
+
   if (val.length === 0) {
     checkAll.value = false
     indeterminate.value = false

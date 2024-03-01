@@ -5,14 +5,15 @@
     :format="props.format"
     :value-format="valueFormat"
     type="datetime"
-    :placeholder="props.placeholder"
+    :placeholder="tryGetI18nText(props.placeholder)"
     @change="onChange"
   />
 </template>
 
 <script setup>
 import { defineProps, defineModel, ref, watch } from 'vue'
-import { timestampToTimezoneDate } from '@/utils/timeUtil'
+import { tsToTimezoneDate } from '@/utils/timeUtil'
+import { tryGetI18nText } from '@/utils'
 
 const model = defineModel()
 const props = defineProps({
@@ -24,7 +25,7 @@ const props = defineProps({
 })
 
 // 显示值
-const displayValue = ref(timestampToTimezoneDate(props.defaultTs))
+const displayValue = ref(tsToTimezoneDate(props.defaultTs))
 // 最终值（临时）用于重置表单时，同步重置显示值
 let finalValue = 0
 
@@ -37,15 +38,16 @@ watch(
       displayValue.value = []
     } else if (finalValue !== newModel.value) {
       finalValue = newModel.value
-      displayValue.value = timestampToTimezoneDate(finalValue)
+      displayValue.value = tsToTimezoneDate(finalValue)
     }
   },
   { deep: true }
 )
 
 const emits = defineEmits(['change'])
+
 function onChange(val) {
-  finalValue = val ? val.getTime() : undefined
+  finalValue = val ? val.getTime() / 1000 : undefined
   model.value = finalValue
   emits('change', val)
 }

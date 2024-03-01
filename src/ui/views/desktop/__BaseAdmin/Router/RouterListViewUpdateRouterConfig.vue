@@ -1,5 +1,5 @@
 <template>
-  <el-button type="primary" :disabled="disabled" @click="onUpdate">
+  <el-button plain :disabled="disabled" @click="onUpdate">
     {{ $t('routerListView.btnUpdateMenus') }}
   </el-button>
 </template>
@@ -22,6 +22,7 @@ const disabled = computed(() => {
 })
 
 const isRequesting = ref(false)
+
 // 解析并上传路由配置
 async function onUpdate() {
   if (isRequesting.value) {
@@ -38,6 +39,7 @@ async function onUpdate() {
   props.routerList.forEach((item) => {
     router_list_data.push({
       name: item.name,
+      path: item.path ? item.path : '',
       icon: item.icon,
       title: item.title,
       title_en: item.title && item.title.en ? item.title.en : 'undefined',

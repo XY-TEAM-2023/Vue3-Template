@@ -62,7 +62,11 @@ const props = defineProps({
 
 const layoutRoutes = computed(() => {
   const routes = router.config.find((obj) => obj.fullPath === '/')
-  return routes.children
+  if (!routes) {
+    return []
+  } else {
+    return routes.children
+  }
 })
 </script>
 
@@ -73,6 +77,7 @@ const layoutRoutes = computed(() => {
   border-right: none;
   border-bottom: none;
 }
+
 .el-header {
   padding: 0 0 0 0;
 }

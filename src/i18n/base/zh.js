@@ -7,8 +7,8 @@ export default {
     signOut: '退出登录',
     requestFail: '请求失败，请稍后再试',
     editI18nLabel: '请输入修改后的内容',
-    searchParamsTitle: '搜索',
-    searchResultTitle: '查询结果',
+    searchParamsTitle: '过滤器',
+    searchResultTitle: '报表',
     editDialogTitle: '编辑{title}',
   },
   com: {
@@ -29,6 +29,17 @@ export default {
     updateTime: '更新时间',
     index: '索引',
     noPermission: '无权限',
+    requestFailTip: '请求失败，是否重试？',
+    deleteTip: '是否确认删除？',
+    imgTypeError: '不支持的图片格式',
+    imgSizeError: '图片大小不能大于{size}MB',
+  },
+  tabs: {
+    close: '关闭当前',
+    closeLeft: '关闭左侧',
+    closeRight: '关闭右侧',
+    closeOther: '关闭其他',
+    closeAll: '关闭所有',
   },
   otp: {
     titleBind: '绑定OTP',

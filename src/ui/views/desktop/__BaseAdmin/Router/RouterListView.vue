@@ -1,22 +1,21 @@
 <template>
   <div style="display: flex; flex-direction: column; height: 100%">
-    <!-- 添加 height: 100%; -->
-    <div style="margin-bottom: 10px">
-      <!--   加载项目   -->
-      <router-list-view-load-project @loaded="onLoadProject" />
-      <!--   更新路由配置   -->
-      <router-list-view-update-router-config
-        :file-dict="fileDict"
-        :router-list="routerList"
-        :async-routes="asyncRoutes"
-        @refresh="requestRouterBase"
-      />
-      <!--   更新页面权限   -->
-      <router-list-view-update-permission :file-dict="fileDict" :router-list="routerList" @refresh="requestRouterBase" />
-    </div>
-
     <!--  目录还是文件  -->
-    <el-table-ex v-loading="isRequestingBase" :data="routerConfig" :show-select="true" row-key="name" :show-pagination="false">
+    <el-table-ex v-loading="isRequestingBase" :data-table="routerConfig" :show-select="true" row-key="name" :show-pagination="false">
+      <template #operations>
+        <!--   加载项目   -->
+        <router-list-view-load-project @loaded="onLoadProject" />
+        <!--   更新路由配置   -->
+        <router-list-view-update-router-config
+          :file-dict="fileDict"
+          :router-list="routerList"
+          :async-routes="asyncRoutes"
+          @refresh="requestRouterBase"
+        />
+        <!--   更新页面权限   -->
+        <router-list-view-update-permission :file-dict="fileDict" :router-list="routerList" @refresh="requestRouterBase" />
+      </template>
+
       <el-table-column :label="$t('routerListView.type')" align="center" width="100">
         <template #default="scope">
           <el-tag v-if="scope.row.component" :style="tagStyle" type="warning" effect="dark">
@@ -30,6 +29,7 @@
 
       <!--   名字  -->
       <el-table-column prop="name" align="left" :label="$t('routerListView.name')" width="120" />
+      <el-table-column prop="path" align="left" :label="tryGetI18nText('path')" width="160" />
 
       <!--  组件图标  -->
       <el-table-column prop="meta.icon" align="center" :label="$t('routerListView.icon')" width="70">
@@ -143,12 +143,12 @@
 
 <script setup>
 import { ref, reactive, computed } from 'vue'
-import ElTableEx from '@/ui/components/ElTableEx.vue'
+import ElTableEx from '@/ui/components/ElTable/ElTableEx.vue'
 import { ElMessageBox } from 'element-plus'
 import i18n from '@/i18n'
 import UiSvg from '@/ui/components/UiSvg.vue'
 import ElDialogSelectIcon from '@/ui/components/ElDialogSelectIcon.vue'
-import { getTextListMaxWidth, hasPermission } from '@/utils'
+import {getTextListMaxWidth, hasPermission, tryGetI18nText} from '@/utils'
 import ElTableColumnLabel from '@/ui/components/ElTable/ElTableColumnLabel.vue'
 import RouterListViewLoadProject from './RouterListViewLoadProject.vue'
 import RouterListViewUpdatePermission from './RouterListViewUpdatePermission.vue'
@@ -165,6 +165,7 @@ const tagStyle = computed(() => {
 
 const routerConfig = ref(reactive([]))
 const isRequestingBase = ref(false)
+
 function requestRouterBase() {
   if (isRequestingBase.value) {
     return
@@ -180,6 +181,7 @@ function requestRouterBase() {
       isRequestingBase.value = false
     })
 }
+
 requestRouterBase(false)
 
 function isElementIcon(icon) {
@@ -200,17 +202,20 @@ function onLoadProject(file_dict, router_list, async_routes) {
 }
 
 /*******************************************************************
-                                修改数据相关
+ 修改数据相关
  ******************************************************************/
 function onEditText_en(index, row, newValue, cancelCb, closeCb) {
   onEditText('en')(index, row, newValue, cancelCb, closeCb)
 }
+
 function onEditText_zh(index, row, newValue, cancelCb, closeCb) {
   onEditText('zh')(index, row, newValue, cancelCb, closeCb)
 }
+
 function onEditText_ko(index, row, newValue, cancelCb, closeCb) {
   onEditText('ko')(index, row, newValue, cancelCb, closeCb)
 }
+
 function onEditText(local) {
   return (index, row, newValue, cancelCb, closeCb) => {
     // 修改路由基础配置-标题
@@ -279,6 +284,7 @@ const isDisplaySelectIcon = ref(false)
 const selectIcon = ref('')
 let selectIconIndex = -1
 let selectIconData = null
+
 function onSelectIcon(index) {
   selectIconIndex = index
   selectIconData = routerConfig.value[index]
@@ -292,6 +298,7 @@ function onSelectIcon(index) {
 }
 
 let requestingEditIcon = false
+
 function onSelectIconResult(type, icon) {
   if (requestingEditIcon) {
     return
@@ -366,6 +373,7 @@ const appStore = useAppStore()
 const displayMenuPermission = ref(false)
 const selectMenu = ref(reactive({}))
 const selectMenuTitle = computed(() => (selectMenu.value ? selectMenu.value['title_' + appStore.language] : ''))
+
 function onDisplayMenuPermission(row) {
   displayMenuPermission.value = true
   selectMenu.value = row
@@ -381,6 +389,7 @@ function onDisplayMenuPermission(row) {
   justify-content: center;
   color: #606266;
 }
+
 .router-icon:hover {
   color: #007aff;
   cursor: pointer;

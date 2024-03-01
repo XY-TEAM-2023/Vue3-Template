@@ -92,9 +92,6 @@ import { CaretBottom, CaretTop } from '@element-plus/icons-vue'
 import { http_post } from '@/axios'
 
 const appStore = useAppStore()
-if (appStore.pageNum_userList <= 0) {
-  appStore.pageNum_userList = appStore.pageSizes[0]
-}
 
 /*************************************************************
  *                    页面基础数据
@@ -179,6 +176,7 @@ function requestMenus() {
       isRequestingMenu.value = false
     })
 }
+
 defineExpose({ requestMenus })
 
 /**
@@ -209,6 +207,7 @@ function onEdit() {
 }
 
 const isChangeHoming = ref(false)
+
 function onSetAsHome() {
   if (isChangeHoming.value) {
     return
@@ -235,6 +234,7 @@ function onCancelEdit() {
  *************************************************************/
 
 const isChanged = ref(false)
+
 function onChangeChecked() {
   // menuCheckedSave
   menuChecked.value = uiTree.value.getCheckedKeys()
@@ -255,6 +255,7 @@ function arraysEqual(arr1, arr2) {
 }
 
 const isReqSaving = ref(false)
+
 function onSubmit() {
   if (isReqSaving.value) {
     return
@@ -343,6 +344,7 @@ function onChangeSort(isUp) {
 }
 
 const isReqSorting = ref(false)
+
 function requestChangeSort() {
   if (isReqSaving.value || isReqSorting.value) {
     return

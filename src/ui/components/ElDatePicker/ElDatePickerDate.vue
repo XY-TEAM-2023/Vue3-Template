@@ -12,7 +12,7 @@
 
 <script setup>
 import { defineProps, defineModel, ref, watch } from 'vue'
-import { timestampToTimezoneDate } from '@/utils/timeUtil'
+import { tsToTimezoneDate } from '@/utils/timeUtil'
 
 const model = defineModel()
 const props = defineProps({
@@ -24,7 +24,7 @@ const props = defineProps({
 })
 
 // 显示值
-const displayValue = ref(timestampToTimezoneDate(props.defaultTs))
+const displayValue = ref(tsToTimezoneDate(props.defaultTs))
 // 最终值（临时）用于重置表单时，同步重置显示值
 let finalValue = 0
 
@@ -37,13 +37,14 @@ watch(
       displayValue.value = []
     } else if (finalValue !== newModel.value) {
       finalValue = newModel.value
-      displayValue.value = timestampToTimezoneDate(finalValue)
+      displayValue.value = tsToTimezoneDate(finalValue)
     }
   },
   { deep: true }
 )
 
 const emits = defineEmits(['change'])
+
 function onChange(val) {
   finalValue = val ? val.getTime() : undefined
   model.value = finalValue

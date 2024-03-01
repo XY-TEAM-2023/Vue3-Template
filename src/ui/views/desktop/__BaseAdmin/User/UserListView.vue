@@ -1,45 +1,43 @@
 <template>
   <div style="display: flex; flex-direction: column; height: 100%">
-    <!-- 添加 height: 100%; -->
-    <div style="margin-bottom: 10px">
-      <!--  创建账号  -->
-      <creat-user-dialog :is-show="showCreateUser" @close="showCreateUser = false" @refresh="requestUserListByRefresh" />
-      <el-button type="primary" @click="onCreateAccount">
-        {{ $t('com.btnCreate') }}
-      </el-button>
-
-      <!--  搜索账号  -->
-      <el-input-search
-        v-model="searchAccount"
-        placeholder="userListView.searchAccount"
-        width="200"
-        @search="requestUserList"
-        max-length="20"
-        style="margin-left: 10px"
-      />
-    </div>
-
     <el-table-ex
-      :data="userList"
+      ref="tableRef"
+      :data-table="userList"
       v-loading="isRequestUserList"
       v-model:current-page="searchPage"
-      v-model:page-size="appStore.pageNum_userList"
-      :page-sizes="appStore.pageSizes"
       :total="total"
       :show-select="true"
       @current-change="requestUserList"
       @size-change="requestUserList"
       @selection-change="onSelectionChange"
     >
-      <!--      <el-table-column type="selection" width="55" align="center" />-->
-      <el-table-column type="index" width="80" align="center" :label="$t('com.index')" />
-      <el-table-column prop="account" align="center" width="100" show-overflow-tooltip :label="$t('userListView.account')" />
+      <template #operations>
+        <!--  创建账号  -->
+        <el-button plain @click="onCreateAccount">
+          {{ $t('com.btnCreate') }}
+          <creat-user-dialog :is-show="showCreateUser" @close="showCreateUser = false" @refresh="requestUserListByRefresh" />
+        </el-button>
+      </template>
+
+      <template #quickSearch>
+        <!--  搜索账号  -->
+        <el-input-search
+          v-model="searchAccount"
+          placeholder="userListView.searchAccount"
+          width="200"
+          @search="requestUserList"
+          max-length="20"
+        />
+      </template>
+
+      <!--      <el-table-column-ex type="selection" width="55" align="center" />-->
+      <el-table-column-ex prop="account" align="center" width="100" show-overflow-tooltip :label="$t('userListView.account')" />
 
       <!--   角色名   -->
-      <el-table-column prop="role_name" align="center" width="140" :label="$t('userListView.role')" />
+      <el-table-column-ex prop="role_name" align="center" width="140" :label="$t('userListView.role')" />
 
       <!--  是否在线  -->
-      <el-table-column :label="$t('userListView.onlineStatus')" align="center" width="130">
+      <el-table-column-ex :label="$t('userListView.onlineStatus')" prop="isOnline" align="center" width="130">
         <template #default="scope">
           <span v-if="scope.row.isOnline" class="color-green">
             {{ $t('userListView.onlineStatus_on') }}
@@ -48,10 +46,10 @@
             {{ $t('userListView.onlineStatus_off') }}
           </div>
         </template>
-      </el-table-column>
+      </el-table-column-ex>
 
       <!--  OTP状态  -->
-      <el-table-column prop="otp_status" align="center" width="180" :label="$t('userListView.otpStatus')">
+      <el-table-column-ex prop="otp_status" align="center" width="180" :label="$t('userListView.otpStatus')">
         <template #default="scope">
           <div v-if="scope.row.otp_status === 0">
             <span class="color-gray">
@@ -69,9 +67,9 @@
             </span>
           </div>
         </template>
-      </el-table-column>
+      </el-table-column-ex>
       <!--  账号状态  -->
-      <el-table-column :label="$t('userListView.accountStatus')" align="center" width="140">
+      <el-table-column-ex prop="status" :label="$t('userListView.accountStatus')" align="center" width="140">
         <template #default="scope">
           <div v-if="scope.row.status === 0">
             <span class="color-green">
@@ -84,12 +82,12 @@
             </span>
           </div>
         </template>
-      </el-table-column>
-      <el-table-column-timestamp prop="update_ts" align="center" width="220" label="com.updateTime" />
-      <el-table-column-timestamp prop="create_ts" align="center" width="220" label="com.creatTime" />
+      </el-table-column-ex>
+      <el-table-column-ts prop="update_ts" align="center" width="220" label="com.updateTime" />
+      <el-table-column-ts prop="create_ts" align="center" width="220" label="com.creatTime" />
 
       <!--  操作按钮  -->
-      <el-table-column :label="$t('com.handler')" align="center" width="270">
+      <el-table-column-ex :label="$t('com.handler')" align="center" width="270">
         <template #default="scope">
           <div v-if="checkPermission(scope.row)">
             <el-button class="loading-small" style="width: 50px" type="primary" size="small" @click="onEditorUserInfo(scope.row)">
@@ -116,7 +114,7 @@
             {{ $t('com.noPermission') }}
           </el-tag>
         </template>
-      </el-table-column>
+      </el-table-column-ex>
     </el-table-ex>
 
     <!-- 修改用户信息窗口 -->
@@ -134,18 +132,14 @@ import { ref, reactive, onBeforeMount, computed, watch, onMounted, onBeforeUnmou
 import ElInputSearch from '@/ui/components/ElInput/ElInputSearch.vue'
 import CreatUserDialog from './CreatUserDialog.vue'
 import ChangeUserInfoDialog from './ChangeUserInfoDialog.vue'
-import ElTableEx from '@/ui/components/ElTableEx.vue'
+import ElTableEx from '@/ui/components/ElTable/ElTableEx.vue'
 import { useAppStore } from '@/stores/app'
 import { useUserStore } from '@/stores/user'
 import { http_post } from '@/axios'
 import { ElMessageBox } from 'element-plus'
 import i18n from '@/i18n'
-import ElTableColumnTimestamp from '@/ui/components/ElTable/ElTableColumnTimestamp.vue'
-
-const appStore = useAppStore()
-if (appStore.pageNum_userList <= 0) {
-  appStore.pageNum_userList = appStore.pageSizes[0]
-}
+import ElTableColumnTs from '@/ui/components/ElTable/ElTableColumnTs.vue'
+import ElTableColumnEx from '@/ui/components/ElTable/ElTableColumnEx.vue'
 
 const userStore = useUserStore()
 
@@ -155,7 +149,7 @@ const searchAccount = ref('')
 const searchPage = ref(1)
 
 /** 用户列表 */
-const userList = reactive([])
+const userList = ref([])
 /** 是否正在拉取用户列表 */
 const isRequestUserList = ref(false)
 /** 当前数据总条数 */
@@ -174,6 +168,8 @@ function checkPermission(target) {
 let roleList = []
 let roleDict = {}
 
+const tableRef = ref(null)
+
 /** 拉取用户列表*/
 function requestUserList() {
   if (isRequestUserList.value) {
@@ -181,10 +177,18 @@ function requestUserList() {
   }
 
   const cb_requestUserList = () => {
-    http_post('/api/admin/user/list', { search: searchAccount.value, page: searchPage.value, page_num: appStore.pageNum_userList }, false)
+    http_post(
+      '/api/admin/user/list',
+      {
+        search: searchAccount.value,
+        page: searchPage.value,
+        page_num: tableRef.value.getPageSize(),
+      },
+      false
+    )
       .then((data) => {
         console.log(data)
-        userList.splice(0)
+        userList.value.splice(0)
         const curTs = new Date().getTime() // 获取当前的13位时间戳
         for (const obj of data.result) {
           console.log(obj)
@@ -207,9 +211,9 @@ function requestUserList() {
           // 整理在线状态
           obj.isOnline = obj.keep_online_ts > curTs
           delete obj.keep_online_ts
-          userList.push(obj)
+          userList.value.push(obj)
         }
-        console.log('?????????????', userList)
+        console.log('?????????????', userList.value)
         total.value = data.total
       })
       .catch(() => {})
@@ -275,20 +279,20 @@ function onEditorUserInfo(info) {
  * @param index 用户索引
  */
 function onClearOtp(index) {
-  const userData = userList[index]
+  const userData = userList.value[index]
   if (userData.isRequestingClear) {
     return
   }
 
-  userList[index].isRequestingClear = true
+  userList.value[index].isRequestingClear = true
   //清空用户OTP密钥
   http_post('/api/admin/user/resetOtp', { user_id: userData.id }, true)
     .then(() => {
-      userList[index].otp_status = 1
+      userList.value[index].otp_status = 1
     })
     .catch(() => {})
     .finally(() => {
-      userList[index].isRequestingClear = false
+      userList.value[index].isRequestingClear = false
     })
 }
 
@@ -297,7 +301,7 @@ function onClearOtp(index) {
  * @param index 用户下标
  */
 function onDeleteAccount(index) {
-  const userData = userList[index]
+  const userData = userList.value[index]
 
   ElMessageBox.confirm(i18n.global.t('userListView.deleteAccountTip', { account: userData.account }), '', {
     confirmButtonText: i18n.global.t('com.btnOk'),
@@ -311,18 +315,18 @@ function onDeleteAccount(index) {
 }
 
 function onDeleteAccountHandler(index) {
-  const userData = userList[index]
+  const userData = userList.value[index]
   if (userData.isRequestingDel) {
     return
   }
-  userList[index].isRequestingDel = true
+  userList.value[index].isRequestingDel = true
   // 删除账号
   http_post('/api/admin/user/delete', { user_id: userData.id }, true)
     .then(() => {
-      userList.splice(index, 1)
+      userList.value.splice(index, 1)
     })
     .catch(() => {
-      userList[index].isRequestingDel = false
+      userList.value[index].isRequestingDel = false
     })
 }
 </script>

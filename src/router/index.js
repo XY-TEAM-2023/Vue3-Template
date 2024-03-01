@@ -5,10 +5,9 @@ import { useUserStore } from '@/stores/user'
 import { config } from '@/config'
 import NProgress from 'nprogress'
 import { useAppStore } from '@/stores/app'
-import { asyncRoutes, platform } from './asyncRoutes'
+import { platform } from './asyncRoutes'
 import { constantRoutes } from './constantRoutes'
 import { cloneDeep } from 'lodash-es'
-import { getParentPath } from '@/utils'
 
 let router = createRouter({
   history: config.localMode ? createWebHashHistory(import.meta.env.BASE_URL) : createWebHistory(import.meta.env.BASE_URL),
@@ -45,7 +44,6 @@ function checkRouterIsPublic(r) {
   return false
 }
 
-let consoleIndex = 0
 const comps = import.meta.glob('/src/ui/**/*.*')
 
 /**
@@ -143,7 +141,6 @@ function tryLoadRouteGroup(route, parentPath = '') {
       route.meta.componentPath = route.component.replace('${platform}', platform)
       route.component = comps[route.meta.componentPath]
     }
-    // console.log(`${++consoleIndex}. ${route.fullPath}`)
   }
 
   return canLoad
@@ -176,8 +173,6 @@ const reloadRoutesHandler = function (asyncRoutesConfig) {
 
   // console.log('重新加载Router配置')
 
-  consoleIndex = 0
-
   // 动态路由
   const layoutIndex = constantRoutes.findIndex((route) => route.name === '/')
   constantRoutes[layoutIndex].children = asyncRoutesConfig
@@ -197,26 +192,29 @@ const reloadRoutesHandler = function (asyncRoutesConfig) {
 
   // 加载路径
   loadRouteConfig(constantRoutes)
-  // 添加不存在的页面重定向
-  // router.addRoute({ path: '/:pathMatch(.*)*', redirect: '/404', meta: { hidden: true } })
 }
 
-const isBuildMode = import.meta.env.DEV ? config.buildMode : true
-router.reloadRoutes = function (isUseStore = false) {
-  console.log('isBuildMode', isBuildMode)
-  if (isBuildMode) {
-    // reloadRoutes_build(isUseStore)
-    if (isUseStore) {
-      reloadRoutesHandler(cloneDeep(useUserStore().routes))
-    } else {
-      let localStorageUserStr = localStorage.getItem('user')
-      const localStorageUser = localStorageUserStr ? JSON.parse(localStorageUserStr) : { routes: [] }
-      const tempAsyncRouters = localStorageUser.routes ? localStorageUser.routes : []
-      reloadRoutesHandler(tempAsyncRouters)
-    }
+router.reloadRoutes = function (loadAsyncRouters = false) {
+  if (loadAsyncRouters) {
+    // console.log(useUserStore().routes)
+    reloadRoutesHandler(cloneDeep(useUserStore().routes))
   } else {
-    reloadRoutesHandler(asyncRoutes)
+    let localStorageUserStr = localStorage.getItem('user')
+    const localStorageUser = localStorageUserStr ? JSON.parse(localStorageUserStr) : { routes: [] }
+    const tempAsyncRouters = localStorageUser.routes ? localStorageUser.routes : []
+    // console.log(tempAsyncRouters)
+    reloadRoutesHandler(tempAsyncRouters)
   }
+}
+
+/** 检查路由是否存在 */
+function checkRouterExists(routeName) {
+  if (routeName === undefined) {
+    return false
+  }
+  // 在你的组件或 JavaScript 代码中
+  const routes = router.getRoutes()
+  return routes.some((route) => route.name === routeName)
 }
 
 router.beforeEach(
@@ -227,34 +225,41 @@ router.beforeEach(
    * @param next next() 继续执行；next(false) 中断导航；next('/') 或 next({ path: '/' }): 跳转到一个不同的地址
    */
   (to, from, next) => {
-    NProgress.start()
+    // 浏览器是否已经打开过了
+    const isOpenedBrowser = sessionStorage.getItem('isOpenedBrowser') === 'true'
+    if (isOpenedBrowser) {
+      NProgress.start()
+    }
+
+    // console.error('from', from, 'to', to)
+
+    // 检查路由是否存在 --------------------------------
+    if (!checkRouterExists(to.name)) {
+      next({ name: '404' })
+      return
+    }
 
     // console.log(`!!!!!!!!!!!!!!!!!!!!路由守卫, from: ${from.fullPath}, to: ${to.fullPath}`)
     const userStore = useUserStore()
     // 登录状态 -1未登录；0已登录；1登录失效；
-    const loginStatus = userStore.loginStatus
+    const loginStatus = userStore.getLoginStatus()
     // console.log('>>>>>>>>>>>>>>>', to)
 
     const nextCb = (page) => {
-      tryLoadI18n(to.meta.componentPath)
-        .then(() => {})
-        .catch(() => {})
-        .finally(() => {
-          if (!page) {
-            next()
-            return
-          }
-          if ((page + '').startsWith('/')) {
-            // console.log('>>>> next ', page)
-            next({ path: page })
-          } else {
-            // console.log('>>>> next ', page)
-            next({ name: page })
-          }
-        })
+      if (!page) {
+        next()
+        appStore.routerPath = to.fullPath
+        return
+      }
+      if ((page + '').startsWith('/')) {
+        // console.log('>>>> next ', page)
+        next({ path: page })
+      } else {
+        // console.log('>>>> next ', page)
+        next({ name: page })
+      }
     }
 
-    console.error('to.path', to)
     if (to.path === '/') {
       // 如果访问的是根目录
       // console.log('如果访问的是根目录')
@@ -266,7 +271,7 @@ router.beforeEach(
           nextCb()
         }
       } else {
-        const homePage = isBuildMode ? userStore.homePage : config.router.homePage
+        const homePage = userStore.homePage
         // 跳转到登录成功后的第一个页面
         if (homePage && homePage !== to.path) {
           nextCb(homePage)
@@ -276,33 +281,35 @@ router.beforeEach(
       }
     } else if (!to.meta || !to.meta.needLogin) {
       // 不需要登录, 直接访问页面
-      // console.log('不需要登录, 直接访问页面')
       nextCb()
     } else if (loginStatus === -1) {
       // 未登录
-      // console.log('未登录')
-      ElMessageBox.alert(i18n.global.t('app.needLogin'), '', {
-        showClose: false,
-        confirmButtonText: i18n.global.t('com.btnOk'),
-        callback: () => {
-          // 如果有登录页面, 访问登录页面
-          nextCb(config.router.loginPage)
-        },
-      })
+      if (isOpenedBrowser) {
+        ElMessageBox.alert(i18n.global.t('app.needLogin'), '', {
+          showClose: false,
+          confirmButtonText: i18n.global.t('com.btnOk'),
+          callback: () => {
+            useUserStore().logout()
+          },
+        })
+      } else {
+        useUserStore().logout()
+      }
     } else if (loginStatus === 1) {
       // 登录失效
-      // console.log('登录失效')
-      ElMessageBox.alert(i18n.global.t('app.sessionTimeout'), '', {
-        showClose: false,
-        confirmButtonText: i18n.global.t('com.btnOk'),
-        callback: () => {
-          // 如果有登录页面, 访问登录页面
-          nextCb(config.router.loginPage)
-        },
-      })
+      if (isOpenedBrowser) {
+        ElMessageBox.alert(i18n.global.t('app.sessionTimeout'), '', {
+          showClose: false,
+          confirmButtonText: i18n.global.t('com.btnOk'),
+          callback: () => {
+            useUserStore().logout()
+          },
+        })
+      } else {
+        useUserStore().logout()
+      }
     } else {
       // 已登录, 判断角色权限
-      // console.log('已登录, 判断角色权限')
       if (to.roles && to.roles.length > 0) {
         // 需要角色权限
         if (to.roles.some((item) => userStore.roles.includes(item))) {
@@ -320,52 +327,39 @@ router.beforeEach(
 )
 
 /** 尝试加载页面对应的国际化文本 */
-const tryLoadI18n = (componentPath) => {
-  return new Promise((resolve, reject) => {
-    const i18nPath = getParentPath(componentPath) + '/i18n.js'
-    const i18nFileLoad = comps[i18nPath]
-    if (!i18nFileLoad) {
-      reject()
-      return // 没有找到翻译文件
-    }
-
-    i18nFileLoad()
-      .then((messagesModule) => {
-        const newTranslations = messagesModule.default
-
-        // 遍历每种语言并合并翻译
-        Object.keys(newTranslations).forEach((lang) => {
-          // 获取现有的翻译（如果存在）
-          const existingTranslations = i18n.global.messages[lang] || {}
-
-          // 合并现有的翻译与新的翻译，并设置到 i18n 实例中
-          i18n.global.setLocaleMessage(lang, { ...existingTranslations, ...newTranslations[lang] })
-        })
-
-        resolve()
-      })
-      .catch((error) => {
-        // console.error('Failed to load i18n file:', error)
-        reject()
-      })
-  })
-}
-
-const getComponentNameFromPath = (filePath) => {
-  const pathParts = filePath.split('/') // 分割路径
-  const fileNameWithExtension = pathParts[pathParts.length - 1] // 获取文件名
-  const fileName = fileNameWithExtension.split('.')[0] // 移除扩展名
-
-  // 检查是否为 'index'
-  if (fileName === 'index') {
-    // 如果是 'index'，返回上一级目录的名字
-    return pathParts[pathParts.length - 2]
+const tryLoadI18n = (i18nJs) => {
+  const i18nFileLoad = i18nJs
+  if (!i18nFileLoad) {
+    return // 没有找到翻译文件
   }
 
-  return fileName
+  i18nFileLoad()
+    .then((messagesModule) => {
+      const newTranslations = messagesModule.default
+
+      // 遍历每种语言并合并翻译
+      Object.keys(newTranslations).forEach((lang) => {
+        // 获取现有的翻译（如果存在）
+        const existingTranslations = i18n.global.messages[lang] || {}
+
+        // 合并现有的翻译与新的翻译，并设置到 i18n 实例中
+        i18n.global.setLocaleMessage(lang, { ...existingTranslations, ...newTranslations[lang] })
+      })
+    })
+    .catch((error) => {})
 }
 
+Object.entries(comps).forEach(([key, value]) => {
+  if (key.endsWith('i18n.js')) {
+    tryLoadI18n(value)
+  }
+})
+
 router.afterEach(() => {
+  const isOpenedBrowser = sessionStorage.getItem('isOpenedBrowser') === 'true'
+
+  sessionStorage.setItem('isOpenedBrowser', 'true')
+
   const appStore = useAppStore()
   const new_full_path = router.currentRoute.value.fullPath
   const curRouteName = router.currentRoute.value.name
@@ -401,6 +395,10 @@ router.afterEach(() => {
     if (!appStore.openedTabs.some((item) => item.fullPath === new_full_path)) {
       const r = router.currentRoute.value
 
+      if (r.name === undefined || r.name === '') {
+        return
+      }
+
       appStore.openedTabs.push({
         name: r.name,
         title: r.meta.title,
@@ -409,7 +407,12 @@ router.afterEach(() => {
     }
   }
 
-  NProgress.done()
+  if (isOpenedBrowser) {
+    console.log('NProgress.done()')
+    NProgress.done()
+  } else {
+    document.getElementById('loading').style.display = 'none'
+  }
 })
 
 // 刷新当前页面

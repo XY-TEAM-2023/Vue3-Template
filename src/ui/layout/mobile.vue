@@ -25,7 +25,7 @@
 <script>
 import { RouterView } from 'vue-router'
 import UiLogo from '@/ui/components/UiLogo.vue'
-import UiIconLogin from '@/ui/components/UiIconLogin.vue'
+import UiIconLogin from '@/ui/components/Header/HeaderUserInfo.vue'
 import UiNavigationMobile from '@/ui/components/UiNavigationMobile.vue'
 
 export default {

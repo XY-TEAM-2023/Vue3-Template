@@ -7,9 +7,11 @@
     </el-icon>
 
     <!-- 使用计算属性来显示标题 -->
-    <span v-if="!appStore.menuIsCollapse" class="text unselect">
+    <span class="text unselect">
       {{ getTitle() }}
     </span>
+
+    <ui-menu-collapse class="menu-collapse" />
   </div>
 </template>
 
@@ -18,6 +20,7 @@ import { useAppStore } from '@/stores/app'
 import { config } from '@/config'
 import UiSvg from '@/ui/components/UiSvg.vue'
 import i18n from '@/i18n'
+import UiMenuCollapse from '@/ui/components/UiMenuCollapse.vue'
 
 const appStore = useAppStore()
 
@@ -34,26 +37,35 @@ function getTitle() {
 /* 组件样式 */
 
 .ui-logo {
-  min-height: 50px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  min-height: 60px;
   display: flex;
+  width: 255px;
   justify-content: center;
   align-items: center;
   height: 100%;
-  box-shadow: inset 0 -10px 4px -10px rgba(0, 0, 0, 0.5);
-  //border-right: solid 1px var(--el-menu-border-color);
+  padding-left: 20px;
+  padding-right: 20px;
+  //box-shadow: 0 3px 15px rgba(119, 119, 119, 0.4);
 
   .icon {
     width: 30px;
     height: 30px;
   }
+
   .text {
-    color: #fff;
+    color: #1b9cfb;
     font-weight: 700;
     font-size: 26px;
-    margin-left: 10px;
     vertical-align: baseline;
     white-space: nowrap;
     font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 微软雅黑, Arial, sans-serif;
   }
+}
+
+.menu-collapse {
+  margin-left: auto;
 }
 </style>

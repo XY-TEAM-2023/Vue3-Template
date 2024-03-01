@@ -19,7 +19,9 @@ export function getStatusTipMsg(status, msg) {
  */
 export function getStatusTipCb(status, data) {
   return () => {
-    if (status === -2) {
+    if (status === -1) {
+      useUserStore().logout()
+    } else if (status === -2) {
       // 账号在其他设备上登录
       useUserStore().logout()
     } else if (status === -3) {

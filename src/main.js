@@ -13,7 +13,7 @@ import menu from '@/ui/components/Menu/v-menu'
 import { hasPermission } from '@/utils'
 import { useUserStore } from '@/stores/user'
 
-router.reloadRoutes()
+router.reloadRoutes(false)
 const app = createApp(App)
 const pinia = createPinia()
 pinia.use(piniaPluginPersist)
@@ -125,3 +125,17 @@ function preventClick(e) {
 
 app.mount('#app')
 i18n.global.init()
+
+/****************************************************************
+ *              拦截用户按下 F5 键以刷新当前页面
+ ****************************************************************/
+// 添加全局的键盘事件监听器
+window.addEventListener('keydown', handleGlobalKeyDown)
+
+function handleGlobalKeyDown(event) {
+  // 拦截 F5 键
+  if (event.keyCode === 116) {
+    event.preventDefault() // 阻止默认行为
+    router.refreshCurPage()
+  }
+}

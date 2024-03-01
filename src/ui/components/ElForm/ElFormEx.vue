@@ -1,5 +1,4 @@
 <template>
-  <div ref="textElement" class="offscreen-text">{{ temp_title }}</div>
   <el-form
     ref="formRef"
     :model="props.model"
@@ -13,6 +12,7 @@
     :scroll-to-error="props.scrollToError"
   >
     <slot></slot>
+    <div ref="textElement" class="offscreen-text">{{ temp_title }}</div>
   </el-form>
 </template>
 
@@ -71,27 +71,29 @@ const formWidth = computed(() => {
     return 'auto'
   }
 })
+
 const textElement = ref(null)
+
 onMounted(() => {
-  const elements = document.querySelectorAll('.el-form-item__label')
-
-  let maxWidth = 0
-  let index = -1
-  const calcLabelWidth = () => {
-    if (++index === elements.length) {
-      return
-    }
-
-    temp_title.value = elements[index].textContent
-    nextTick(() => {
-      if (textElement.value.getBoundingClientRect().width > maxWidth) {
-        maxWidth = textElement.value.getBoundingClientRect().width
-      }
-      calcLabelWidth()
-    })
-  }
-  calcLabelWidth()
-
+  // nextTick(() => {
+  //   const elements = document.querySelectorAll('.el-form-item__label')
+  //
+  //   let maxWidth = 0
+  //   let index = -1
+  //   const calcLabelWidth = () => {
+  //     if (++index === elements.length) {
+  //       return
+  //     }
+  //
+  //     temp_title.value = elements[index].textContent
+  //     console.log(textElement.value, textElement.value.getBoundingClientRect)
+  //     if (textElement.value.getBoundingClientRect().width > maxWidth) {
+  //       maxWidth = textElement.value.getBoundingClientRect().width
+  //     }
+  //     calcLabelWidth()
+  //   }
+  //   calcLabelWidth()
+  // })
   // if (textElement.value) {
   //   const size = textElement.value.getBoundingClientRect()
   //   console.log(`文本宽度: ${size.width}px, 文本高度: ${size.height}px`)

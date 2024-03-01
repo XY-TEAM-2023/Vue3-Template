@@ -39,7 +39,7 @@
             <el-input v-model="data_route.config.meta.title.ko" class="input-view-title" placeholder="韩文（选择）" clearable />
           </el-form-item>
 
-          <el-form-item label="图标"> </el-form-item>
+          <el-form-item label="图标"></el-form-item>
 
           <el-form-item>
             <el-button type="primary" @click="searchData.genCode">提交请求</el-button>
@@ -51,7 +51,7 @@
       <!--      <el-collapse-item title="页面功能" name="3">-->
       <!--   请求定义   -->
       <el-card-ex>
-        <template #header> 请求定义 </template>
+        <template #header> 请求定义</template>
 
         <el-form :model="data_searchRequest" label-position="top" :inline="true">
           <el-form-item label="请求类型">
@@ -74,14 +74,14 @@
           </el-form-item>
 
           <el-form-item label="分页查询">
-            <el-switch v-model="data_searchRequest.isPage" active-color="#13ce66" inactive-color="#ff4949"> </el-switch>
+            <el-switch v-model="data_searchRequest.isPage" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
           </el-form-item>
         </el-form>
       </el-card-ex>
 
       <!--   筛选条件   -->
       <el-card-ex shadow="never" style="margin-top: 10px">
-        <template #header> 筛选条件 </template>
+        <template #header> 筛选条件</template>
 
         <template #default>
           <!--  添加的搜索条件  -->
@@ -538,14 +538,14 @@
               </el-button>
             </el-button-group>
 
-            <el-button style="margin-left: 10px" type="danger" @click="data_search.splice(0, data_search.length)">清空</el-button>
+            <el-button style="margin-left: 10px" type="danger" @click="data_search.splice(0, data_search.length)">清空 </el-button>
           </el-form-item>
         </template>
       </el-card-ex>
 
       <!--   表格显示   -->
       <el-card-ex shadow="never" style="margin-top: 10px">
-        <template #header> 表格显示 </template>
+        <template #header> 表格显示</template>
 
         <template #default>
           <!--  添加的搜索条件  -->
@@ -619,12 +619,12 @@
               </el-button>
             </el-button-group>
 
-            <el-button style="margin-left: 10px" type="danger" @click="data_table.splice(0, data_table.length)">清空</el-button>
+            <el-button style="margin-left: 10px" type="danger" @click="data_table.splice(0, data_table.length)">清空 </el-button>
           </el-form-item>
         </template>
       </el-card-ex>
 
-      <el-button type="primary" @click="copyCode" style="margin-top: 10px"> 复制代码 </el-button>
+      <el-button type="primary" @click="copyCode" style="margin-top: 10px"> 复制代码</el-button>
 
       <el-input type="textarea" placeholder="请输入内容" v-model="code_search" :rows="20" />
       <!--      </el-collapse-item>-->
@@ -642,6 +642,7 @@ import ElInputLabel from '@/ui/components/ElInput/ElInputLabel.vue'
 import ElSelectLocal from '@/ui/components/ElSelect/ElSelectLocal.vue'
 import ElTableColumnInteger from '@/ui/components/ElTable/ElTableColumnInteger.vue'
 import { ElMessage } from 'element-plus'
+import Dialog from '@/ui/components/DIalog/Dialog'
 
 const activeName = ref('')
 const data_page = reactive({
@@ -891,7 +892,15 @@ function parseQueryString(queryString) {
 }
 
 const code_search = computed(() => genCode())
+
 function copyCode() {
+  if (!navigator.clipboard) {
+    Dialog.tip({
+      content: '开发工具必须使用127.0.0.1进行访问',
+    })
+    return
+  }
+
   const code = genCode()
   navigator.clipboard
     .writeText(code)
@@ -908,7 +917,6 @@ function genCode() {
   let temp_search_data_list = ''
   // 搜索参数定义
   let temp_searchDataDefine = ''
-  let code_searchData = ''
   let code_boolFieldsReset = ''
   let code_tableEvents = ''
 
@@ -921,43 +929,37 @@ function genCode() {
       if (field.type === 1) {
         // 文本
         temp_search_data_list += `
-        <el-col :lg="4" :md="8" :sm="12" :xs="24">
-          <el-form-item-label
-            label="${field.title}"
-            v-model="searchData.${field.field ? field.field : '???'}"
-            prop="${field.field}"
-            :placeholder="${field.placeholder !== '' ? "'" + field.placeholder + "'" : null}"
-            :maxlength="${field.max > 0 ? field.max : null}"
-            clearable
-          />
-        </el-col>`
+      <el-tabel-seach-label
+        label='${field.title}'
+        v-model='searchData.${field.field ? field.field : '???'}'
+        prop='${field.field}'
+        :placeholder='${field.placeholder !== '' ? "'" + field.placeholder + "'" : undefined}'
+        :maxlength='${field.max > 0 ? field.max : undefined}'
+        clearable
+      />`
       } else if (field.type === 4) {
         // 整数
         temp_search_data_list += `
-        <el-col :lg="4" :md="8" :sm="12" :xs="24">
-          <el-form-item-integer
-            label="${field.title}"
-            v-model="searchData.${field.field ? field.field : '???'}"
-            prop="${field.field}"
-            :placeholder="${field.placeholder !== '' ? "'" + field.placeholder + "'" : null}"
-            :max="${field.max > 0 ? field.max : null}"
-            clearable
-          />
-        </el-col>`
+      <el-tabel-seach-integer
+        label='${field.title}'
+        v-model='searchData.${field.field ? field.field : '???'}'
+        prop='${field.field}'
+        :placeholder='${field.placeholder !== '' ? "'" + field.placeholder + "'" : undefined}'
+        :max='${field.max > 0 ? field.max : undefined}'
+        clearable
+      />`
       } else if (field.type === 3) {
         // 小数
         temp_search_data_list += `
-        <el-col :lg="4" :md="8" :sm="12" :xs="24">
-          <el-form-item-float
-            label="${field.title}"
-            v-model="searchData.${field.field ? field.field : '???'}"
-            prop="${field.field}"
-            :placeholder="${field.placeholder !== '' ? "'" + field.placeholder + "'" : null}"
-            :min='${field.min ? field.min : null}'
-            :max="${field.max ? field.max : null}"
-            clearable
-          />
-        </el-col>`
+      <el-tabel-seach-float
+        label='${field.title}'
+        v-model='searchData.${field.field ? field.field : '???'}'
+        prop='${field.field}'
+        :placeholder='${field.placeholder !== '' ? "'" + field.placeholder + "'" : undefined}'
+        :min='${field.min ? field.min : undefined}'
+        :max='${field.max ? field.max : undefined}'
+        clearable
+      />`
       } else if (field.type === 5) {
         // 选择框
         if (field.select.type === 'code') {
@@ -967,99 +969,75 @@ function genCode() {
           }
 
           temp_search_data_list += `
-        <el-col :lg="4" :md="8" :sm="12" :xs="24">
-          <el-form-item-select-local
-            label="${field.title}"
-            v-model="searchData.${field.field ? field.field : '???'}"
-            :options='${options}'
-            prop="${field.field}"
-            :placeholder="${field.placeholder !== '' ? "'" + field.placeholder + "'" : null}"
-            clearable
-          />
-        </el-col>`
+      <el-tabel-seach-select-local
+        label='${field.title}'
+        v-model='searchData.${field.field ? field.field : '???'}'
+        :options='${options}'
+        prop='${field.field}'
+        :placeholder='${field.placeholder !== '' ? "'" + field.placeholder + "'" : undefined}'
+        clearable
+      />`
         } else if (field.select.type === 'url') {
           temp_search_data_list += `
-        <el-col :lg="4" :md="8" :sm="12" :xs="24">
-          <el-form-item-select-server
-            label="${field.title}"
-            v-model="searchData.${field.field ? field.field : '???'}"
-            prop="${field.field}"
-            url="${field.select.dataFromUrl}"
-            field="${field.select.dataFromField}"
-            :placeholder="${field.placeholder !== '' ? "'" + field.placeholder + "'" : null}"
-            clearable
-          />
-        </el-col>`
+      <el-tabel-seach-select-server
+        label='${field.title}'
+        v-model='searchData.${field.field ? field.field : '???'}'
+        prop='${field.field}'
+        url='${field.select.dataFromUrl}'
+        field='${field.select.dataFromField}'
+        :placeholder='${field.placeholder !== '' ? "'" + field.placeholder + "'" : undefined}'
+        clearable
+      />`
         }
       } else if (field.type === 6) {
         // 逻辑型
         code_boolFieldsReset += `
   searchData.value.${field.field}= ${field.defaultVal ? field.defaultVal : 'false'}`
         temp_search_data_list += `
-        <el-col :lg="4" :md="8" :sm="12" :xs="24">
-          <el-form-item-checkbox label="${field.title}" v-model="searchData.${field.field ? field.field : '???'}" />
-        </el-col>`
+      <el-tabel-seach-checkbox label='${field.title}' v-model='searchData.${field.field ? field.field : '???'}' />`
       } else if (field.type === 2) {
         // 时间区间
         temp_search_data_list += `
-        <el-col :lg="4" :md="8" :sm="12" :xs="24">
-          <el-form-item-date-range
-            label="${field.title}"
-            v-model="searchData.${field.field ? field.field : '???'}"
-            prop="${field.field}"
-            :placeholder="${field.placeholder !== '' ? "'" + field.placeholder + "'" : null}"
-            clearable
-          />
-        </el-col>`
+      <el-tabel-seach-date-range
+        label='${field.title}'
+        v-model='searchData.${field.field ? field.field : '???'}'
+        prop='${field.field}'
+        :placeholder='${field.placeholder !== '' ? "'" + field.placeholder + "'" : undefined}'
+        clearable
+      />`
       } else if (field.type === 7) {
         // 指定日期
         temp_search_data_list += `
-        <el-col :lg="4" :md="8" :sm="12" :xs="24">
-          <el-form-item-date
-            label="${field.title}"
-            v-model="searchData.${field.field ? field.field : '???'}"
-            prop="${field.field}"
-            :placeholder="${field.placeholder !== '' ? "'" + field.placeholder + "'" : null}"
-            clearable
-          />
-        </el-col>`
+      <el-tabel-seach-date
+        label='${field.title}'
+        v-model='searchData.${field.field ? field.field : '???'}'
+        prop='${field.field}'
+        :placeholder='${field.placeholder !== '' ? "'" + field.placeholder + "'" : undefined}'
+        clearable
+      />`
       } else if (field.type === 8) {
         // 指定日期事件
         temp_search_data_list += `
-        <el-col :lg="4" :md="8" :sm="12" :xs="24">
-          <el-form-item-date-time
-            label="${field.title}"
-            v-model="searchData.${field.field ? field.field : '???'}"
-            prop="${field.field}"
-            :placeholder="${field.placeholder !== '' ? "'" + field.placeholder + "'" : null}"
-            clearable
-          />
-        </el-col>`
+      <el-tabel-seach-date-time
+        label='${field.title}'
+        v-model='searchData.${field.field ? field.field : '???'}'
+        prop='${field.field}'
+        :placeholder='${field.placeholder !== '' ? "'" + field.placeholder + "'" : undefined}'
+        clearable
+      />`
       }
     })
 
-    code_searchData = `
-  <el-card-ex :use-fold="true" shadow="never">
-    <template #header> {{ $t('app.searchParamsTitle') }} </template>
-    <el-form ref="searchDataRef" :model="searchData" label-position="top">
-      <el-row :gutter="24">
-${temp_search_data_list}
-      </el-row>
-    </el-form>
-
-    <template #footer>
-      <div style="display: flex; margin-left: auto">
-        <el-button type="warning" @click="onResetSearch" style="width: 100px"> {{ $t('com.btnReset') }} </el-button>
-        <el-button type="primary" @click="${
-          data_searchRequest.value.isPage ? 'onSearch' : 'requestSearch'
-        }" style="width: 100px"> {{ $t('com.btnSearch') }} </el-button>
-      </div>
+    if (temp_search_data_list !== '') {
+      temp_search_data_list = `
+    <!--  搜索  -->
+    <template #search>${temp_search_data_list}
     </template>
-  </el-card-ex>`
+      `
+    }
   }
 
-  let code_tableFields = `
-      <el-table-column-index label="com.index" width="80" align="center" />`
+  let code_tableFields = ``
   let code_table = ''
   data_table.forEach((field) => {
     let temp_edit_fun_name = ''
@@ -1072,35 +1050,35 @@ ${temp_search_data_list}
     if (field.type === 1) {
       // 文本
       code_tableFields += `
-      <el-table-column-label label="${field.title}" prop="${field.field}" align="${field.align}" ${temp_edit} />`
+      <el-table-column-label label='${field.title}' prop='${field.field}' align='${field.align}' ${temp_edit} />`
     } else if (field.type === 2) {
       // 整数
       code_tableFields += `
-      <el-table-column-integer label="${field.title}" prop="${field.field}" align="${field.align}" ${temp_edit} />`
+      <el-table-column-integer label='${field.title}' prop='${field.field}' align='${field.align}' ${temp_edit} />`
     } else if (field.type === 3) {
       // 小数
       code_tableFields += `
-      <el-table-column-float label="${field.title}" prop="${field.field}" align="${field.align}" ${temp_edit} />`
+      <el-table-column-float label='${field.title}' prop='${field.field}' align='${field.align}' ${temp_edit} />`
     } else if (field.type === 4) {
       // 金钱
       code_tableFields += `
-      <el-table-column-money label="${field.title}" prop="${field.field}" align="${field.align}" ${temp_edit} />`
+      <el-table-column-money label='${field.title}' prop='${field.field}' align='${field.align}' ${temp_edit} />`
     } else if (field.type === 5) {
       // 逻辑型
       code_tableFields += `
-      <el-table-column-switch label="${field.title}" prop="${field.field}" align="${field.align}" ${temp_edit} />`
+      <el-table-column-switch label='${field.title}' prop='${field.field}' align='${field.align}' ${temp_edit} />`
     } else if (field.type === 6) {
       //时间戳
       code_tableFields += `
-      <el-table-column-timestamp label="${field.title}" prop="${field.field}" align="${field.align}" ${temp_edit} width='160' />`
+      <el-table-column-ts label='${field.title}' prop='${field.field}' align='${field.align}' ${temp_edit} width='160' />`
     } else if (field.type === 7) {
       //时间戳
       code_tableFields += `
-      <el-table-column-link label="${field.title}" prop="${field.field}" align="${field.align}" />`
+      <el-table-column-link label='${field.title}' prop='${field.field}' align='${field.align}' />`
     } else if (field.type === 8) {
       code_tableFields += `
-      <el-table-column-ex label="${field.title}" prop="${field.field}"  align="${field.align}">
-        <template #default="scope">
+      <el-table-column-ex label='${field.title}' prop='${field.field}'  align='${field.align}'>
+        <template #default='scope'>
           {{ scope.row.${field.field}}}
         </template>
       </el-table-column-ex>`
@@ -1123,51 +1101,73 @@ ${temp_search_data_list}
   })
   if (data_search.length > 0) {
     code_table = `
-  <el-card-ex :use-fold="false" shadow="never" style="margin-top: 10px">
-    <template #header> {{ $t('app.searchResultTitle') }} </template>
-
-    <el-table-ex
-      :data="tableData"
-      v-loading='isRequestingSearch'
-      :show-pagination="${data_searchRequest.value.isPage}"
-      :is-small-pagination="true"${
-        !data_searchRequest.value.isPage
-          ? ''
-          : `
-      :current-page="searchPageData.page"
-      :page-size="searchPageData.page_size"
-      :page-sizes="appStore.pageSizes"
-      :total="searchPageData.total"
-      @size-change="onPageNumChange"
-      @current-change='onPageChange'`
-      }
-    >
-${code_tableFields}
-    </el-table-ex>
-  </el-card-ex>`
-  } else {
-    code_table = `
   <el-table-ex
-    :data="tableData"
+    ref='tableRef'
+    :data-tabel='tableData'
+    v-model:dataSearch='searchData'
     v-loading='isRequestingSearch'
-    :show-pagination="${data_searchRequest.value.isPage}"
-    :is-small-pagination="true"${
+    :show-pagination='${data_searchRequest.value.isPage}'
+    :show-index-column='true'
+    :index-reverse-order='false'
+    :is-small-pagination='true'${
       !data_searchRequest.value.isPage
         ? ''
         : `
-      :current-page="searchPageData.page"
+      v-model:currentPage="searchPageData.page"
       :page-size="searchPageData.page_size"
-      :page-sizes="appStore.pageSizes"
+      :total="searchPageData.total"
+      @size-change="onPageNumChange"
+      @current-change='onPageChange'`
+    }
+  >
+${temp_search_data_list}
+
+    <!--  左侧按钮  -->
+    <template #operations>
+
+    </template>
+
+    <!--  右侧快捷搜索  -->
+    <template #quickSearch>
+
+    </template>
+
+${code_tableFields}
+  </el-table-ex>`
+  } else {
+    code_table = `
+  <el-table-ex
+    :data-tabel='tableData'
+    v-loading='isRequestingSearch'
+    :show-pagination='${data_searchRequest.value.isPage}'
+    :is-small-pagination='true'${
+      !data_searchRequest.value.isPage
+        ? ''
+        : `
+      v-model:currentPage="searchPageData.page"
+      :page-size="searchPageData.page_size"
       :total="searchPageData.total"
       @size-change="onPageNumChange"
       @current-change='onPageChange'`
     }
     >
+    <!--  左侧按钮  -->
+    <template #operations>
+
+    </template>
+
+    <!--  右侧快捷搜索  -->
+    <template #quickSearch>
+
+    </template>
+
 ${code_tableFields}
+
+
   </el-table-ex>`
   }
 
-  const code_template = `<template>${code_searchData}${code_table}
+  const code_template = `<template>${code_table}
 </template>
 `
 
@@ -1175,54 +1175,43 @@ ${code_tableFields}
 
 <script setup>
 import { reactive, ref } from 'vue'
-import ElCardEx from '@/ui/components/ElCardEx.vue'
-import ElFormItemLabel from '@/ui/components/ElForm/ElFormItemLabel.vue'
-import ElFormItemInteger from '@/ui/components/ElForm/ElFormItemInteger.vue'
-import ElFormItemSelectLocal from '@/ui/components/ElForm/ElFormItemSelectLocal.vue'
-import ElFormItemSelectServer from '@/ui/components/ElForm/ElFormItemSelectServer.vue'
-import ElFormItemFloat from '@/ui/components/ElForm/ElFormItemFloat.vue'
-import ElFormItemCheckbox from '@/ui/components/ElForm/ElFormItemCheckbox.vue'
-import ElFormItemDateRange from '@/ui/components/ElForm/ElFormItemDateRange.vue'
-import ElFormItemDateTime from '@/ui/components/ElForm/ElFormItemDateTime.vue'
-import ElFormItemDate from '@/ui/components/ElForm/ElFormItemDate.vue'
 import { http_get, http_post } from '@/axios'
 import { useAppStore } from '@/stores/app'
-import { getDefaultPageSize, setDefaultPageSize } from '@/utils'
 import ElTableEx from '@/ui/components/ElTableEx.vue'
 import ElTableColumnLabel from '@/ui/components/ElTable/ElTableColumnLabel.vue'
 import ElTableColumnInteger from '@/ui/components/ElTable/ElTableColumnInteger.vue'
 import ElTableColumnFloat from '@/ui/components/ElTable/ElTableColumnFloat.vue'
 import ElTableColumnMoney from '@/ui/components/ElTable/ElTableColumnMoney.vue'
 import ElTableColumnSwitch from '@/ui/components/ElTable/ElTableColumnSwitch.vue'
-import ElTableColumnTimestamp from '@/ui/components/ElTable/ElTableColumnTimestamp.vue'
-import ElTableColumnIndex from '@/ui/components/ElTable/ElTableColumnIndex.vue'
+import ElTableColumnTs from '@/ui/components/ElTable/ElTableColumnTs.vue'
 import ElTableColumnEx from '@/ui/components/ElTable/ElTableColumnEx.vue'
 import ElTableColumnLink from '@/ui/components/ElTable/ElTableColumnLink.vue'
+import ElTableSearchLabel from '@/ui/components/ElTable/ElTableSearchLabel.vue'
+import ElTableSearchInteger from '@/ui/components/ElTable/ElTableSearchInteger.vue'
+import ElTableSearchSelectLocal from '@/ui/components/ElTable/ElTableSearchSelectLocal.vue'
+import ElTableSearchSelectServer from '@/ui/components/ElTable/ElTableSearchSelectServer.vue'
+import ElTableSearchFloat from '@/ui/components/ElTable/ElTableSearchFloat.vue'
+import ElTableSearchCheckbox from '@/ui/components/ElTable/ElTableSearchCheckbox.vue'
+import ElTableSearchDateRange from '@/ui/components/ElTable/ElTableSearchDateRange.vue'
+import ElTableSearchDateTime from '@/ui/components/ElTable/ElTableSearchDateTime.vue'
+import ElTableSearchDate from '@/ui/components/ElTable/ElTableSearchDate.vue'
 
 const appStore = useAppStore()
 
-/** 搜索Form对象 */
-const searchDataRef = ref(null)
 /** 搜索数据 */
 const searchData = ref({
 ${temp_searchDataDefine}
 })
 
-
-function onResetSearch() {
-  searchDataRef.value.resetFields()
-  ${code_boolFieldsReset}
-}
-
 /** 是否正在搜索中 */
 const isRequestingSearch = ref(false)
 /** 表格显示的数据 */
 const tableData = ref([])
-
+/** 表格对象 */
+const tableRef = ref(null)
 /** 分页查询数据 */
 const searchPageData = ref({
   page: 1,
-  page_size: getDefaultPageSize('${data_searchRequest.value.url}'),
   total: 0,
 })
 
@@ -1233,7 +1222,9 @@ function requestSearch() {
   }
   isRequestingSearch.value = true
   ${data_searchRequest.value.type}('${data_searchRequest.value.url}', ${
-    data_searchRequest.value.isPage ? '{ ...searchData.value, ...searchPageData.value }' : '{ ...searchData.value }'
+    data_searchRequest.value.isPage
+      ? '{ ...searchData.value, ...searchPageData.value, page_size: tableRef.value.getPageSize() }'
+      : '{ ...searchData.value }'
   }, false)
     .then((response) => {
       tableData.value = response.${data_searchRequest.value.tableDataField}
@@ -1252,7 +1243,6 @@ ${
     : `/** 修改每页显示数量 */
 function onPageNumChange(value) {
   searchPageData.value.page_size = value
-  setDefaultPageSize('${data_searchRequest.value.url}', value)
   onSearch()
 }
 
@@ -1367,6 +1357,7 @@ const tableData = {
 <style scoped>
 .input-view-title {
   width: 150px;
+
   & + & {
     margin-left: 10px;
   }

@@ -78,6 +78,7 @@ class Dialog {
    * @param maxLength 输入文本最大长度
    * @param showWordLimit 是否显示字数限制
    * @param clearable 是否显示清空按钮
+   * @param desc
    * @param onClose 点击关闭按钮回调
    * @param onSubmit 点击提交按钮回调，function(value, cancelCb, closeCb)
    * @returns {number} 返回对话框唯一ID
@@ -90,6 +91,7 @@ class Dialog {
     maxLength = '',
     showWordLimit = false,
     clearable = true,
+    desc = '',
     onClose,
     onSubmit,
   }) {
@@ -112,6 +114,7 @@ class Dialog {
           maxLength: maxLength ? undefined : maxLength + '',
           showWordLimit,
           clearable,
+          desc,
           onClose: () => {
             onClose && onClose()
             closeCb()
@@ -135,12 +138,22 @@ class Dialog {
    * @param width 对话框的宽度
    * @param defaultValue 输入框默认值
    * @param placeholder 输入框提示文本
+   * @param desc
    * @param clearable 是否显示清空按钮
    * @param onClose 点击关闭按钮回调
    * @param onSubmit 点击提交按钮回调，function(string value)
    * @returns {number} 返回对话框唯一ID
    */
-  static inputInteger({ title, width = '300', defaultValue = undefined, placeholder = '', clearable = true, onClose, onSubmit }) {
+  static inputInteger({
+    title,
+    width = '300',
+    defaultValue = undefined,
+    placeholder = '',
+    desc = '',
+    clearable = true,
+    onClose,
+    onSubmit,
+  }) {
     const dialogId = ++this.currentId // 先递增 ID，再使用
     const mountNode = document.createElement('div')
     document.body.appendChild(mountNode)
@@ -158,6 +171,7 @@ class Dialog {
           defaultValue,
           placeholder,
           clearable,
+          desc,
           onClose: () => {
             onClose && onClose()
             closeCb()
@@ -181,12 +195,13 @@ class Dialog {
    * @param width 对话框的宽度
    * @param defaultValue 输入框默认值
    * @param placeholder 输入框提示文本
+   * @param desc
    * @param clearable 是否显示清空按钮
    * @param onClose 点击关闭按钮回调
    * @param onSubmit 点击提交按钮回调，function(string value)
    * @returns {number} 返回对话框唯一ID
    */
-  static inputFloat({ title, width = '300', defaultValue = undefined, placeholder = '', clearable = true, onClose, onSubmit }) {
+  static inputFloat({ title, width = '300', defaultValue = undefined, placeholder = '', desc = '', clearable = true, onClose, onSubmit }) {
     const dialogId = ++this.currentId // 先递增 ID，再使用
     const mountNode = document.createElement('div')
     document.body.appendChild(mountNode)
@@ -204,6 +219,7 @@ class Dialog {
           defaultValue,
           placeholder,
           clearable,
+          desc,
           onClose: () => {
             onClose && onClose()
             closeCb()
@@ -227,12 +243,22 @@ class Dialog {
    * @param width 对话框的宽度
    * @param defaultValue 输入框默认值
    * @param placeholder 输入框提示文本
+   * @param desc
    * @param clearable 是否显示清空按钮
    * @param onClose 点击关闭按钮回调
    * @param onSubmit 点击提交按钮回调，function(string value)
    * @returns {number} 返回对话框唯一ID
    */
-  static inputTimestamp({ title, width = '300', defaultValue = undefined, placeholder = '', clearable = true, onClose, onSubmit }) {
+  static inputTimestamp({
+    title,
+    width = '300',
+    defaultValue = undefined,
+    placeholder = '',
+    desc = '',
+    clearable = true,
+    onClose,
+    onSubmit,
+  }) {
     const dialogId = ++this.currentId // 先递增 ID，再使用
     const mountNode = document.createElement('div')
     document.body.appendChild(mountNode)
@@ -250,6 +276,7 @@ class Dialog {
           defaultValue,
           placeholder,
           clearable,
+          desc,
           onClose: () => {
             onClose && onClose()
             closeCb()

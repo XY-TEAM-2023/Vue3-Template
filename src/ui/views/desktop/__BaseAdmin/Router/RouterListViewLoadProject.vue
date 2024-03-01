@@ -1,5 +1,5 @@
 <template>
-  <el-button type="warning" @click="onLoad">
+  <el-button plain @click="onLoad">
     {{ $t('routerListView.btnLoadProject') }}
   </el-button>
 </template>

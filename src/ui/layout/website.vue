@@ -33,7 +33,7 @@
 import { ref, computed } from 'vue'
 import { RouterView } from 'vue-router'
 import UiLogo from '@/ui/components/UiLogo.vue'
-import UiIconLogin from '@/ui/components/UiIconLogin.vue'
+import UiIconLogin from '@/ui/components/Header/HeaderUserInfo.vue'
 import UiNavigationDesktop from '@/ui/components/UiNavigationDesktop.vue'
 import router from '@/router'
 import { useAppStore } from '@/stores/app'

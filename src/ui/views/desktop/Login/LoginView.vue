@@ -13,7 +13,7 @@
             {{ $t('loginView.loginBtn') }}
           </el-button>
         </div>
-        <div>
+        <div v-if="false">
           <el-button v-menu="menuItems" type="info" :loading="isRequesting" @click="ShowBindOtp">
             {{ $t('otp.titleBind') }}
           </el-button>
@@ -41,8 +41,8 @@ import Dialog from '@/ui/components/DIalog/Dialog'
 
 const userStore = useUserStore()
 
-const account = ref('coco')
-const password = ref('123456')
+const account = ref('')
+const password = ref('')
 
 const menuItems = [
   { text: '选项1', icon: 'Finished', hoverColor: '#FF0000', action: () => console.log('选项1被点击') },

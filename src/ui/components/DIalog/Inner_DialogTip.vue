@@ -31,9 +31,7 @@
 
 <script lang="ts" setup>
 import { computed, onMounted, ref } from 'vue'
-import { cloneDeep } from 'lodash-es'
 import { tryGetI18nText } from '@/utils'
-import i18n from '@/i18n'
 
 const isShow = ref(false)
 const isSubmitting = ref(false)
@@ -53,26 +51,9 @@ const props = defineProps({
     default: () => {},
   },
 })
-const inputValue = ref(cloneDeep(props.defaultValue))
 
 onMounted(() => {
   isShow.value = true
-})
-
-const title = computed(() => {
-  if (props.title) {
-    return props.title.indexOf('.') ? i18n.global.t(props.title) : props.title
-  } else {
-    return props.title
-  }
-})
-
-const placeholder = computed(() => {
-  if (props.placeholder) {
-    return props.placeholder.indexOf('.') ? i18n.global.t(props.placeholder) : props.placeholder
-  } else {
-    return props.placeholder
-  }
 })
 
 function onCancelSubmit() {
@@ -81,9 +62,10 @@ function onCancelSubmit() {
 
 function onSubmitCb() {
   isSubmitting.value = true
-  props.onSubmit && props.onSubmit(inputValue.value, onCancelSubmit)
+  props.onSubmit && props.onSubmit(onCancelSubmit)
 }
 </script>
+
 <style scoped>
 .dialog :deep(.el-dialog__header) {
   border-bottom: none !important;

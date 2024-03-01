@@ -67,11 +67,6 @@ import { ElMessageBox } from 'element-plus'
 import UiSvg from '@/ui/components/UiSvg.vue'
 import { http_post } from '@/axios'
 
-const appStore = useAppStore()
-if (appStore.pageNum_userList <= 0) {
-  appStore.pageNum_userList = appStore.pageSizes[0]
-}
-
 /** 搜索第几页 */
 const svgCode =
   '<svg t="1704024937965" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="21796" width="32" height="32"><path d="M832 128H192a64.19 64.19 0 0 0-64 64v640a64.19 64.19 0 0 0 64 64h640a64.19 64.19 0 0 0 64-64V192a64.19 64.19 0 0 0-64-64zM628.36 320c48.29 0 87 39.82 87 89.14s-38.69 89.14-87 89.14-87.27-39.82-87.27-89.14S580.07 320 628.36 320z m-232.73 0c48.29 0 87 39.82 87 89.14s-38.69 89.14-87 89.14-87.27-39.82-87.27-89.14S347.35 320 395.64 320z m203.64 416H192v-74.29c0-69.23 135.85-104 203.64-104s203.64 34.77 203.64 104zM832 736H657.45v-74.29c0-44-23.56-77.55-57.31-102.51 10.18-0.89 19.78-1.49 28.22-1.49 67.78 0 203.64 34.77 203.64 104z" fill="#040000" p-id="21797"></path></svg>'
@@ -86,6 +81,7 @@ const isRequestUserList = ref(false)
 const total = ref(0)
 
 const subRoles = ref(reactive([]))
+
 /** 拉取角色树形结构*/
 function requestRoleTree() {
   if (isRequestUserList.value) {
@@ -180,6 +176,7 @@ function onRolesMenu(data) {
  ********************************************************************/
 const showCreate = ref(false)
 const createParent = ref(0)
+
 function onCreate(parent_id) {
   createParent.value = parent_id
   showCreate.value = true
@@ -278,6 +275,7 @@ function onUnlock(role) {
 
 const editorInfoData = ref(reactive({}))
 const showEditorUserInfo = ref(false)
+
 function onEditorInfo(info) {
   editorInfoData.value = info
   showEditorUserInfo.value = true

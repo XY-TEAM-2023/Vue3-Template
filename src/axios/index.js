@@ -65,6 +65,9 @@ const successCb = (url, response, reject, resolve, tipType) => {
   const tip_type = status === 0 ? 'success' : 'error'
   let tip_msg = getStatusTipMsg(status, msg)
 
+  const need_login = status === -1
+  const not_ping = url !== '/api/admin/user/keepOnline'
+
   let tip_callback = () => {
     if (status === 0) {
       resolve(data)
@@ -75,8 +78,8 @@ const successCb = (url, response, reject, resolve, tipType) => {
     getStatusTipCb(status, data)()
   }
 
-  if (!isTipShowing[url]) {
-    if (tipType === 1) {
+  if (!isTipShowing[url] && not_ping) {
+    if (tipType === 1 || need_login) {
       isTipShowing[url] = true
       ElMessageBox.alert(tip_msg, '', {
         showClose: false,

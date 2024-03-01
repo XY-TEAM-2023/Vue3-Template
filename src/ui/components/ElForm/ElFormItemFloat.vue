@@ -1,14 +1,19 @@
 <template>
-  <el-form-item :label="label" :required="required" :prop="props.prop">
-    <el-input-float
-      v-model="model"
-      :min="props.min"
-      :max="props.max"
-      :clearable="true"
-      :placeholder="props.placeholder"
-      :formatDecimal="props.formatDecimal"
-      style="width: 100%"
-    />
+  <el-form-item :label="label" :required="required" :prop="props.prop" class="unselect">
+    <template v-if="props.readonly">
+      {{ model }}
+    </template>
+    <template v-else>
+      <el-input-float
+        v-model="model"
+        :min="props.min"
+        :max="props.max"
+        :clearable="true"
+        :placeholder="props.placeholder"
+        :formatDecimal="props.formatDecimal"
+        style="width: 100%"
+      />
+    </template>
   </el-form-item>
 </template>
 
@@ -20,7 +25,10 @@ import ElInputFloat from '@/ui/components/ElInput/ElInputFloat.vue'
 const model = defineModel()
 const props = defineProps({
   /** 是否必传 */
-  required: Boolean,
+  required: {
+    type: Boolean,
+    default: undefined,
+  },
   /** 支持直接输入国际化的key */
   label: String,
   /** 规则检查的prop */
@@ -29,6 +37,8 @@ const props = defineProps({
   min: Number,
   /** 最大值 */
   max: Number,
+  /** 是否只读 */
+  readonly: Boolean,
   /** 输入提示 */
   placeholder: String,
   /** 保留几位小数点, 默认不限制 */

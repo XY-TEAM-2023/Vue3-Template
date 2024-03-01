@@ -1,7 +1,7 @@
 <template>
   <el-dialog
     v-model="isShow"
-    :title="title"
+    :title="tryGetI18nText(props.title)"
     :width="props.width"
     :close-on-click-modal="false"
     :autofocus="false"
@@ -10,7 +10,11 @@
     @cancel="onClose"
     class="unselect"
   >
-    <el-input-integer v-model="inputValue" :placeholder="placeholder" :clearable="props.clearable"> </el-input-integer>
+    <el-input-integer v-model="inputValue" :placeholder="tryGetI18nText(props.placeholder)" :clearable="props.clearable"></el-input-integer>
+
+    <div v-if="props.desc && props.desc !== ''" class="desc">
+      {{ props.desc }}
+    </div>
 
     <template #footer>
       <span class="dialog-footer">
@@ -29,7 +33,7 @@
 <script lang="ts" setup>
 import { computed, onMounted, ref } from 'vue'
 import { cloneDeep } from 'lodash-es'
-import i18n from '@/i18n'
+import { tryGetI18nText } from '@/utils'
 import ElInputInteger from '@/ui/components/ElInput/ElInputInteger.vue'
 
 const isShow = ref(false)
@@ -50,6 +54,7 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
+  desc: String,
   onClose: {
     type: Function,
     default: () => {},
@@ -65,22 +70,6 @@ onMounted(() => {
   isShow.value = true
 })
 
-const title = computed(() => {
-  if (props.title) {
-    return props.title.indexOf('.') ? i18n.global.t(props.title) : props.title
-  } else {
-    return props.title
-  }
-})
-
-const placeholder = computed(() => {
-  if (props.placeholder) {
-    return props.placeholder.indexOf('.') ? i18n.global.t(props.placeholder) : props.placeholder
-  } else {
-    return props.placeholder
-  }
-})
-
 function onCancelSubmit() {
   isSubmitting.value = false
 }
@@ -90,4 +79,10 @@ function onSubmitCb() {
   props.onSubmit && props.onSubmit(inputValue.value, onCancelSubmit)
 }
 </script>
-<style scoped></style>
+
+<style scoped>
+.desc {
+  font-size: 12px;
+  margin-top: 6px;
+}
+</style>

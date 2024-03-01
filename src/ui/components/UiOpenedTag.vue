@@ -50,9 +50,10 @@ watch(
 
 /** 作为子组件时，定义有什么事件 */
 const emit = defineEmits(['close', 'click'])
+
 function onClose(event) {
   event.stopPropagation()
-  console.log('关闭', props.closable)
+  // console.log('关闭', props.closable)
 
   if (props.closable) {
     emit('close')
@@ -80,6 +81,7 @@ function onClick() {
   flex-shrink: 0; /* 防止元素缩 */
   cursor: pointer;
 }
+
 .tag-box:hover {
   background-color: #eee;
   color: #909399;
@@ -91,6 +93,7 @@ function onClick() {
     color: #f56c6c;
   }
 }
+
 .tag-box-active {
   background-color: #4165d7 !important;
   color: #ffffff !important;
@@ -112,6 +115,7 @@ function onClick() {
   opacity: 0;
   transition: all 0.3s;
 }
+
 .tag-icon:hover {
   fill: red;
 }

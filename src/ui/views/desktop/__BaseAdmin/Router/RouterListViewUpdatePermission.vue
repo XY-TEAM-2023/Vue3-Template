@@ -1,5 +1,5 @@
 <template>
-  <el-button v-loading="isRequesting" type="primary" :disabled="disabled" @click="onUpdate">
+  <el-button v-loading="isRequesting" plain :disabled="disabled" @click="onUpdate">
     {{ $t('routerListView.btnUpdatePermission') }}
   </el-button>
 </template>
@@ -22,6 +22,7 @@ const disabled = computed(() => {
 const emit = defineEmits(['refresh'])
 
 const isRequesting = ref(false)
+
 async function onUpdate() {
   if (isRequesting.value) {
     return
@@ -254,25 +255,25 @@ function isImportWithinAllowedPath(importPath, baseDir) {
  * @returns {any} 返回具体结构如下
  *
  *  {
- *  	// 标签
- *  	"component": "el-tag",
- *  	// 属性
- *  	"props": {
- *  		"v-permission": "2",
- *  		"v-if": "scope.row.component",
- *  		":style": "tagStyle",
- *  	},
- *  	// 子组件
- *  	"children": [
- *  		// ...和当前结构一致
- *  	],
- *  	// 父级组件
- *  	"parents": [
- *  		"div",
- *  		"el-table-ex",
- *  		"el-table-column",
- *  		"template"
- *  	]
+ *    // 标签
+ *    "component": "el-tag",
+ *    // 属性
+ *    "props": {
+ *      "v-permission": "2",
+ *      "v-if": "scope.row.component",
+ *      ":style": "tagStyle",
+ *    },
+ *    // 子组件
+ *    "children": [
+ *      // ...和当前结构一致
+ *    ],
+ *    // 父级组件
+ *    "parents": [
+ *      "div",
+ *      "el-table-ex",
+ *      "el-table-column",
+ *      "template"
+ *    ]
  *  }
  */
 function htmlToJson(html) {

@@ -1,6 +1,18 @@
 <template>
-  <el-form-item :label="label" :required="required" :prop="props.prop">
-    <el-input-integer v-model="model" :placeholder="placeholder" :min="props.min" :max="props.max" :clearable="true" style="width: 100%" />
+  <el-form-item :label="label" :required="required" :prop="props.prop" class="unselect">
+    <template v-if="props.readonly">
+      {{ model }}
+    </template>
+    <template v-else>
+      <el-input-integer
+        v-model="model"
+        :placeholder="placeholder"
+        :min="props.min"
+        :max="props.max"
+        :clearable="true"
+        style="width: 100%"
+      />
+    </template>
   </el-form-item>
 </template>
 
@@ -12,7 +24,10 @@ import ElInputInteger from '@/ui/components/ElInput/ElInputInteger.vue'
 const model = defineModel()
 const props = defineProps({
   /** 是否必传 */
-  required: Boolean,
+  required: {
+    type: Boolean,
+    default: undefined,
+  },
   /** 支持直接输入国际化的key */
   label: String,
   /** 支持直接输入国际化的key */
@@ -23,6 +38,8 @@ const props = defineProps({
   min: Number,
   /** 最大值 */
   max: Number,
+  /** 是否只读 */
+  readonly: Boolean,
 })
 
 const label = computed(() => {

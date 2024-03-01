@@ -105,6 +105,12 @@
 /********************************************************
                        card
  ********************************************************/
+.el-card {
+    display: flex;
+    flex-direction: column;
+    transition: none !important;
+}
+
 .el-card__header {
     padding: 6px 10px !important;
     background-color: #f5f7fa !important;
@@ -113,7 +119,10 @@
 }
 
 .el-card__body {
+    display: flex !important;
+    flex-direction: column !important;
     padding: 10px 10px !important;
+    height: 100%;
 }
 
 .el-card__footer {
@@ -122,4 +131,11 @@
     word-wrap: break-word;
     font-size: 12px;
     padding: 4px 10px 4px 10px !important;
+}
+
+/********************************************************
+                    el-dropdown
+ ********************************************************/
+:focus-visible {
+    outline: none !important;
 }

@@ -1,7 +1,7 @@
 <template>
   <el-dialog
     v-model="isShow"
-    :title="title"
+    :title="tryGetI18nText(props.title)"
     :width="props.width"
     :close-on-click-modal="false"
     :autofocus="false"
@@ -10,7 +10,16 @@
     @cancel="onClose"
     class="unselect"
   >
-    <el-date-picker-date-time v-model="inputValue" :placeholder="placeholder" :clearable="props.clearable" style="width: 100%" />
+    <el-date-picker-date-time
+      v-model="inputValue"
+      :placeholder="tryGetI18nText(props.placeholder)"
+      :clearable="props.clearable"
+      style="width: 100%"
+    />
+
+    <div v-if="props.desc && props.desc !== ''" class="desc">
+      {{ props.desc }}
+    </div>
 
     <template #footer>
       <span class="dialog-footer">
@@ -29,8 +38,8 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue'
 import { cloneDeep } from 'lodash-es'
-import i18n from '@/i18n'
 import ElDatePickerDateTime from '@/ui/components/ElDatePicker/ElDatePickerDateTime.vue'
+import { tryGetI18nText } from '@/utils'
 
 const isShow = ref(false)
 const isSubmitting = ref(false)
@@ -50,6 +59,7 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
+  desc: String,
   onClose: {
     type: Function,
     default: () => {},
@@ -65,22 +75,6 @@ onMounted(() => {
   isShow.value = true
 })
 
-const title = computed(() => {
-  if (props.title) {
-    return props.title.indexOf('.') ? i18n.global.t(props.title) : props.title
-  } else {
-    return props.title
-  }
-})
-
-const placeholder = computed(() => {
-  if (props.placeholder) {
-    return props.placeholder.indexOf('.') ? i18n.global.t(props.placeholder) : props.placeholder
-  } else {
-    return props.placeholder
-  }
-})
-
 function onCancelSubmit() {
   isSubmitting.value = false
 }
@@ -90,4 +84,10 @@ function onSubmitCb() {
   props.onSubmit && props.onSubmit(inputValue.value, onCancelSubmit)
 }
 </script>
-<style scoped></style>
+
+<style scoped>
+.desc {
+  font-size: 12px;
+  margin-top: 6px;
+}
+</style>

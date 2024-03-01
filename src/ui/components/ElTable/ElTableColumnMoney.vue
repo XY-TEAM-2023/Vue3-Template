@@ -1,5 +1,13 @@
 <template>
-  <el-table-column :label="label" :width="props.width" :align="props.align" :show-overflow-tooltip="true">
+  <el-table-column
+    v-if="showColumn(props.prop)"
+    :label="label"
+    :prop="props.prop"
+    :width="props.width"
+    :align="props.align"
+    :show-overflow-tooltip="true"
+    :sortable="sortable"
+  >
     <template #default="scope">
       <span class="input-label" :class="{ 'input-label-edit': canEdit }" @click="onClick(scope.$index, scope.row)">
         {{ formatNumberAsMoney(scope.row[props.prop], props.showFloat) }}
@@ -9,7 +17,7 @@
 </template>
 
 <script setup>
-import { computed, defineProps, getCurrentInstance } from 'vue'
+import { computed, defineProps, getCurrentInstance, inject } from 'vue'
 import dialog from '@/ui/components/DIalog/Dialog'
 import { formatNumberAsMoney, getI18nText, tryGetI18nText } from '@/utils'
 
@@ -40,16 +48,26 @@ const props = defineProps({
   editMaxLength: String,
   /** 编辑窗口输入显示最大长度限制 */
   editShowWordLimit: Boolean,
+  editDesc: String,
   /** 编辑窗口输入是否可以清除 */
   editClearable: {
     type: Boolean,
     default: true,
   },
   showFloat: Boolean,
+  /** 是否开启排序 */
+  sortable: {
+    type: Boolean,
+    default: true,
+  },
 })
 
 const label = computed(() => {
   return tryGetI18nText(props.label)
+})
+
+const sortable = computed(() => {
+  return props.sortable && props.prop !== undefined
 })
 
 const emit = defineEmits(['edit', 'click'])
@@ -63,6 +81,7 @@ function onClick(index, row) {
       defaultValue: row[props.prop],
       placeholder: props.editPlaceholder ? props.editPlaceholder : '',
       clearable: props.editClearable,
+      desc: props.editDesc,
       onSubmit: (newValue, cancelCb, closeCb) => {
         emit('edit', index, row, newValue, cancelCb, closeCb)
       },
@@ -71,6 +90,8 @@ function onClick(index, row) {
     emit('click', index, row)
   }
 }
+
+const showColumn = inject('showColumnFun')
 </script>
 
 <style scoped lang="scss">

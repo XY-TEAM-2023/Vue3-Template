@@ -3,7 +3,7 @@
     <el-container class="layout">
       <el-aside :width="asideWidth" class="layout-aside">
         <ui-logo class="layout-aside-logo" />
-        <el-scrollbar>
+        <el-scrollbar style="margin-top: 60px" class="layout-aside-menu">
           <ui-navigation-desktop
             :routes="router.options.routes"
             :background-color="config.router.admin.backgroundColor"
@@ -19,12 +19,6 @@
 
       <el-container>
         <el-header class="layout-header">
-          <!--  菜单栏折叠按钮  -->
-          <el-icon size="21" class="layout-menu-btn" @click="appStore.menuIsCollapse = !appStore.menuIsCollapse">
-            <Expand v-if="appStore.menuIsCollapse" />
-            <Fold v-else />
-          </el-icon>
-
           <div style="width: 14px" />
 
           <!--  面包屑  -->
@@ -33,25 +27,25 @@
           <!-- 自动填充 -->
           <div class="layout-top-auto-margin" />
 
-          <div class="layout-top-i18n">
-            <ui-i18n color="#4d5056" />
-          </div>
-
-          <ui-icon-login :size="35" class="layout-top-icon" />
+          <header-time />
+          <div class="header-line" />
+          <header-user-info />
+          <div class="header-line" />
+          <header-role />
+          <div class="header-line" />
+          <header-i18n />
         </el-header>
 
-        <ui-toolbar />
-
         <div class="layout-bottom">
-          <el-main class="layout-main">
-            <div class="layout-main-content">
-              <el-scrollbar>
-                <!--                <keep-alive :include="appStore.keepAliveMenus">-->
-                <RouterView />
-                <!--                </keep-alive>-->
-              </el-scrollbar>
-            </div>
-          </el-main>
+          <!--          <el-main class="layout-main">-->
+          <ui-toolbar style="padding-left: 15px; padding-right: 15px" />
+
+          <div ref="mainAreaRef" class="layout-main-content">
+            <el-scrollbar style="height: 100%" always>
+              <RouterView />
+            </el-scrollbar>
+          </div>
+          <!--          </el-main>-->
         </div>
       </el-container>
     </el-container>
@@ -60,10 +54,9 @@
 
 <script setup>
 // eslint-disable-next-line no-unused-vars
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, onUnmounted, nextTick, provide } from 'vue'
 import { RouterView, useRoute } from 'vue-router'
 import UiLogo from '@/ui/components/UiLogo.vue'
-import UiIconLogin from '@/ui/components/UiIconLogin.vue'
 import UiI18n from '@/ui/components/UiI18n.vue'
 import UiNavigationDesktop from '@/ui/components/UiNavigationDesktop.vue'
 import UiToolbar from '@/ui/components/UiToolbar.vue'
@@ -73,7 +66,31 @@ import { Expand, Fold } from '@element-plus/icons-vue'
 import router from '@/router'
 import { useAppStore } from '@/stores/app'
 import { config } from '@/config'
+import HeaderUserInfo from '@/ui/components/Header/HeaderUserInfo.vue'
+import HeaderI18n from '@/ui/components/Header/HeaderI18n.vue'
+import HeaderTime from '@/ui/components/Header/HeaderTime.vue'
+import HeaderRole from '@/ui/components/Header/HeaderRole.vue'
+
 const route = useRoute()
+const mainAreaRef = ref(null)
+const mainAreaStyle = ref({ height: '300px' })
+const resizeObserver = new ResizeObserver(() => {
+  calcMainAreaStyle()
+})
+onMounted(() => {
+  resizeObserver.observe(mainAreaRef.value)
+  calcMainAreaStyle()
+})
+onUnmounted(() => {
+  resizeObserver.unobserve(mainAreaRef.value)
+})
+
+function calcMainAreaStyle() {
+  nextTick(() => {
+    mainAreaStyle.value.height = mainAreaRef.value.clientHeight + 'px'
+    // console.log(mainAreaStyle.value.height)
+  })
+}
 
 const appStore = useAppStore()
 const mode = computed(() => (config.websiteModel === 'website' ? 'horizontal' : 'vertical'))
@@ -81,17 +98,16 @@ const asideWidth = computed(() => (appStore.menuIsCollapse ? '63px' : '255px'))
 </script>
 
 <style scoped lang="scss">
-$header-height: 60px; // 顶部区域高度
+$header-height: 50px; // 顶部区域高度
 $layout-top-bg-color: #fff; // 顶部区域背景色
-$layout-aside-bg-color: #2f3447; // 左侧区域背景色
-$layout-main-bg-color: #f5f5f5; // 主区域背景色
-$layout-main-content-bg-color: #fff; // 主区域内容背景色
+$layout-aside-bg-color: #fff; // 左侧区域背景色
+$layout-main-bg-color: #eff0f4; // 主区域背景色
+$layout-main-content-bg-color: #eff0f4; // 主区域内容背景色
 
 .layout {
   height: 100%;
   display: flex;
   flex-direction: row;
-  flex: 1;
 }
 
 .layout-header {
@@ -102,30 +118,26 @@ $layout-main-content-bg-color: #fff; // 主区域内容背景色
   flex-direction: row;
   padding: 0 10px !important;
   background-color: $layout-top-bg-color;
-  //box-shadow: inset 0 -10px 4px -10px rgba(0, 0, 0, 1); // 底部阴影
 }
 
 .layout-top-auto-margin {
   margin-left: auto !important;
 }
 
-.layout-top-i18n {
-  display: flex;
-}
-
-.layout-top-icon {
-  margin-left: 15px;
-}
-
 .layout-aside {
+  position: relative;
   display: flex;
   flex-direction: column;
   height: 100% !important;
   overflow-y: auto;
   // 右边阴影
-  //box-shadow: inset -10px 0 4px -10px rgba(0, 0, 0, 1) !important;
   background-color: $layout-aside-bg-color;
-  transition: width 0.2s;
+  transition: width 0.4s;
+  //box-shadow: 3px 0 8px 0 rgba(119, 119, 119, 0.3);
+  box-shadow: var(--el-box-shadow-light);
+}
+
+.layout-aside-menu {
 }
 
 .layout-menu-btn {
@@ -134,9 +146,11 @@ $layout-main-content-bg-color: #fff; // 主区域内容背景色
   width: 30px;
   height: 30px;
 }
+
 .layout-menu-btn:hover {
   color: #2299dd;
 }
+
 .layout-menu-btn:not(:last-child) {
   margin-right: 4px;
 }
@@ -144,29 +158,43 @@ $layout-main-content-bg-color: #fff; // 主区域内容背景色
 .layout-aside-logo {
   min-height: $header-height;
   height: $header-height;
+  //box-shadow: -3px 3px 15px -6px rgba(119, 119, 119, 0.3);
+  box-shadow: var(--el-box-shadow-light);
+  z-index: 1;
 }
 
 .layout-bottom {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   height: calc(100vh - #{$header-height}); // 使用变量并在 calc 函数中插入
-  overflow-y: auto;
 }
 
 .layout-main {
   width: 100%;
+  height: 100%;
   background-color: $layout-main-bg-color;
-  padding: 0 10px 10px !important;
+  padding: 0 0 0 0 !important;
 }
 
 .layout-main-content {
+  display: inline-block;
   width: 100%;
-  height: 100%;
+  height: calc(100% - 10px);
   box-sizing: border-box;
-  padding: 10px;
   background-color: $layout-main-content-bg-color;
+
+  :deep(.el-scrollbar__view:first-child:not(.el-scrollbar__view .el-scrollbar__view)) {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 0 15px 15px 15px;
+  }
 }
-.el-scrollbar__wrap {
-  padding: 5px;
+
+.header-line {
+  height: 20px;
+  margin-left: 5px;
+  margin-right: 5px;
+  border-left: 1px solid #e6eaee;
 }
 </style>

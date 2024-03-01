@@ -1,13 +1,22 @@
 <template>
-  <el-table-column :label="label" :width="props.width" :align="props.align" :show-overflow-tooltip="true" v-bind="$attrs">
-    <template #default="scope">
+  <el-table-column
+    v-if="showColumn(props.prop)"
+    :label="label"
+    :prop="props.prop"
+    :width="props.width"
+    :align="props.align"
+    :show-overflow-tooltip="true"
+    :sortable="sortable"
+    v-bind="$attrs"
+  >
+    <template v-if="$slots.default" #default="scope">
       <slot v-bind="scope"></slot>
     </template>
   </el-table-column>
 </template>
 
 <script setup>
-import { computed, defineProps } from 'vue'
+import { computed, defineProps, ref, onMounted, inject } from 'vue'
 import { tryGetI18nText } from '@/utils'
 
 const props = defineProps({
@@ -19,11 +28,22 @@ const props = defineProps({
   width: String,
   /** 对齐方式：left/center/right */
   align: String,
+  /** 是否开启排序 */
+  sortable: {
+    type: Boolean,
+    default: true,
+  },
 })
 
 const label = computed(() => {
   return tryGetI18nText(props.label)
 })
+
+const sortable = computed(() => {
+  return props.sortable && props.prop !== undefined
+})
+
+const showColumn = inject('showColumnFun')
 </script>
 
 <style scoped lang="scss">

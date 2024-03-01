@@ -1,7 +1,4 @@
 import { createI18n } from 'vue-i18n'
-import EN from './en'
-import ZH from './zh'
-import KO from './ko'
 import BASE_EN from './base/en'
 import BASE_ZH from './base/zh'
 import BASE_KO from './base/ko'
@@ -10,9 +7,9 @@ import { config } from '@/config'
 
 // 语言配置
 const messages = {
-  en: { ...BASE_EN, ...EN },
-  zh: { ...BASE_ZH, ...ZH },
-  ko: { ...BASE_KO, ...KO },
+  en: { ...BASE_EN },
+  zh: { ...BASE_ZH },
+  ko: { ...BASE_KO },
 }
 
 // 从本地数据中读取当前语言
@@ -35,7 +32,6 @@ function getLanguageFromLocalStorage() {
 
 const i18n = createI18n({
   locale: getLanguageFromLocalStorage(), // 设置当前语言类型
-  fallbackLocale: 'en', // 如果当前语言没有相应翻译时使用的后备语言
   messages,
 })
 

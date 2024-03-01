@@ -1,7 +1,7 @@
 <template>
-  <el-form-item :label="label" :required="required" :prop="props.prop">
+  <el-form-item :label="label" :required="required" :prop="props.prop" class="unselect">
     <template v-if="props.readonly">
-      {{ label }}
+      {{ model }}
     </template>
     <template v-else>
       <el-input
@@ -25,9 +25,13 @@ import { tryGetI18nText } from '@/utils'
 const model = defineModel()
 const props = defineProps({
   /** 是否必传 */
-  required: Boolean,
+  required: {
+    type: Boolean,
+    default: undefined,
+  },
   /** 支持直接输入国际化的key */
   label: String,
+  defaultValue: String,
   /** 支持直接输入国际化的key */
   placeholder: String,
   /** el-form 使用rules规则检查时用到 */

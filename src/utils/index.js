@@ -3,8 +3,9 @@ import { DateTime } from 'luxon'
 import { useUserStore } from '@/stores/user'
 import { useAppStore } from '@/stores/app'
 import i18n from '@/i18n'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { http_post } from '@/axios'
+import { tsToTimezoneDate } from '@/utils/timeUtil'
 
 /**
  * 判断是否是移动设备
@@ -23,35 +24,35 @@ export function isMobile() {
 }
 
 /**
- * 时间戳转时间
- * @param timestamp 时间戳
- * @returns {String}
+ * 获取国际化文本
+ * @param label 键
+ * @param params 文本内的动态参数, 比如 { name: '123' }
+ * @param local 指定语言, 默认为全局配置 比如 'zh'
  */
-export function tsToTime(timestamp) {
-  if (timestamp === 0) {
-    return '-----'
-  }
-  if ((timestamp + '').length === 10) {
-    timestamp = timestamp * 1000
-  }
-  try {
-    const targetTime = DateTime.fromMillis(timestamp).setZone(config.timezone)
-    return targetTime.toFormat('yyyy/MM/dd HH:mm:ss')
-  } catch (error) {
-    return '??????'
-  }
-}
+export function tryGetI18nText(label, params = undefined, local = undefined) {
+  return computed(() => {
+    if (!label) {
+      return ''
+    }
 
-export function tryGetI18nText(label) {
-  if (!label) {
-    return ''
-  }
-
-  if (i18n.global.te(label)) {
-    return i18n.global.t(label)
-  } else {
-    return label
-  }
+    if (i18n.global.te(label)) {
+      if (params) {
+        if (local) {
+          return i18n.global.t(label, params, local)
+        } else {
+          return i18n.global.t(label, params)
+        }
+      } else {
+        if (local) {
+          return i18n.global.t(label, local)
+        } else {
+          return i18n.global.t(label)
+        }
+      }
+    } else {
+      return label
+    }
+  }).value
 }
 
 /**
@@ -122,12 +123,14 @@ export function getTextListMaxWidth(texts, font = null) {
 
 let userStore = null
 let appStore = null
+
 function getUserStore() {
   if (!userStore) {
     userStore = useUserStore()
   }
   return userStore
 }
+
 function getAppStore() {
   if (!appStore) {
     appStore = useAppStore()
@@ -153,26 +156,6 @@ export function hasPermission(level) {
   }
 
   return (permission & (1 << i)) !== 0
-}
-
-/** 获取默认页数 */
-export function getDefaultPageSize(url) {
-  const str = localStorage.getItem('defaultPageSize')
-  if (str) {
-    const config = JSON.parse(str)
-    const num = config[url]
-    return num ? num : useAppStore().pageSizes[0]
-  } else {
-    return useAppStore().pageSizes[0]
-  }
-}
-
-/** 设置默认选择的每页的数量 */
-export function setDefaultPageSize(url, pageNum) {
-  const str = localStorage.getItem('defaultPageSize')
-  const defaultPageSizeConfig = str ? JSON.parse(str) : {}
-  defaultPageSizeConfig[url] = pageNum
-  localStorage.setItem('defaultPageSize', JSON.stringify(defaultPageSizeConfig))
 }
 
 /** 以金钱格式显示 */
@@ -229,4 +212,10 @@ export function getBrandOptions() {
         reject()
       })
   })
+}
+
+/** 检查文本是否为邮件 */
+export function checkIsEmail(email) {
+  const regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+  return regex.test(email)
 }

@@ -1,8 +1,16 @@
 <template>
-  <el-table-column :label="label" :width="props.width" :align="props.align" :show-overflow-tooltip="true">
+  <el-table-column
+    v-if="showColumn(props.prop)"
+    :label="label"
+    :prop="props.prop"
+    :width="props.width"
+    :align="props.align"
+    :show-overflow-tooltip="true"
+    :sortable="sortable"
+  >
     <template #default="scope">
       <el-switch
-        v-loading="isRequesting"
+        v-loading="scope.row.isRequesting"
         :disabled="!canEdit"
         v-model="scope.row[props.prop]"
         active-color="#13ce66"
@@ -18,8 +26,9 @@
   </el-table-column>
 </template>
 
+const showColumn = inject('showColumnFun')
 <script setup>
-import { computed, defineProps, ref } from 'vue'
+import { computed, defineProps, inject, ref } from 'vue'
 import { tryGetI18nText } from '@/utils'
 
 const props = defineProps({
@@ -36,38 +45,47 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  /** 是否开启排序 */
+  sortable: {
+    type: Boolean,
+    default: true,
+  },
 })
 
 const label = computed(() => {
   return tryGetI18nText(props.label)
 })
 
-const emit = defineEmits(['edit'])
+const sortable = computed(() => {
+  return props.sortable && props.prop !== undefined
+})
 
-const isRequesting = ref(false)
+const emit = defineEmits(['edit'])
 
 function onChange(index, row) {
   if (!props.canEdit) {
     return
   }
-  if (isRequesting.value) {
+  if (row.isRequesting) {
     return
   }
-  isRequesting.value = true
+  row.isRequesting = true
 
   if (props.canEdit) {
     const cancelCb = () => {
-      isRequesting.value = false
+      row.isRequesting = false
       row[props.prop] = !row[props.prop]
     }
 
     const closeCb = () => {
-      isRequesting.value = false
+      row.isRequesting = false
     }
 
     emit('edit', index, row, row[props.prop], cancelCb, closeCb)
   }
 }
+
+const showColumn = inject('showColumnFun')
 </script>
 
 <style scoped lang="scss">

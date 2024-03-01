@@ -52,6 +52,12 @@ a,
     align-items: center;
 }
 
+.flex-nowrap {
+    display: flex;
+    flex-wrap: nowrap; /* 当元素超出容器宽度时不换行 */
+    overflow-x: auto; /* 添加水平滚动条 */
+}
+
 .flex-left-center {
     display: flex;
     width: 100%;

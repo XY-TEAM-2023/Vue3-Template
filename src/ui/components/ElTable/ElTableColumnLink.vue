@@ -1,5 +1,13 @@
 <template>
-  <el-table-column :label="label" :width="props.width" :align="props.align" :show-overflow-tooltip="true">
+  <el-table-column
+    v-if="showColumn(props.prop)"
+    :label="label"
+    :prop="props.prop"
+    :width="props.width"
+    :align="props.align"
+    :show-overflow-tooltip="true"
+    :sortable="sortable"
+  >
     <template #default="scope">
       <span class="input-label" :class="{ 'input-label-edit': canJump }" @click="onClick(scope.$index, scope.row)">
         <template v-if="scope.row[props.prop] === null || scope.row[props.prop] === undefined || scope.row[props.prop] === ''">
@@ -14,7 +22,7 @@
 </template>
 
 <script setup>
-import { computed, defineProps, getCurrentInstance } from 'vue'
+import { computed, defineProps, getCurrentInstance, inject } from 'vue'
 import { getI18nText, tryGetI18nText } from '@/utils'
 
 const props = defineProps({
@@ -30,10 +38,19 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
+  /** 是否开启排序 */
+  sortable: {
+    type: Boolean,
+    default: true,
+  },
 })
 
 const label = computed(() => {
   return tryGetI18nText(props.label)
+})
+
+const sortable = computed(() => {
+  return props.sortable && props.prop !== undefined
 })
 
 const emptyLabel = computed(() => {
@@ -47,6 +64,8 @@ function onClick(index, row) {
   }
   window.open(url, '_blank')
 }
+
+const showColumn = inject('showColumnFun')
 </script>
 
 <style scoped lang="scss">

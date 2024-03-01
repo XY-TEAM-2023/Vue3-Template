@@ -1,6 +1,6 @@
 <template>
-  <div v-if="visible && position" class="menu-wrapper">
-    <div :style="{ top: `${position.y}px`, left: `${position.x}px` }" class="menu">
+  <div v-if="visible && position" class="menu-wrapper unselect">
+    <div :style="{ top: `${position.y}px`, left: `${position.x}px` }" class="menu" @click.stop="() => {}">
       <ul class="menu-list">
         <template v-for="item in items" :key="item.text">
           <li class="menu-item" v-if="item.display === undefined || item.display" @click="() => onItemClick(item)">
@@ -14,14 +14,14 @@
               <component v-if="isElementIcon(item.icon)" :is="item.icon" class="icon" />
               <ui-svg
                 v-else-if="item.icon"
-                size="20"
+                size="14"
                 :svg-code="item.icon"
                 svg-color="#898c94"
                 :svg-hover-color="hoverColor(item)"
                 :force-hover="item.isHovered"
               />
               <span style="margin-left: 7px">
-                {{ getText(item) }}
+                {{ tryGetI18nText(item.text) }}
               </span>
             </div>
           </li>
@@ -35,6 +35,7 @@
 import { ref } from 'vue'
 import UiSvg from '@/ui/components/UiSvg.vue'
 import i18n from '@/i18n'
+import { tryGetI18nText } from '../../../utils'
 
 const props = defineProps({
   items: Array,
@@ -43,21 +44,15 @@ const props = defineProps({
 
 const items = ref(props.items)
 const position = ref(props.position)
+
 function isElementIcon(icon) {
   return icon && !icon.includes('<path')
 }
 
 const visible = ref(true)
 
-function getText(item) {
-  if (item.text.includes('.')) {
-    return i18n.global.t(item.text)
-  } else {
-    return item.text
-  }
-}
 function hoverColor(item) {
-  return item.hoverColor ? item.hoverColor : '#3a3c42'
+  return item.hoverColor ? item.hoverColor : '#181818'
 }
 
 function hoverStyle(item) {
@@ -86,13 +81,14 @@ const onItemClick = (item) => {
   height: 100vh;
   z-index: 9999; /* 确保遮罩层和菜单在最顶层 */
 }
+
 .menu {
   position: absolute;
   display: flex;
   flex-direction: column;
   background-color: #fff;
   border-radius: 5px;
-  box-shadow: 0 10px 20px rgba(64, 64, 64, 0.15);
+  box-shadow: 0 10px 20px rgba(64, 64, 64, 0.3);
   z-index: 10000;
   font-size: 12px;
 }
@@ -107,6 +103,7 @@ ul {
   display: block;
   width: 100%;
   padding: 6px;
+
   & + .menu-list {
     border-top: 1px solid #ddd;
   }
@@ -119,7 +116,7 @@ ul {
 .menu-button {
   font: inherit;
   border: 0;
-  padding: 4px 36px 4px 8px;
+  padding: 4px 20px 4px 8px;
   width: 100%;
   border-radius: 5px;
   text-align: left;
@@ -139,7 +136,7 @@ ul {
 }
 
 .icon {
-  width: 20px;
-  height: 20px;
+  width: 14px;
+  height: 14px;
 }
 </style>

@@ -36,7 +36,13 @@ const userStore = useUserStore()
 /** 应用全局数据对象 */
 const appStore = useAppStore()
 
+const inputValue = ref(props.modeValue)
 const props = defineProps({
+  /* v-module */
+  modeValue: {
+    type: String,
+    default: '',
+  },
   text: {
     type: String,
     default: '',
@@ -68,14 +74,12 @@ watch(
 )
 
 /** 作为子组件时，定义有什么事件 */
-const emit = defineEmits(['update:value', 'custom-event'])
+const emit = defineEmits(['update:modelValue', 'custom-event'])
+
 /** 触发外部事件 */
 const emitCustomEvent = () => {
   emit('custom-event', { msg: '这是自定义事件的数据' })
 }
-
-/** 定义一个用于在Template中显示的变量 */
-const inputValue = ref(props.value)
 
 /** 定义一个将数据处理后返回结果的变量 */
 const computedTitle = computed(() => '计算后的标题: ' + props.title)
@@ -83,6 +87,7 @@ const computedTitle = computed(() => '计算后的标题: ' + props.title)
 /** 定义一个时间 */
 const onInput = (event) => {
   inputValue.value = event.target.value
+  emit('update:modelValue', inputValue.value)
 }
 
 /** 组件加载事件 */
@@ -98,6 +103,7 @@ onBeforeUnmount(() => {
 function test() {
   console.log('11111')
 }
+
 // 使用 defineExpose 暴露方法
 defineExpose({ test })
 </script>

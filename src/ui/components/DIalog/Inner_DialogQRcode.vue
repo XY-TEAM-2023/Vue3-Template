@@ -1,7 +1,7 @@
 <template>
   <el-dialog
     v-model="isShow"
-    :title="title"
+    :title="tryGetI18nText(props.title)"
     :width="props.width"
     :close-on-click-modal="false"
     :autofocus="false"
@@ -15,7 +15,7 @@
       <qrcode-vue :value="content" :size="200" style="margin-left: auto; margin-right: auto"></qrcode-vue>
       <div v-if="props.desc" style="margin-top: 10px">
         <p style="white-space: pre-wrap">
-          {{ desc }}
+          {{ tryGetI18nText(props.desc) }}
         </p>
       </div>
     </div>
@@ -26,7 +26,9 @@
           {{ $t('com.btnCancel') }}
         </el-button>
 
-        <el-button v-loading="isSubmitting" type="primary" @click="onSubmitCb"> {{ submitBtnLabel }} </el-button>
+        <el-button v-loading="isSubmitting" type="primary" @click="onSubmitCb">
+          {{ tryGetI18nText(props.submitBtnLabel) }}
+        </el-button>
       </span>
     </template>
   </el-dialog>
@@ -35,7 +37,7 @@
 <script lang="ts" setup>
 import { computed, onMounted, ref } from 'vue'
 import QrcodeVue from 'qrcode.vue'
-import i18n from '@/i18n'
+import { tryGetI18nText } from '@/utils'
 
 const isShow = ref(false)
 const isSubmitting = ref(false)
@@ -66,30 +68,6 @@ const props = defineProps({
 
 onMounted(() => {
   isShow.value = true
-})
-
-const title = computed(() => {
-  if (props.title) {
-    return props.title.indexOf('.') ? i18n.global.t(props.title) : props.title
-  } else {
-    return props.title
-  }
-})
-
-const submitBtnLabel = computed(() => {
-  if (props.submitBtnLabel) {
-    return props.submitBtnLabel.indexOf('.') ? i18n.global.t(props.submitBtnLabel) : props.submitBtnLabel
-  } else {
-    return props.submitBtnLabel
-  }
-})
-
-const desc = computed(() => {
-  if (props.desc) {
-    return props.desc.indexOf('.') ? i18n.global.t(props.desc) : props.desc
-  } else {
-    return props.desc
-  }
 })
 
 function onCancelSubmit() {

@@ -36,7 +36,10 @@ const props = defineProps({
     default: 'auto',
   },
   /** 是否必填 */
-  required: Boolean,
+  required: {
+    type: Boolean,
+    default: undefined,
+  },
   /** 表单验证规则 */
   rules: Object,
   /** 表单域验证错误信息 */

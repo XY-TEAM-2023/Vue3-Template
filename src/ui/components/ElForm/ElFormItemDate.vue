@@ -1,5 +1,5 @@
 <template>
-  <el-form-item :label="label" :required="required" :prop="props.prop">
+  <el-form-item :label="label" :required="required" :prop="props.prop" class="unselect">
     <el-date-picker-date
       v-model="model"
       :clearable="true"
@@ -20,7 +20,10 @@ import ElDatePickerDate from '@/ui/components/ElDatePicker/ElDatePickerDate.vue'
 const model = defineModel()
 const props = defineProps({
   /** 是否必传 */
-  required: Boolean,
+  required: {
+    type: Boolean,
+    default: undefined,
+  },
   /** 支持直接输入国际化的key */
   label: String,
   /** 规则检查的prop */
@@ -35,6 +38,7 @@ const label = computed(() => {
 })
 
 const emits = defineEmits(['change'])
+
 function onChange(val) {
   emits('change', val)
 }

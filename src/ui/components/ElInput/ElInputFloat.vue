@@ -8,6 +8,7 @@ import { ref } from 'vue'
 import { ElInput } from 'element-plus'
 
 const props = defineProps({
+  /* v-module */
   modeValue: {
     type: String,
     default: '',
@@ -42,6 +43,10 @@ const handleInput = (value) => {
 
   // 尝试将处理后的值转换为浮点数
   let numericValue = parseFloat(processedValue)
+  let isEndWith = (processedValue + '').endsWith('.')
+  if (processedValue.split('.').length - 1 > 1) {
+    isEndWith = false
+  }
 
   // 检查转换后的数值是否为NaN（不是一个数字），如果是，则重置为0
   if (isNaN(numericValue)) {
@@ -64,7 +69,11 @@ const handleInput = (value) => {
     processedValue = (processedValue.match(regex) || [])[0] || ''
   }
 
-  inputValue.value = processedValue
+  if (isEndWith) {
+    inputValue.value = processedValue + '.'
+  } else {
+    inputValue.value = processedValue
+  }
 
   // 发出更新事件
   emit('update:modelValue', inputValue.value)
