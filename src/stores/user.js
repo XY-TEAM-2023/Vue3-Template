@@ -18,7 +18,8 @@ async function tryRunKeepAliveTimer() {
     // 保持用户在线
     await http_post('/api/admin/user/keepOnline', {}, false)
       .then(() => {})
-      .catch(() => {})
+      .catch(() => {
+      })
   }, 20000) // 每20秒发送一次请求
 }
 
@@ -203,7 +204,7 @@ export const useUserStore = defineStore('user', {
         // 停止保持在线的定时器
         if (keepAliveTimerId) {
           clearInterval(keepAliveTimerId)
-          keepAliveTimerId = null
+          keepAliveTimerId = undefined
         }
 
         router.push('/')
@@ -218,6 +219,13 @@ export const useUserStore = defineStore('user', {
           })
       } else {
         clearDataCb()
+      }
+    },
+
+    stopKeepAlive() {
+      if (keepAliveTimerId) {
+        clearInterval(keepAliveTimerId)
+        keepAliveTimerId = undefined
       }
     },
 

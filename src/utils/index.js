@@ -219,3 +219,17 @@ export function checkIsEmail(email) {
   const regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
   return regex.test(email)
 }
+
+/**
+ * 生成唯一ID
+ * @returns {string} 唯一ID
+ */
+export function randomId() {
+  // 获取当前时间戳
+  const timestamp = Date.now().toString(36);
+  // 生成随机字符串
+  const randomString = Math.random().toString(36).substring(2, 7);
+  // 组合时间戳和随机字符串作为唯一ID
+  return timestamp + randomString;
+}
+

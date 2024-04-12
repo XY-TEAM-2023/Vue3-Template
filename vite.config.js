@@ -11,11 +11,17 @@ import { env } from 'eslint-plugin-vue/lib/configs/base'
 import viteImagemin from 'vite-plugin-imagemin'
 import purgecss from '@fullhuman/postcss-purgecss'
 import CompressionWebpackPlugin from 'compression-webpack-plugin'
+import {resolve} from "path";
 
 // https://vitejs.dev/config/
 export default defineConfig({
   build: {
-    sourcemap: true,
+    sourcemap: false,
+    rollupOptions: {
+      input: {
+        main: resolve(__dirname, 'index.html'),
+      },
+    },
   },
   // 使用PurgeCSS插件，可以自动删除不使用的CSS
   css: {
@@ -58,7 +64,6 @@ export default defineConfig({
       vue: ['ref', 'reactive', 'computed', 'watch', 'onMounted', 'onBeforeUnmount', 'defineProps', 'defineEmits', 'defineExpose'],
     }),
     AutoImport({
-      // imports: ['vue', 'vue-router'],
       resolvers: [ElementPlusResolver()],
     }),
     Components({

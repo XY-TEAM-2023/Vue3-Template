@@ -1,21 +1,22 @@
 <template>
   <el-table-column
-    v-if="showColumn(props.prop)"
-    :label="label"
-    :prop="props.prop"
-    :width="props.width"
-    :align="props.align"
-    :show-overflow-tooltip="true"
-    :sortable="sortable"
+      v-if="showColumn(props.prop)"
+      :label="label"
+      :prop="props.prop"
+      :width="props.width"
+      :align="props.align"
+      :show-overflow-tooltip="true"
+      :sortable="sortable"
   >
     <template #default="scope">
       <el-switch
-        v-loading="scope.row.isRequesting"
-        :disabled="!canEdit"
-        v-model="scope.row[props.prop]"
-        active-color="#13ce66"
-        inactive-color="#ff4949"
-        @click="
+          v-loading="scope.row.isRequesting"
+          :disabled="!canEdit"
+          v-model="scope.row[props.prop]"
+          active-color="#13ce66"
+          inactive-color="#ff4949"
+          :size="props.size"
+          @click="
           () => {
             onChange(scope.$index, scope.row)
           }
@@ -28,8 +29,8 @@
 
 const showColumn = inject('showColumnFun')
 <script setup>
-import { computed, defineProps, inject, ref } from 'vue'
-import { tryGetI18nText } from '@/utils'
+import {computed, defineProps, inject, ref} from 'vue'
+import {tryGetI18nText} from '@/utils'
 
 const props = defineProps({
   /** 表格标题，支持国际化Key */
@@ -50,6 +51,11 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
+  /** default small large */
+  size: {
+    type: String,
+    default: 'default'
+  }
 })
 
 const label = computed(() => {

@@ -1103,7 +1103,7 @@ function genCode() {
     code_table = `
   <el-table-ex
     ref='tableRef'
-    :data-tabel='tableData'
+    :data-table='tableData'
     v-model:dataSearch='searchData'
     v-loading='isRequestingSearch'
     :show-pagination='${data_searchRequest.value.isPage}'
@@ -1177,7 +1177,7 @@ ${code_tableFields}
 import { reactive, ref } from 'vue'
 import { http_get, http_post } from '@/axios'
 import { useAppStore } from '@/stores/app'
-import ElTableEx from '@/ui/components/ElTableEx.vue'
+import ElTableEx from '@/ui/components/ElTable/ElTableEx.vue'
 import ElTableColumnLabel from '@/ui/components/ElTable/ElTableColumnLabel.vue'
 import ElTableColumnInteger from '@/ui/components/ElTable/ElTableColumnInteger.vue'
 import ElTableColumnFloat from '@/ui/components/ElTable/ElTableColumnFloat.vue'

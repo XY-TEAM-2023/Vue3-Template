@@ -74,3 +74,10 @@ npm run build
     ]))
     </script>
     ```
+   
+3. 通过js调用右键菜单
+   ```vue
+   import { showContextMenu } from '@/ui/components/Menu/v-menu'
+   
+   showContextMenu(e, menuItems)
+   ```

@@ -7,7 +7,7 @@
       </template>
     </inner-el-table-search-mulit-line>
 
-    <el-card-ex class="card-table" shadow="never" :use-fold="false">
+    <el-card-ex class="card-table" shadow="never" :use-fold="props.useFold">
       <template #header>
         <template v-if="!slots.header">
           {{ $t('app.searchResultTitle') }}
@@ -52,6 +52,7 @@
         :scrollbar-always-on="scrollbar.display"
         :class="scrollbar.class"
         height="100%"
+        style="min-height: 150px"
       >
         <template v-for="(_, name) in $slots" :key="name" v-slot:[name]="scope">
           <el-table-column
@@ -70,7 +71,7 @@
         </template>
       </el-table>
 
-      <div class="bottom-area">
+      <div :class="{ 'bottom-area': showPagination }">
         <el-pagination
           v-if="showPagination"
           v-model:current-page="currentPage"
@@ -95,15 +96,20 @@ import router from '@/router'
 import { tryGetI18nText } from '@/utils'
 import md5 from 'md5'
 import { useAppStore } from '@/stores/app'
-import InnerElTableSearchMulitLine from '@/ui/components/ElTable/InnerElTableSearchMulitLine.vue'
+import InnerElTableSearchMulitLine from './InnerElTableSearchMulitLine.vue'
 import { cloneDeep } from 'lodash-es'
-import InnerElTableColumnSettings from '@/ui/components/ElTable/InnerElTableColumnSettings.vue'
+import InnerElTableColumnSettings from './InnerElTableColumnSettings.vue'
 import ElCardEx from '@/ui/components/ElCardEx.vue'
 
 const appStore = useAppStore()
 const slots = useSlots()
 
 const props = defineProps({
+  // 是否可以折叠
+  useFold: {
+    type: Boolean,
+    default: false,
+  },
   // 搜索相关------------------------------------
   dataSearch: {
     type: Object,
@@ -324,7 +330,9 @@ onMounted(async () => {
   refreshScrollbarStatus()
 
   // 加载配置
-  columnSettingsRef.value.initColumnOptions(column_options)
+  if (props.displayColumnSettings) {
+    columnSettingsRef.value.initColumnOptions(column_options)
+  }
   loadTableConfig()
 })
 
@@ -361,7 +369,10 @@ function loadTableConfig() {
   let temp_page_size = props.pageSize
   if (temp_config !== undefined && temp_config !== '' && temp_config !== null) {
     tableConfig.value = JSON.parse(temp_config)
-    columnSettingsRef.value.initHideColumns(tableConfig.value.hideColumns)
+
+    if (props.displayColumnSettings) {
+      columnSettingsRef.value.initHideColumns(tableConfig.value.hideColumns)
+    }
 
     if (temp_page_size === 0) {
       temp_page_size = tableConfig.value.pageSize
@@ -533,7 +544,7 @@ function sortMethod(a, b, prop) {
 }
 
 :deep(.el-card) {
-  border-radius: 10px;
+  border-radius: 4px;
 }
 
 .columnSettings {

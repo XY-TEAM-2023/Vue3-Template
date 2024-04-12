@@ -140,4 +140,19 @@ export const asyncRoutes = [
       },
     ],
   },
+  {
+    name: 'demands',
+    component: `/src/ui/views/${platform}/__BaseAdmin/Demands/index.vue`,
+    meta: {
+      title: { zh: '需求设计', en: '需求设计', ko: '需求设计' },
+      icon: '<svg t="1704705765062" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="42595" width="32" height="32"><path d="M63.9 419.6h250.2v203.3H63.9V419.6z m318.4 271.5h259.3v223.8H382.3V691.1z m0-271.5h259.3v203.3H382.3V419.6z m341.3 271.5h236.5v223.8H709.9V704.8c0-7.6 6.1-13.7 13.7-13.7z m-659.7 0h250.2v223.8H63.9V691.1z m0-582h896.2v242.3H63.9V109.1z m659.7 310.5h236.5v203.3H709.9V433.3c0-7.6 6.1-13.7 13.7-13.7z" p-id="42596"></path></svg>',
+      hidden: false,
+      cache: true,
+      needLogin: false,
+      public: {
+        desktop: true,
+        mobile: true,
+      },
+    },
+  },
 ]

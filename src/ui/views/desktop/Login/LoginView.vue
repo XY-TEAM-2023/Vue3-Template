@@ -9,7 +9,7 @@
         <div style="height: 20px" />
         <div class="login-box-btnArea">
           <ui-i18n class="login-i18n" color="#ffffff" />
-          <el-button v-menu="menuItems" type="primary" :loading="isRequesting" @click="onLogin">
+          <el-button v-menu="menuItems" type="primary" :loading="isRequesting" @click="onLogin(false)">
             {{ $t('loginView.loginBtn') }}
           </el-button>
         </div>
@@ -84,8 +84,10 @@ function onLogin(isForce = false, otpCode = '') {
       console.log('>>>>>>>>>>>登录成功', userStore.homePage, data)
       // 跳转页面
       router.push({ name: userStore.homePage })
+      isRequesting.value = true
     })
     .catch(({ status, msg, data }) => {
+      isRequesting.value = false
       console.log('>>>>>>>>>>>登录失败', msg)
       // 已经有人登录过了
       if (status === 12) {
@@ -150,7 +152,7 @@ function onLogin(isForce = false, otpCode = '') {
     })
     .finally(() => {
       // console.log('请求结束')
-      isRequesting.value = false
+      // isRequesting.value = false
     })
 }
 

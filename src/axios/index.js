@@ -4,7 +4,7 @@ import { config } from '@/config'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import i18n from '@/i18n'
 import { useAppStore } from '@/stores/app'
-import { getStatusTipCb, getStatusTipMsg } from '@/axios/axiosHanlder'
+import { getStatusTipMsg, tryInvokeStatusTipCb } from '@/axios/axiosHanlder'
 
 // 创建并配置axios实例
 const http = axios.create({
@@ -66,19 +66,28 @@ const successCb = (url, response, reject, resolve, tipType) => {
   let tip_msg = getStatusTipMsg(status, msg)
 
   const need_login = status === -1
-  const not_ping = url !== '/api/admin/user/keepOnline'
+  const is_ping = url === '/api/admin/user/keepOnline'
 
   let tip_callback = () => {
+    // 尝试通用处理
+    if (tryInvokeStatusTipCb(status, data)()) {
+      return
+    }
+
     if (status === 0) {
       resolve(data)
     } else {
       reject(response)
     }
-
-    getStatusTipCb(status, data)()
   }
 
-  if (!isTipShowing[url] && not_ping) {
+  if (need_login) {
+    useUserStore().stopKeepAlive()
+  }
+
+  if (is_ping) {
+    resolve(data)
+  } else if (!isTipShowing[url]) {
     if (tipType === 1 || need_login) {
       isTipShowing[url] = true
       ElMessageBox.alert(tip_msg, '', {

@@ -2,47 +2,47 @@
   <div id="app">
     <el-container class="layout">
       <el-aside :width="asideWidth" class="layout-aside">
-        <ui-logo class="layout-aside-logo" />
+        <ui-logo class="layout-aside-logo"/>
         <el-scrollbar style="margin-top: 60px" class="layout-aside-menu">
           <ui-navigation-desktop
-            :routes="router.options.routes"
-            :background-color="config.router.admin.backgroundColor"
-            :text-color="config.router.admin.textColor"
-            :active-text-color="config.router.admin.activeTextColor"
-            :default-active="appStore.routerPath"
-            :is-router="true"
-            :mode="mode"
-            :collapse="appStore.menuIsCollapse"
+              :routes="router.options.routes"
+              :background-color="config.router.admin.backgroundColor"
+              :text-color="config.router.admin.textColor"
+              :active-text-color="config.router.admin.activeTextColor"
+              :default-active="appStore.routerPath"
+              :is-router="true"
+              :mode="mode"
+              :collapse="appStore.menuIsCollapse"
           />
         </el-scrollbar>
       </el-aside>
 
       <el-container>
         <el-header class="layout-header">
-          <div style="width: 14px" />
+          <div style="width: 14px"/>
 
           <!--  面包屑  -->
-          <ui-breadcrumb />
+          <ui-breadcrumb/>
 
           <!-- 自动填充 -->
-          <div class="layout-top-auto-margin" />
+          <div class="layout-top-auto-margin"/>
 
-          <header-time />
-          <div class="header-line" />
-          <header-user-info />
-          <div class="header-line" />
-          <header-role />
-          <div class="header-line" />
-          <header-i18n />
+          <header-time/>
+          <div class="header-line"/>
+          <header-user-info/>
+          <div class="header-line"/>
+          <header-role/>
+          <div class="header-line"/>
+          <header-i18n/>
         </el-header>
 
         <div class="layout-bottom">
           <!--          <el-main class="layout-main">-->
-          <ui-toolbar style="padding-left: 15px; padding-right: 15px" />
+          <ui-toolbar style="padding-left: 15px; padding-right: 15px"/>
 
           <div ref="mainAreaRef" class="layout-main-content">
-            <el-scrollbar style="height: 100%" always>
-              <RouterView />
+            <el-scrollbar style="height: 100%; max-height: 100%;  padding: 0 15px;" always>
+              <RouterView/>
             </el-scrollbar>
           </div>
           <!--          </el-main>-->
@@ -54,18 +54,18 @@
 
 <script setup>
 // eslint-disable-next-line no-unused-vars
-import { ref, computed, onMounted, onUnmounted, nextTick, provide } from 'vue'
-import { RouterView, useRoute } from 'vue-router'
+import {ref, computed, onMounted, onBeforeUnmount, onUnmounted, nextTick, provide} from 'vue'
+import {RouterView, useRoute} from 'vue-router'
 import UiLogo from '@/ui/components/UiLogo.vue'
 import UiI18n from '@/ui/components/UiI18n.vue'
 import UiNavigationDesktop from '@/ui/components/UiNavigationDesktop.vue'
 import UiToolbar from '@/ui/components/UiToolbar.vue'
 import UiBreadcrumb from '@/ui/components/UiBreadcrumb.vue'
 // eslint-disable-next-line no-unused-vars
-import { Expand, Fold } from '@element-plus/icons-vue'
+import {Expand, Fold} from '@element-plus/icons-vue'
 import router from '@/router'
-import { useAppStore } from '@/stores/app'
-import { config } from '@/config'
+import {useAppStore} from '@/stores/app'
+import {config} from '@/config'
 import HeaderUserInfo from '@/ui/components/Header/HeaderUserInfo.vue'
 import HeaderI18n from '@/ui/components/Header/HeaderI18n.vue'
 import HeaderTime from '@/ui/components/Header/HeaderTime.vue'
@@ -73,7 +73,7 @@ import HeaderRole from '@/ui/components/Header/HeaderRole.vue'
 
 const route = useRoute()
 const mainAreaRef = ref(null)
-const mainAreaStyle = ref({ height: '300px' })
+const mainAreaStyle = ref({height: '300px'})
 const resizeObserver = new ResizeObserver(() => {
   calcMainAreaStyle()
 })
@@ -81,7 +81,8 @@ onMounted(() => {
   resizeObserver.observe(mainAreaRef.value)
   calcMainAreaStyle()
 })
-onUnmounted(() => {
+
+onBeforeUnmount(() => {
   resizeObserver.unobserve(mainAreaRef.value)
 })
 
@@ -179,7 +180,7 @@ $layout-main-content-bg-color: #eff0f4; // 主区域内容背景色
 .layout-main-content {
   display: inline-block;
   width: 100%;
-  height: calc(100% - 10px);
+  height: calc(100% - 50px);
   box-sizing: border-box;
   background-color: $layout-main-content-bg-color;
 
@@ -187,7 +188,7 @@ $layout-main-content-bg-color: #eff0f4; // 主区域内容背景色
     height: 100%;
     display: flex;
     flex-direction: column;
-    padding: 0 15px 15px 15px;
+    padding: 0 0 15px 0;
   }
 }
 
